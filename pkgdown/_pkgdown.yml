@@ -4,6 +4,27 @@ template:
   params:
     bootswatch: sandstone
 
+reference:
+- title: Package
+  contents:
+  - alfresco
+- title: Default options
+  contents:
+  - alfdef
+- title: Fire events processing
+  contents:
+  - fireEventsFun
+- title: Bridging subsequent model runs
+  contents:
+  - outputs_as_inputs
+- title: Projections
+  contents:
+  - wgs2ak
+- title: Command line helpers
+  contents:
+  - prep_comArgs
+  - prep_alf_frp
+
 navbar:
   type: inverse
   right:
