@@ -26,15 +26,15 @@
 #' }
 outputs_as_inputs <- function(domain, run_name, year, suffix = "runs",
                               sub_dir = "secondaryRunInputs", mc.cores = 32){
-  top_dir <- alf_defaults()$atlas_shiny_dir
-  owner <- alf_defaults()$atlas_run_owner_dir
+  top_dir <- alfdef()$atlas_shiny_dir
+  owner <- alfdef()$atlas_run_owner_dir
   in_dir <- paste0(top_dir, "/Runs_", domain, "/", owner, "/", run_name, "/Maps")
   dir.create(
     out_dir <- paste0(top_dir, "/Final_", domain, "_", suffix, "/", sub_dir),
     showWarnings = FALSE, recursive = TRUE)
   files <- list.files(in_dir, pattern = paste0(year, "\\.tif"), full.names = TRUE)
   files <- files[-which(substr(basename(files), 1, 8) == "FireScar")]
-  r <- raster::raster(alf_defaults()$age_spinups)
+  r <- raster::raster(alfdef()$age_spinups)
   parallel::mclapply(seq_along(files), .write_outputs_as_inputs, files = files,
                      template = r, out_dir = out_dir, mc.cores = mc.cores)
 }
