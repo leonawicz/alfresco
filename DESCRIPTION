@@ -1,6 +1,6 @@
 Package: alfresco
 Version: 0.0.0.9000
-Title: What the Package Does (one line, title case)
+Title: R Functions For ALFRESCO Wildfire Model
 Description: R is used to manipulate and analyze data that both feed into and come out of the ALFRESCO wildfire model. 
     This package contains functions for working with ALFRESCO input and output data. 
     It is a core functional package in the SNAPverse collection of R packages.
