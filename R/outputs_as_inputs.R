@@ -35,11 +35,11 @@ outputs_as_inputs <- function(domain, run_name, year, suffix = "runs",
   files <- list.files(in_dir, pattern = paste0(year, "\\.tif"), full.names = TRUE)
   files <- files[-which(substr(basename(files), 1, 8) == "FireScar")]
   r <- raster::raster(alf_defaults()$age_spinups)
-  parallel::mclapply(seq_along(files), .write_outputs_as_inputs,
-                     template = template, out_dir = out_dir, mc.cores = mc.cores)
+  parallel::mclapply(seq_along(files), .write_outputs_as_inputs, files = files,
+                     template = r, out_dir = out_dir, mc.cores = mc.cores)
 }
 
-.write_outputs_as_inputs <- function(i, template, out_dir){
+.write_outputs_as_inputs <- function(i, files, template, out_dir){
   r <- raster::raster(files[i])
   r <- raster::extend(r, template)
   if(substr(basename(files[i]), 1, 3) == "Age")
