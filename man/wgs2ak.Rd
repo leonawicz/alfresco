@@ -2,7 +2,7 @@
 % Please edit documentation in R/projections.R
 \name{wgs2ak}
 \alias{wgs2ak}
-\title{Convert from Alaska Albers projection to WGS84}
+\title{Convert from WGS84 to Alaska Albers projection}
 \usage{
 wgs2ak(xy)
 }
@@ -13,7 +13,7 @@ wgs2ak(xy)
 data frame with new attached coordinates.
 }
 \description{
-Simple wrapper around \code{spTransform} to convert from Alaska Albers projection to WGS84.
+Simple wrapper around \code{spTransform} to convert from WGS84 to Alaska Albers projection.
 }
 \examples{
 # not run
