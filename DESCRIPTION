@@ -1,0 +1,22 @@
+Package: alfresco
+Version: 0.0.0.9000
+Title: What the Package Does (one line, title case)
+Description: R is used to manipulate and analyze data that both feed into and come out of the ALFRESCO wildfire model. 
+    This package contains functions for working with ALFRESCO input and output data. 
+    It is a core functional package in the SNAPverse collection of R packages.
+Authors@R: c(person("Matthew", "Leonawicz", email = "mfleonawicz@alaska.edu", role = c("aut", "cre")),
+    person("Scenarios Network for Alaska and Arctic Planning", role = c("cph", "fnd"))
+    )
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+ByteCompile: true
+Url: https://github.com/leonawicz/alfresco
+BugReports: https://github.com/leonawicz/alfresco/issues
+Suggests: 
+    testthat,
+    covr,
+    snapmeta
+Imports: 
+    raster
+RoxygenNote: 6.0.1
