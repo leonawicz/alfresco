@@ -19,8 +19,13 @@ Suggests:
     snapmeta,
     knitr,
     rmarkdown
-Imports:
-    raster
+Imports: 
+    raster,
+    dplyr,
+    purrr,
+    rgdal,
+    tibble,
+    magrittr
 Remotes:
     leonawicz/snapmeta
 RoxygenNote: 6.0.1
