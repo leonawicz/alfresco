@@ -28,9 +28,9 @@ outputs_as_inputs <- function(domain, run_name, year, suffix = "runs",
                               sub_dir = "secondaryRunInputs", mc.cores = 32){
   top_dir <- alfdef()$atlas_shiny_dir
   owner <- alfdef()$atlas_run_owner_dir
-  in_dir <- paste0(top_dir, "/Runs_", domain, "/", owner, "/", run_name, "/Maps")
+  in_dir <- paste0(top_dir, "/Runs_", domain, "/", owner, "/", run_name, "/Maps") # nolint
   dir.create(
-    out_dir <- paste0(top_dir, "/Final_", domain, "_", suffix, "/", sub_dir),
+    out_dir <- paste0(top_dir, "/Final_", domain, "_", suffix, "/", sub_dir), # nolint
     showWarnings = FALSE, recursive = TRUE)
   files <- list.files(in_dir, pattern = paste0(year, "\\.tif"), full.names = TRUE)
   files <- files[-which(substr(basename(files), 1, 8) == "FireScar")]

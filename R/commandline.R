@@ -8,13 +8,14 @@
 #' @export
 #'
 #' @examples
+#' # not run
 prep_comArgs <- function(comArgs){
   x <- do.call("rbind", strsplit(comArgs, "="))
   options(warn = -1)
   arg.char <- which(is.na(as.numeric(x[, 2])))
   options(warn=0)
   if(length(arg.char) > 0)
-    x[arg.char, 2] <- paste0("'", x[arg.char,2], "'")
+    x[arg.char, 2] <- paste0("'", x[arg.char, 2], "'")
   x
 }
 

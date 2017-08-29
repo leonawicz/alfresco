@@ -10,17 +10,17 @@
 #' @param source character, \code{"Observed"} or \code{"Modeled"}.
 #' @param buffer.list list of point location buffers in meters.
 #' @param buffer.labels labels for buffers in list.
-#' @param burnable.cells.raster binary raster of possibly burnable cells.
-#' @param mainDir directory path.
+#' @param burnable_cells binary raster of possibly burnable cells.
+#' @param main_dir directory path.
 #'
 #' @return a list.
 fireEventsFun <- function(k, pts, locs, replicates, source="Modeled", buffer.list = list(NULL),
                           buffer.labels = LETTERS[1:length(buffer.list)],
-                          burnable.cells.raster = NULL, mainDir){
-  if(!is.null(burnable.cells.raster))
-    burnable.cells <- raster::Which(burnable.cells.raster == 1)
-  reps <- paste0("_", k-1, "_")
-  files <- list.files(mainDir, pattern =
+                          burnable_cells = NULL, main_dir){
+  if(!is.null(burnable_cells))
+    burnable.cells <- raster::Which(burnable_cells == 1)
+  reps <- paste0("_", k - 1, "_") # nolint
+  files <- list.files(main_dir, pattern =
                         gsub("expression", "",
                              paste(bquote(expression("^FireSc.*.", .(reps), ".*.tif$")), collapse="")),
                       full.names = TRUE)
@@ -40,9 +40,9 @@ fireEventsFun <- function(k, pts, locs, replicates, source="Modeled", buffer.lis
       cells <- vector("list", length(buffer.list))
       for(p in seq_aloing(buffer.list)){
         if(is.null(buffer.list[[p]])){
-          tmp <- as.list(extract(r, pts, cellnumbers = TRUE)[,1])
+          tmp <- as.list(raster::extract(r, pts, cellnumbers = TRUE)[, 1])
         } else {
-          tmp <- purrr::map(extract(r, pts, buffer=buffer.list[[p]], cellnumbers = TRUE), .x[, 1])
+          tmp <- purrr::map(raster::extract(r, pts, buffer=buffer.list[[p]], cellnumbers = TRUE), ~.x[, 1])
         }
         tmp <- purrr::map(seq_along(tmp), ~tibble::data_frame(Location=locs[.x], Cell=tmp[[.x]])) %>%
           dplyr::bind_rows()
@@ -50,7 +50,7 @@ fireEventsFun <- function(k, pts, locs, replicates, source="Modeled", buffer.lis
       }
       cells <- dplyr::bind_rows(cells)
     } else r.hold <- r.hold + r
-    cells <- dplyr::mutate(cells, Value=r[Cell])
+    cells <- dplyr::mutate(cells, Value=r[(!!as.name("Cell"))])
     d[[i]] <- dplyr::group_by(cells, Buffer_km, Location) %>%
       dplyr::summarise(Value = mean(Value, na.rm=TRUE)) %>% dplyr::mutate(Year = yrs[i])
   }
@@ -66,10 +66,10 @@ fireEventsFun <- function(k, pts, locs, replicates, source="Modeled", buffer.lis
 #' @rdname fireEventsFun
 fireEventsFunEmpirical <- function(b, pts, locs, replicates = "Observed", source = "Observed",
                                    buffer.list = list(NULL), buffer.labels = LETTERS[1:length(buffer.list)],
-                                   burnable.cells.raster = NULL){
-  if(!is.null(burnable.cells.raster))
-    burnable.cells <- raster::Which(burnable.cells.raster == 1)
-  n <- nlayers(b)
+                                   burnable_cells = NULL){
+  if(!is.null(burnable_cells))
+    burnable.cells <- raster::Which(burnable_cells == 1)
+  n <- raster::nlayers(b)
   d <- vector("list", n)
   for(i in 1:n){
     r <- subset(b, i)
@@ -81,7 +81,7 @@ fireEventsFunEmpirical <- function(b, pts, locs, replicates = "Observed", source
       cells <- vector("list", length(buffer.list))
       for(p in seq_along(buffer.list)){
         if(is.null(buffer.list[[p]])){
-          tmp <- as.list(extract(r, pts, cellnumbers = TRUE)[,1])
+          tmp <- as.list(raster::extract(r, pts, cellnumbers = TRUE)[, 1])
         } else {
           tmp <- purrr::map(raster::extract(
             r, pts, buffer = buffer.list[[p]], cellnumbers = TRUE), ~.x[, 1])
@@ -93,7 +93,7 @@ fireEventsFunEmpirical <- function(b, pts, locs, replicates = "Observed", source
       }
       cells <- dplyr::bind_rows(cells)
     } else r.hold <- r.hold + r
-    cells <- dplyr::mutate(cells, Value = r[Cell])
+    cells <- dplyr::mutate(cells, Value = r[(!!as.name("Cell"))])
     d[[i]] <- dplyr::group_by(cells, Buffer_km, Location) %>%
       dplyr::summarise(Value = mean(Value, na.rm=TRUE)) %>% dplyr::mutate(Year = yrs[i])
   }

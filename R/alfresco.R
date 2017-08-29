@@ -1,6 +1,10 @@
+globalVariables(c(".x"))
+
+#' @importFrom rlang !!
 #' @importFrom magrittr %>%
 NULL
 
+# nolint start
 #' Common default values
 #'
 #' Common default values in the context of ALFRESCO modeling.
@@ -22,3 +26,4 @@ alfdef <- function(){
     fire_cause_all="/big_scratch/mfleonawicz/FAH/Lightning_Fires_11182013.shp"
   )
 }
+# nolint end
