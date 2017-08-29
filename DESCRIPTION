@@ -13,10 +13,13 @@ LazyData: true
 ByteCompile: true
 Url: https://github.com/leonawicz/alfresco
 BugReports: https://github.com/leonawicz/alfresco/issues
-Suggests: 
+Suggests:
     testthat,
     covr,
-    snapmeta
-Imports: 
+    snapmeta,
+    knitr,
+    rmarkdown
+Imports:
     raster
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr
