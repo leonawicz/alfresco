@@ -2,7 +2,7 @@
 #'
 #' Simple wrapper around \code{spTransform} to convert from WGS84 to Alaska Albers projection.
 #'
-#' @param xy
+#' @param xy a 2-column matrix or data frame of lon/lat coordinates.
 #'
 #' @return data frame with new attached coordinates.
 #' @export

@@ -11,7 +11,8 @@ fireEventsFun(k, pts, locs, replicates, source = "Modeled",
 
 fireEventsFunEmpirical(b, pts, locs, replicates = "Observed",
   source = "Observed", buffer.list = list(NULL),
-  buffer.labels = LETTERS[1:length(buffer.list)], burnable_cells = NULL)
+  buffer.labels = LETTERS[1:length(buffer.list)], burnable_cells = NULL,
+  yrs)
 }
 \arguments{
 \item{k}{integer, an iterator.}
@@ -33,6 +34,8 @@ fireEventsFunEmpirical(b, pts, locs, replicates = "Observed",
 \item{main_dir}{directory path.}
 
 \item{b}{a raster brick.}
+
+\item{yrs}{vector of years.}
 }
 \value{
 a list.

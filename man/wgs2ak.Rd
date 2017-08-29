@@ -7,7 +7,7 @@
 wgs2ak(xy)
 }
 \arguments{
-\item{xy}{}
+\item{xy}{a 2-column matrix or data frame of lon/lat coordinates.}
 }
 \value{
 data frame with new attached coordinates.

@@ -11,6 +11,7 @@
 #' @param buffer.list list of point location buffers in meters.
 #' @param buffer.labels labels for buffers in list.
 #' @param burnable_cells binary raster of possibly burnable cells.
+#' @param yrs vector of years.
 #' @param main_dir directory path.
 #'
 #' @return a list.
@@ -70,7 +71,7 @@ fireEventsFun <- function(k, pts, locs, replicates, source="Modeled", buffer.lis
 #' @rdname fireEventsFun
 fireEventsFunEmpirical <- function(b, pts, locs, replicates = "Observed", source = "Observed",
                                    buffer.list = list(NULL), buffer.labels = LETTERS[1:length(buffer.list)],
-                                   burnable_cells = NULL){
+                                   burnable_cells = NULL, yrs){
   if(!is.null(burnable_cells))
     burnable.cells <- raster::Which(burnable_cells == 1)
   n <- raster::nlayers(b)

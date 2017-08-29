@@ -25,7 +25,7 @@ NULL
 #' @export
 #'
 #' @examples
-#' alf_defaults()$atlas_shiny_dir
+#' alfdef()$atlas_shiny_dir
 alfdef <- function(){
   list(
     atlas_shiny_dir = "/big_scratch/shiny",

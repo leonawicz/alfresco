@@ -17,5 +17,5 @@ This function returns a list of default values like standard file paths on the S
 for running the model and processing outputs and paths to standard input maps.
 }
 \examples{
-alf_defaults()$atlas_shiny_dir
+alfdef()$atlas_shiny_dir
 }
