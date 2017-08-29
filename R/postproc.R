@@ -38,7 +38,7 @@ fireEventsFun <- function(k, pts, locs, replicates, source="Modeled", buffer.lis
     if(i == 1){
       r.hold <- r
       cells <- vector("list", length(buffer.list))
-      for(p in seq_aloing(buffer.list)){
+      for(p in seq_along(buffer.list)){
         if(is.null(buffer.list[[p]])){
           tmp <- as.list(raster::extract(r, pts, cellnumbers = TRUE)[, 1])
         } else {
@@ -51,14 +51,18 @@ fireEventsFun <- function(k, pts, locs, replicates, source="Modeled", buffer.lis
       cells <- dplyr::bind_rows(cells)
     } else r.hold <- r.hold + r
     cells <- dplyr::mutate(cells, Value=r[(!!as.name("Cell"))])
-    d[[i]] <- dplyr::group_by(cells, Buffer_km, Location) %>%
-      dplyr::summarise(Value = mean(Value, na.rm=TRUE)) %>% dplyr::mutate(Year = yrs[i])
+    d[[i]] <- dplyr::group_by(cells, (!!as.name("Buffer_km")), (!!as.name("Location"))) %>%
+      dplyr::summarise(Value = mean((!!as.name("Value")), na.rm=TRUE)) %>% dplyr::mutate(Year = yrs[i])
   }
+  a <- c("Source", "Replicate", "Buffer_km", "Location", "Year", "Value")
   d <- dplyr::bind_rows(d) %>% dplyr::mutate(
     Source = factor(source, levels=c("Observed", "Modeled")),
     Replicate = factor(replicates[k], levels = unique(c("Observed", replicates)))) %>%
-    dplyr::ungroup() %>% dplyr::arrange(Source, Replicate, Buffer_km, Location, Year) %>%
-    dplyr::select(Source, Replicate, Buffer_km, Location, Year, Value)
+    dplyr::ungroup() %>%
+    dplyr::arrange(!!as.name(a[1]), !!as.name(a[2]), !!as.name(a[3]),
+                   !!as.name(a[4]), !!as.name(a[5])) %>%
+    dplyr::select(!!as.name(a[1]), !!as.name(a[2]), !!as.name(a[3]),
+                  !!as.name(a[4]), !!as.name(a[5]), !!as.name(a[6]))
   list(rasters = r.hold, points = d, years = n, years.vec = yrs)
 }
 
@@ -94,13 +98,17 @@ fireEventsFunEmpirical <- function(b, pts, locs, replicates = "Observed", source
       cells <- dplyr::bind_rows(cells)
     } else r.hold <- r.hold + r
     cells <- dplyr::mutate(cells, Value = r[(!!as.name("Cell"))])
-    d[[i]] <- dplyr::group_by(cells, Buffer_km, Location) %>%
-      dplyr::summarise(Value = mean(Value, na.rm=TRUE)) %>% dplyr::mutate(Year = yrs[i])
+    d[[i]] <- dplyr::group_by(cells, (!!as.name("Buffer_km")), (!!as.name("Location"))) %>%
+      dplyr::summarise(Value = mean((!!as.name("Value")), na.rm=TRUE)) %>% dplyr::mutate(Year = yrs[i])
   }
+  a <- c("Source", "Replicate", "Buffer_km", "Location", "Year", "Value")
   d <- dplyr::bind_rows(d) %>% dplyr::mutate(
     Source = factor(source, levels=c("Observed", "Modeled")),
     Replicate = factor(replicates[1], levels=unique(c("Observed", replicates)))) %>%
-    dplyr::ungroup() %>% dplyr::arrange(Source, Replicate, Buffer_km, Location, Year) %>%
-    dplyr::select(Source, Replicate, Buffer_km, Location, Year, Value)
+    dplyr::ungroup() %>%
+    dplyr::arrange(!!as.name(a[1]), !!as.name(a[2]), !!as.name(a[3]),
+                   !!as.name(a[4]), !!as.name(a[5])) %>%
+    dplyr::select(!!as.name(a[1]), !!as.name(a[2]), !!as.name(a[3]),
+                  !!as.name(a[4]), !!as.name(a[5]), !!as.name(a[6]))
   list(rasters = r.hold, points = d, years = n)
 }

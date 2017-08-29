@@ -1,3 +1,5 @@
+globalVariables(c(".x", "BUffer_km"))
+
 #' alfresco: R functions for ALFRESCO wildfire model.
 #'
 #' The alfresco package provides functions for working with and analyzing ALFRESCO wildfire model inputs and outputs.

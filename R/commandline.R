@@ -23,8 +23,8 @@ prep_comArgs <- function(comArgs){
 #'
 #' Helper function for Fire Return Period processing.
 #'
-#' @param comArgs
-#' @param out
+#' @param comArgs output from \code{commandArgs(TRUE)}.
+#' @param out character, output directory.
 #'
 #' @return side effects of creating output directory, \code{sink}-ing message.
 #' @export

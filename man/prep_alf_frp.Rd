@@ -7,7 +7,9 @@
 prep_alf_frp(comArgs, out)
 }
 \arguments{
-\item{out}{}
+\item{comArgs}{output from \code{commandArgs(TRUE)}.}
+
+\item{out}{character, output directory.}
 }
 \value{
 side effects of creating output directory, \code{sink}-ing message.
