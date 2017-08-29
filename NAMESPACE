@@ -3,6 +3,7 @@
 export(alfdef)
 export(fireEventsFunEmpirical)
 export(outputs_as_inputs)
+export(prep_alf_frp)
 export(prep_comArgs)
 export(wgs2ak)
 importFrom(magrittr,"%>%")
