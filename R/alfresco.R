@@ -1,3 +1,6 @@
+#' @importFrom magrittr %>%
+NULL
+
 #' Common default values
 #'
 #' Common default values in the context of ALFRESCO modeling.
@@ -10,10 +13,12 @@
 #'
 #' @examples
 #' alf_defaults()$atlas_shiny_dir
-alf_defaults <- function(){
+alfdef <- function(){
   list(
     atlas_shiny_dir = "/big_scratch/shiny",
     atlas_run_owner_dir = "mfleonawicz@alaska.edu",
-    age_spinups = "/big_scratch/mfleonawicz/Alf_Files_20121129/Spinup300Year_32Reps/Age_0_1900.tif"
+    age_spinups = "/big_scratch/mfleonawicz/Alf_Files_20121129/Spinup300Year_32Reps/Age_0_1900.tif",
+    fire_cause_lightning="/big_scratch/mfleonawicz/FAH/FireAreaHistory_11182013.shp",
+    fire_cause_all="/big_scratch/mfleonawicz/FAH/Lightning_Fires_11182013.shp"
   )
 }
