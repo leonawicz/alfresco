@@ -1,4 +1,11 @@
-globalVariables(c(".x"))
+#' alfresco: R functions for ALFRESCO wildfire model.
+#'
+#' The alfresco package provides functions for working with and analyzing ALFRESCO wildfire model inputs and outputs.
+#' It is a member package in the functional sector of the SNAPverse.
+#'
+#' @docType package
+#' @name alfresco
+NULL
 
 #' @importFrom rlang !!
 #' @importFrom magrittr %>%
