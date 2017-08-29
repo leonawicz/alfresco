@@ -1,0 +1,31 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", fig.path = "man/figures/README-",
+  message = FALSE, warning = FALSE, error = FALSE, eval = FALSE, tidy = TRUE
+)
+```
+
+# alfresco
+
+[![Travis build status](https://travis-ci.org/leonawicz/alfresco.svg?branch=master)](https://travis-ci.org/leonawicz/alfresco)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/leonawicz/alfresco?branch=master&svg=true)](https://ci.appveyor.com/project/leonawicz/alfresco)
+[![Coverage status](https://codecov.io/gh/leonawicz/alfresco/branch/master/graph/badge.svg)](https://codecov.io/github/leonawicz/alfresco?branch=master)
+
+R is used to manipulate and analyze data that both feed into and come out of the ALFRESCO wildfire model. 
+The `alfresco` R package contains functions for working with ALFRESCO input and output data. 
+It is a core functional package in the SNAPverse collection of R packages.
+
+## Installation
+
+You can install alfresco from github with:
+
+```{r gh-installation, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("leonawicz/alfresco")
+```
