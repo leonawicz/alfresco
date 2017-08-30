@@ -6,8 +6,7 @@
 \usage{
 outputs_as_inputs(domain, run_name, year,
   owner = alfdef()$atlas_run_owner_dir, top_dir = alfdef()$atlas_shiny_dir,
-  template_raster = alfdef()$age_spinups, suffix = "runs",
-  sub_dir = "secondaryRunInputs", mc.cores = 32)
+  template_raster = alfdef()$age_spinups, suffix = "runs", mc.cores = 32)
 }
 \arguments{
 \item{domain}{character, usually \code{"Statewide"} or \code{"Noatak"}.}
@@ -24,9 +23,9 @@ outputs_as_inputs(domain, run_name, year,
 
 \item{suffix}{appended to output directory, defaults to \code{"runs"}.}
 
-\item{sub_dir}{name of directory where copied maps are stored, defaults to \code{"secondaryRunInputs"}.}
-
 \item{mc.cores}{number of processors, defaults to 32.}
+
+\item{sub_dir}{name of directory where copied maps are stored, defaults to \code{"secondaryRunInputs"}.}
 }
 \value{
 file copy side effect.
@@ -40,7 +39,7 @@ one less than the starting year of the subsequent model run. For example, a run 
 would use as inputs 1949 output maps from a prior model run.
 \code{year} need not be the final year of the original run, but it is final
 in the context that the following year will be part of a new, subsequent run.
-The output directory is at \code{alf_defaults()$atlas_shiny_dir} and begins with \code{"/Final_"}.
+The output directory is \code{<top_dir>/secondary_run_inputs/<domain>/<run_name>}.
 }
 \examples{
 \dontrun{

@@ -7,7 +7,7 @@
 #' would use as inputs 1949 output maps from a prior model run.
 #' \code{year} need not be the final year of the original run, but it is final
 #' in the context that the following year will be part of a new, subsequent run.
-#' The output directory is at \code{alf_defaults()$atlas_shiny_dir} and begins with \code{"/Final_"}.
+#' The output directory is \code{<top_dir>/secondary_run_inputs/<domain>/<run_name>}.
 #'
 #' @param domain character, usually \code{"Statewide"} or \code{"Noatak"}.
 #' @param run_name character.
@@ -29,10 +29,10 @@
 #' }
 outputs_as_inputs <- function(domain, run_name, year, owner = alfdef()$atlas_run_owner_dir,
                               top_dir = alfdef()$atlas_shiny_dir, template_raster = alfdef()$age_spinups,
-                              suffix = "runs", sub_dir = "secondaryRunInputs", mc.cores = 32){
+                              suffix = "runs", mc.cores = 32){
   in_dir <- paste0(top_dir, "/Runs_", domain, "/", owner, "/", run_name, "/Maps") # nolint
   dir.create(
-    out_dir <- paste0(top_dir, "/Final_", domain, "_", suffix, "/", sub_dir), # nolint
+    out_dir <- file.path(top_dir, "secondary_run_inputs", domain, run_name), # nolint
     showWarnings = FALSE, recursive = TRUE)
   files <- list.files(in_dir, pattern = paste0(year, "\\.tif"), full.names = TRUE)
   files <- files[-which(substr(basename(files), 1, 8) == "FireScar")]
