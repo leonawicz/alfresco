@@ -4,7 +4,9 @@
 \alias{outputs_as_inputs}
 \title{Copy ALFRESCO output maps}
 \usage{
-outputs_as_inputs(domain, run_name, year, suffix = "runs",
+outputs_as_inputs(domain, run_name, year,
+  owner = alfdef()$atlas_run_owner_dir, top_dir = alfdef()$atlas_shiny_dir,
+  template_raster = alfdef()$age_spinups, suffix = "runs",
   sub_dir = "secondaryRunInputs", mc.cores = 32)
 }
 \arguments{
@@ -13,6 +15,12 @@ outputs_as_inputs(domain, run_name, year, suffix = "runs",
 \item{run_name}{character.}
 
 \item{year}{numeric, the "final" year of a run. See details.}
+
+\item{owner}{character, an email address, defaults to \code{alfdef()$atlas_run_owner_dir}.}
+
+\item{top_dir}{character, defaults to \code{alfdef()$atlas_shiny_dir}.}
+
+\item{template_raster}{character, defaults to \code{alfdef()$age_spinups}.}
 
 \item{suffix}{appended to output directory, defaults to \code{"runs"}.}
 
@@ -32,7 +40,7 @@ one less than the starting year of the subsequent model run. For example, a run 
 would use as inputs 1949 output maps from a prior model run.
 \code{year} need not be the final year of the original run, but it is final
 in the context that the following year will be part of a new, subsequent run.
-The output directory is at alf_defaults()$atlas_shiny_dir and begins with \code{"/Final_"}.
+The output directory is at \code{alf_defaults()$atlas_shiny_dir} and begins with \code{"/Final_"}.
 }
 \examples{
 \dontrun{
