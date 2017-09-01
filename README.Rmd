@@ -7,7 +7,7 @@ output: github_document
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE, comment = "#>", fig.path = "man/figures/README-",
-  message = FALSE, warning = FALSE, error = FALSE, eval = FALSE, tidy = TRUE
+  message = FALSE, warning = FALSE, error = FALSE, tidy = TRUE
 )
 ```
 
@@ -28,4 +28,12 @@ You can install alfresco from github with:
 ```{r gh-installation, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("leonawicz/alfresco")
+```
+
+```{r is_md, echo = FALSE}
+is_md <- knitr::opts_knit$get("rmarkdown.pandoc.to") == "markdown_github-ascii_identifiers"
+```
+
+```{r md_doc3, echo = FALSE, results = "asis", eval = is_md}
+cat('## Reference\n\n[Package reference and function documentation](https://leonawicz.github.io/alfresco/)')
 ```
