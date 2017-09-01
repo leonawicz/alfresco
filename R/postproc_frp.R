@@ -147,19 +147,19 @@ frp_maps_no_buffer <- function(i, alf_data, emp_data, shp, fire_area_history, ou
   pngname <- paste0(out_dir, "/Maps_noBuffer/PNGs/FRP_", domain, "_Rep", i - 1, ".png") # nolint
   if(domain == "Noatak"){
     grDevices::png(pngname, width=1200, height=1370)
-    layout(matrix(1:2, 2, 1))
+    graphics::layout(matrix(1:2, 2, 1))
   } else if(domain == "Statewide") {
     grDevices::png(pngname, width=2400, height=1370)
-    layout(matrix(1:2, 1, 2))
+    graphics::layout(matrix(1:2, 1, 2))
   }
-  plot(round(alf_data[[i]][[3]] / alf_data[[i]][[1]]), col = heat.colors(20), zlim = zlm,
-       main = paste0(domain, " ", alf_yrs[1], "-", tail(alf_yrs, 1), " replicate ", i - 1, " FRP"))
-  plot(shp, bg = "transparent", add = TRUE)
-  plot(fire_area_history, bg = "transparent", add = TRUE)
-  plot(round(length(emp_yrs) / emp_data), col = heat.colors(20), zlim = zlm,
-       main = paste0(domain, " ", emp_yrs[1], "-", tail(emp_yrs, 1), " observed FRP"))
-  plot(shp, bg = "transparent", add = TRUE)
-  plot(fire_area_history, bg = "transparent", add = TRUE)
+  graphics::plot(round(alf_data[[i]][[3]] / alf_data[[i]][[1]]), col = grDevices::heat.colors(20), zlim = zlm,
+       main = paste0(domain, " ", alf_yrs[1], "-", utils::tail(alf_yrs, 1), " replicate ", i - 1, " FRP"))
+  graphics::plot(shp, bg = "transparent", add = TRUE)
+  graphics::plot(fire_area_history, bg = "transparent", add = TRUE)
+  graphics::plot(round(length(emp_yrs) / emp_data), col = grDevices::heat.colors(20), zlim = zlm,
+       main = paste0(domain, " ", emp_yrs[1], "-", utils::tail(emp_yrs, 1), " observed FRP"))
+  graphics::plot(shp, bg = "transparent", add = TRUE)
+  graphics::plot(fire_area_history, bg = "transparent", add = TRUE)
   grDevices::dev.off()
   if(i == 1) file.copy(pngname, file.path(dirname(out_dir), basename(pngname)))
 }
@@ -210,10 +210,10 @@ pp_fire_events <- function(alf_data, emp_data, domain, group_name, run_name, emp
   d_emp <- pp_df_prep(emp_data, FALSE)
   d <- pp_df_prep(alf_data)
   d2_emp <- dplyr::group_by(d_emp, .data[[g[1]]], .data[[g[2]]], .data[[g[3]]], .data[[g[4]]]) %>%
-    summarise(FRP = length((!!as.name("Year"))) / sum((!!as.name("Value"))))
+    dplyr::summarise(FRP = length((!!as.name("Year"))) / sum((!!as.name("Value"))))
 
   d2 <- dplyr::group_by(d, .data[[g[1]]], .data[[g[2]]], .data[[g[3]]], .data[[g[4]]]) %>%
-    summarise(FRP = length((!!as.name("Year"))) / sum((!!as.name("Value"))))
+    dplyr::summarise(FRP = length((!!as.name("Year"))) / sum((!!as.name("Value"))))
   # Additional objects to transport to app
   buffersize <- unique(d_emp$Buffer_km)
   obs.years.range <- range(d_emp$Year) # nolint
@@ -221,7 +221,7 @@ pp_fire_events <- function(alf_data, emp_data, domain, group_name, run_name, emp
   # Assemble final data frames
   rab.dat <- dplyr::bind_rows(d, d_emp) %>% tibble::as_data_frame() %>% dplyr::ungroup() %>%
     dplyr::arrange(.data[[g[2]]], .data[[g[3]]], .data[[g[4]]])
-  frp.dat <- bind_rows(d2, d2_emp) %>% tibble::as_data_frame() %>% dplyr::ungroup() %>%
+  frp.dat <- dplyr::bind_rows(d2, d2_emp) %>% tibble::as_data_frame() %>% dplyr::ungroup() %>%
     dplyr::arrange(.data[[g[2]]], .data[[g[3]]], .data[[g[4]]])
   rab.dat <- dplyr::mutate(Source = ifelse(Replicate == "Observed", "Observed", "Modeled"))
   frp.dat <- dplyr::mutate(Source = ifelse(Replicate == "Observed", "Observed", "Modeled"))
@@ -242,12 +242,13 @@ pp_fire_events <- function(alf_data, emp_data, domain, group_name, run_name, emp
 
   # Load/save objects in a workspace file to be transported to app
   infile <- paste0(out, "/fsByVeg_df_", domain, ".RData") # nolint
+  d.fs <- NULL # dummy variable, will be loaded next
   load(infile, envir = environment())
   out_dir <- file.path(out, "FRP")
   prefix <- ifelse(group_name == "none", "RAB_FRP", run_name)
   ws <- ifelse(group_name == "none",
                paste0(out_dir, "/", prefix, "_Emp_", emp_yrs[1], "_",
-                      tail(emp_yrs, 1), "_Alf_", alf_yrs[1], "_", tail(alf_yrs, 1), ".RData"),
+                      utils::tail(emp_yrs, 1), "_Alf_", alf_yrs[1], "_", utils::tail(alf_yrs, 1), ".RData"),
                paste0(out_dir, "/", prefix, ".RData"))
   save(d.fs, buffersize, obs.years.range, mod.years.range, rab.dat, frp.dat, fri.dat, file=ws) # nolint
   if(send_to_app) send_app_to_eris(group_name, ws)
@@ -267,13 +268,13 @@ censor <- function(x, y){
 .noatak_df <- function(x){
   lev <- c("RedLake", "Raven", "Uchugrak", "Poktovik", "LittleIsac", "FoxLake")
   lev2 <- c("Origin", "Shrub", "Graminoid", "Fire")
-  x <- dplyr::ungourp(x) %>% dplyr::mutate(LocGroup = "Origin") %>%
+  x <- dplyr::ungroup(x) %>% dplyr::mutate(LocGroup = "Origin") %>%
     dplyr::mutate(
       LocGroup = ifelse(substr(.data[["Location"]], 1, 5) == "Gram_", "Graminoid",
                         ifelse(substr(.data[["Location"]], 1, 5) == "Shrub", "Shrub",
                                ifelse(substr(.data[["Location"]], 1, 5) == "Fire_",
                                       "Fire", "Origin")))) %>%
-    mutate(LocGroup = factor(.data[["LocGroup"]], levels=lev2),
+    dplyr::mutate(LocGroup = factor(.data[["LocGroup"]], levels=lev2),
            Location = factor(
              gsub("Fire_", "", gsub("Shrub_", "", gsub("Gram_", "", .data[["Location"]]))),
              levels = lev))
@@ -321,6 +322,7 @@ prep_fire_scars <- function(year, x, y, years_avail, field = 1){
 #' @param fire_area_history shapefile of fire area history.
 #' @param fah_yrs fire area history years.
 #' @param emp_yrs empirical data years.
+#' @param emp_fire_cause character, cause of fire: \code{"lightning"} or \code{"all"}.
 #' @param domain character, ALFRESCO domain.
 #' @param shp masking shapefile.
 #' @param template_raster raster layer.
@@ -382,7 +384,7 @@ fire_scar_brick <- function(fire_area_history, fah_yrs, emp_yrs, emp_fire_cause,
       result2 <- raster::mask(result2, shp)
     }
     names(result) <- names(b.fid) <- emp_yrs
-    names(result2) <- paste(emp_yrs[1], tail(emp_yrs, 1), sep="_")
+    names(result2) <- paste(emp_yrs[1], utils::tail(emp_yrs, 1), sep="_")
     if(!file.exists(result.name)){
       b <- raster::brick(result, values = FALSE)
       b <- raster::writeStart(b, filename = result.name, format="GTiff", datatype = "FLT4S",
@@ -436,7 +438,7 @@ pp_frp_stops <- function(){
 #' @examples
 #' # not run
 prep_points <- function(pts, path, domain){
-  pts <- read.csv(file.path(path, pts))
+  pts <- utils::read.csv(file.path(path, pts))
   if(domain == "Noatak"){
     pts$ID <- factor(
       pts$ID, levels=c(paste0(rep(c("", "Shrub_", "Gram_"), each=4),
