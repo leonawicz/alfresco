@@ -33,6 +33,7 @@ prep_comArgs <- function(comArgs){
 #' # not run
 prep_alf_frp <- function(comArgs, out){
   cat(comArgs)
+  pp_frp_stops()
   dir.create(file.path(out, "FRP"), showWarnings = FALSE)
   sink(file = file.path(out, "message.txt"), append = TRUE)
   cat("Below is a link to a preliminary R Shiny Alfresco FRP/FRI results app.\n")
