@@ -27,7 +27,10 @@ Imports:
     tibble,
     magrittr,
     rlang,
-    sp
+    sp,
+    ggplot2,
+    tidyr,
+    grDevices
 Remotes:
     leonawicz/snapmeta
 RoxygenNote: 6.0.1
