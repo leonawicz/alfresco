@@ -14,6 +14,8 @@ fire_scar_brick(fire_area_history, fah_yrs, emp_yrs, emp_fire_cause, domain,
 
 \item{emp_yrs}{empirical data years.}
 
+\item{emp_fire_cause}{character, cause of fire: \code{"lightning"} or \code{"all"}.}
+
 \item{domain}{character, ALFRESCO domain.}
 
 \item{shp}{masking shapefile.}

@@ -37,6 +37,8 @@ pp_fsv_save(d, main_dir, veg, shp, alf_yrs, emp_yrs, obs, i, b, out, domain,
 \item{out}{character, output directory.}
 
 \item{domain}{character, ALFRESCO domain, \code{Statewide} or \code{Noatak}.}
+
+\item{mc.cores}{number of processors.}
 }
 \value{
 a tibble.

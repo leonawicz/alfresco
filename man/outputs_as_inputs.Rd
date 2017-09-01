@@ -24,8 +24,6 @@ outputs_as_inputs(domain, run_name, year,
 \item{suffix}{appended to output directory, defaults to \code{"runs"}.}
 
 \item{mc.cores}{number of processors, defaults to 32.}
-
-\item{sub_dir}{name of directory where copied maps are stored, defaults to \code{"secondaryRunInputs"}.}
 }
 \value{
 file copy side effect.
