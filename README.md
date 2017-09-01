@@ -16,3 +16,8 @@ You can install alfresco from github with:
 # install.packages('devtools')
 devtools::install_github("leonawicz/alfresco")
 ```
+
+Reference
+---------
+
+[Package reference and function documentation](https://leonawicz.github.io/alfresco/)

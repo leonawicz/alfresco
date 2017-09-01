@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Common default values — alf_defaults â€¢ alfresco</title>
+<title>Prepare points matrix and locations vector — prep_points â€¢ alfresco</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -69,8 +69,86 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/leonawicz/mapmate">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-globe fa-lg"></span>
+     
+    SNAPverse
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="http://leonawicz.github.io/sv">Home of the verse</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Sector packages</li>
+    <li>
+      <a href="http://leonawicz.github.io/snapverse">snapverse</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snaplite">snaplite</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snapdata">snapdata</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Functions packages</li>
+    <li>
+      <a href="http://leonawicz.github.io/snapfuns">snapfuns</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snapprep">snapprep</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/alfresco">alfresco</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Data packages</li>
+    <li>
+      <a href="http://leonawicz.github.io/snapclim">snapclim</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snapfire">snapfire</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snappoly">snappoly</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snapmaps">snapmaps</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snapdist">snapdist</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Apps packages</li>
+    <li>
+      <a href="http://leonawicz.github.io/snapapps">snapapps</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Satellite packages</li>
+    <li>
+      <a href="http://leonawicz.github.io/rvtable">rvtable</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/apputils">apputils</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/maputils">maputils</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snaputils">snaputils</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snapmeta">snapmeta</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snapsite">snapsite</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="https://github.com/leonawicz/alfresco">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -86,31 +164,49 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Common default values</h1>
+    <h1>Prepare points matrix and locations vector</h1>
     </div>
 
     
-    <p>Common default values in the context of ALFRESCO modeling.</p>
+    <p>Prepare points matrix and locations vector for buffered FRP extractions</p>
     
 
-    <pre class="usage"><span class='fu'>alf_defaults</span>()</pre>
-        
+    <pre class="usage"><span class='fu'>prep_points</span>(<span class='no'>pts</span>, <span class='no'>path</span>, <span class='no'>domain</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>pts</th>
+      <td><p>a lon/lat matrix.</p></td>
+    </tr>
+    <tr>
+      <th>path</th>
+      <td><p>file path.</p></td>
+    </tr>
+    <tr>
+      <th>domain</th>
+      <td><p>ALFRESCO domain.</p></td>
+    </tr>
+    </table>
+    
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a named list.</p>
+    <p>a list.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This function returns a list of default values like standard file paths on the SNAP Atlas cluster
-for running the model and processing outputs and paths to standard input maps.</p>
+    <p>This function also makes adjustments for Noatak domain if applicable.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>alf_defaults</span>()$<span class='no'>atlas_shiny_dir</span></div><div class='output co'>#&gt; [1] "/big_scratch/shiny"</div></pre>
+    <pre class="examples"><div class='input'># not run
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
 

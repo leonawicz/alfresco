@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ALFRESCO post-processing of fire events — fireEventsFun â€¢ alfresco</title>
+<title>Prepare data frame during ALFRESCO post-processing — pp_df_prep â€¢ alfresco</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -69,8 +69,86 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/leonawicz/mapmate">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-globe fa-lg"></span>
+     
+    SNAPverse
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="http://leonawicz.github.io/sv">Home of the verse</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Sector packages</li>
+    <li>
+      <a href="http://leonawicz.github.io/snapverse">snapverse</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snaplite">snaplite</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snapdata">snapdata</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Functions packages</li>
+    <li>
+      <a href="http://leonawicz.github.io/snapfuns">snapfuns</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snapprep">snapprep</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/alfresco">alfresco</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Data packages</li>
+    <li>
+      <a href="http://leonawicz.github.io/snapclim">snapclim</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snapfire">snapfire</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snappoly">snappoly</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snapmaps">snapmaps</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snapdist">snapdist</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Apps packages</li>
+    <li>
+      <a href="http://leonawicz.github.io/snapapps">snapapps</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Satellite packages</li>
+    <li>
+      <a href="http://leonawicz.github.io/rvtable">rvtable</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/apputils">apputils</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/maputils">maputils</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snaputils">snaputils</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snapmeta">snapmeta</a>
+    </li>
+    <li>
+      <a href="http://leonawicz.github.io/snapsite">snapsite</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="https://github.com/leonawicz/alfresco">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -86,71 +164,36 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>ALFRESCO post-processing of fire events</h1>
+    <h1>Prepare data frame during ALFRESCO post-processing</h1>
     </div>
 
     
-    <p>These functions are used for post-processing of ALFRESCO fire events from map outputs.</p>
+    <p>Prepare data frame during post-processing of ALFRESCO fire events from map outputs.</p>
     
 
-    <pre class="usage"><span class='fu'>fireEventsFun</span>(<span class='no'>k</span>, <span class='no'>pts</span>, <span class='no'>locs</span>, <span class='no'>replicates</span>, <span class='kw'>source</span> <span class='kw'>=</span> <span class='st'>"Modeled"</span>,
-  <span class='kw'>buffer.list</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>NULL</span>), <span class='kw'>buffer.labels</span> <span class='kw'>=</span> <span class='no'>LETTERS</span>[<span class='fl'>1</span>:<span class='fu'>length</span>(<span class='no'>buffer.list</span>)],
-  <span class='kw'>burnable_cells</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>main_dir</span>)
-
-<span class='fu'>fireEventsFunEmpirical</span>(<span class='no'>b</span>, <span class='no'>pts</span>, <span class='no'>locs</span>, <span class='kw'>replicates</span> <span class='kw'>=</span> <span class='st'>"Observed"</span>,
-  <span class='kw'>source</span> <span class='kw'>=</span> <span class='st'>"Observed"</span>, <span class='kw'>buffer.list</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>NULL</span>),
-  <span class='kw'>buffer.labels</span> <span class='kw'>=</span> <span class='no'>LETTERS</span>[<span class='fl'>1</span>:<span class='fu'>length</span>(<span class='no'>buffer.list</span>)], <span class='kw'>burnable_cells</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>pp_df_prep</span>(<span class='no'>x</span>, <span class='kw'>multiple_reps</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>k</th>
-      <td><p>integer, an iterator.</p></td>
+      <th>x</th>
+      <td><p>output from <code>fire_events</code> or <code>fire_events_emp</code>.</p></td>
     </tr>
     <tr>
-      <th>pts</th>
-      <td><p>table of point locations.</p></td>
-    </tr>
-    <tr>
-      <th>locs</th>
-      <td><p>location names</p></td>
-    </tr>
-    <tr>
-      <th>replicates</th>
-      <td><p>character, simulation replicate labels.</p></td>
-    </tr>
-    <tr>
-      <th>source</th>
-      <td><p>character, <code>"Observed"</code> or <code>"Modeled"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>buffer.list</th>
-      <td><p>list of point location buffers in meters.</p></td>
-    </tr>
-    <tr>
-      <th>buffer.labels</th>
-      <td><p>labels for buffers in list.</p></td>
-    </tr>
-    <tr>
-      <th>burnable_cells</th>
-      <td><p>binary raster of possibly burnable cells.</p></td>
-    </tr>
-    <tr>
-      <th>main_dir</th>
-      <td><p>directory path.</p></td>
-    </tr>
-    <tr>
-      <th>b</th>
-      <td><p>a raster brick.</p></td>
+      <th>multiple_reps</th>
+      <td><p>logical, typically <code>TRUE</code> for ALFRESCO model output and <code>FALSE</code> for empirical data.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a list.</p>
+    <p>a tibble.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'># not run
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -158,7 +201,9 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
