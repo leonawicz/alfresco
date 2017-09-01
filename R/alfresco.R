@@ -1,4 +1,4 @@
-globalVariables(c(".x", "Domain", "Replicate", "Source", "BUffer_km", "Vegetation"))
+globalVariables(c(".", ".x", ".data", "Value", "Year", "Domain", "Replicate", "Source", "BUffer_km", "Vegetation"))
 
 #' alfresco: R functions for ALFRESCO wildfire model.
 #'
