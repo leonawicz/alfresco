@@ -16,7 +16,6 @@
 #' @param top_dir character, defaults to \code{alfdef()$atlas_shiny_dir}.
 #' @param template_raster character, defaults to \code{alfdef()$age_spinups}.
 #' @param suffix appended to output directory, defaults to \code{"runs"}.
-#' @param sub_dir name of directory where copied maps are stored, defaults to \code{"secondaryRunInputs"}.
 #' @param mc.cores number of processors, defaults to 32.
 #'
 #' @return file copy side effect.
