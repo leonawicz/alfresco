@@ -208,7 +208,7 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
     cells <- dplyr::select(cells, -.data[["Cell_rmNA"]])
     if(rmpi){
       x <- Rmpi::mpi.remote.exec(
-        extract_alf(i = itervar[id], type = type, loop_by = loop_by, main_dir = main_dir, reps = reps,
+        extract_alf(i = itervar[rmpi_proc_id], type = type, loop_by = loop_by, main_dir = main_dir, reps = reps,
                     years = years, cells = cells, veg_labels = veg_labels) )
       x <- dplyr::bind_rows(x)
     } else {
@@ -244,7 +244,7 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
     cells <- dplyr::select(cells, -.data[["Cell"]])
     if(rmpi){
       va <- Rmpi::mpi.remote.exec(
-        extract_alf(i = itervar[id], type = type, loop_by = loop_by, main_dir = main_dir, reps = reps,
+        extract_alf(i = itervar[rmpi_proc_id], type = type, loop_by = loop_by, main_dir = main_dir, reps = reps,
                     years = years, cells = cells, veg_labels = veg_labels) )
       d.area <- dplyr::bind_rows(purrr::map(va, ~.x$d.area))
       d.age <- dplyr::bind_rows(purrr::map(va, ~.x$d.age))

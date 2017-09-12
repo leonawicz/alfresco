@@ -23,6 +23,7 @@
 #' select(x, -PctIgSupp) %>% group_by(PctFsSupp) %>% summarise_all(function(x) round(mean(x), 3))
 #' }
 ba_ratios <- function(files, years = 1950:2013, domain = "Full"){
+  d.fs <- NULL # loaded next line
   load(files[1], envir = environment())
   fmo <- substr(basename(files[1]), 4, 9)
   d <- dplyr::filter(d.fs, .data[["Domain"]] == domain & .data[["Year"]] %in% years) %>%
