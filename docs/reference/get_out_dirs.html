@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • alfresco</title>
+<title>Get ALFRESCO output directories � get_out_dirs • alfresco</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -49,7 +49,7 @@
   </head>
 
   <body>
-    <div class="container template-vignette-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
@@ -185,20 +185,66 @@
       
       </header>
 
-      <div class="page-header">
-  <h1>Articles <small>version&nbsp;0.0.1</small></h1>
-</div>
-
-<div class="row">
-  <div class="col-md-9">
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <ul>
-        <li><a href="alfresco.html">Introduction to alfresco R package</a></li>
-      </ul>
+      <div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header">
+    <h1>Get ALFRESCO output directories</h1>
     </div>
+
+    
+    <p>Get ALFRESCO output directories for an ALFRESCO project.</p>
+    
+
+    <pre class="usage"><span class='fu'>get_out_dirs</span>(<span class='no'>domain</span>, <span class='no'>project</span>, <span class='no'>cru</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>domain</th>
+      <td><p>character, the ALFRESCO run spatial domain, either <code>"akcan1km"</code> or <code>"ak1km"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>project</th>
+      <td><p>character, valid projects based on the domain. See details.</p></td>
+    </tr>
+    <tr>
+      <th>cru</th>
+      <td><p>logical, whether data extraction is for historical years (ALFRESCO runs based on CRU data) or projected years (GCM data).</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>a vector of project climate model/emissions scenario ALFRESCO output directories.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function supports data extraction procedures for ALFRESCO model geotiff map outputs.
+A project refers to a collection of output directories pertaining to the set of climate models and emissions scenarios/RCPs
+that were used in project simulations. This function returns the full file path to each pertinent directory, given a valid <code>domain</code>
+and <code>project</code>.
+Valid projects for Alaska/western Canada include <code>"IEM"</code> and <code>"FMO_Calibrated"</code>. For Alaska "statewide", it is <code>"CMIP5_SW"</code>.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"># NOT RUN {
+domain = "ak1km", project = "CMIP5_SW", cru = TRUE
+# }
+</pre>
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
   </div>
 </div>
 
