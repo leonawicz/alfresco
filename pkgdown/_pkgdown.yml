@@ -31,6 +31,12 @@ reference:
   - fire_scar_brick
   - prep_points
   - frp_maps_no_buffer
+- title: General data extraction
+  contents:
+  - extract_alf
+  - extract_fsv
+  - extract_av
+  - prep_alf_files
 - title: Fire management options
   contents:
   - ba_ratios
