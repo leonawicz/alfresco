@@ -18,8 +18,7 @@ Suggests:
     covr,
     snapmeta,
     knitr,
-    rmarkdown,
-    Rmpi
+    rmarkdown
 Imports: 
     raster,
     dplyr,
@@ -36,5 +35,7 @@ Imports:
 Remotes:
     leonawicz/snapmeta,
     leonawicz/snapprep
+Enhances:
+    Rmpi
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
