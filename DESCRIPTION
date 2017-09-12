@@ -18,7 +18,8 @@ Suggests:
     covr,
     snapmeta,
     knitr,
-    rmarkdown
+    rmarkdown,
+    Rmpi
 Imports: 
     raster,
     dplyr,
@@ -30,8 +31,10 @@ Imports:
     sp,
     ggplot2,
     tidyr,
-    grDevices
+    grDevices,
+    snapprep
 Remotes:
-    leonawicz/snapmeta
+    leonawicz/snapmeta,
+    leonawicz/snapprep
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
