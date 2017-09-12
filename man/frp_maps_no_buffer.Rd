@@ -24,7 +24,7 @@ frp_maps_no_buffer(i, alf_data, emp_data, shp, fire_area_history, out, domain,
 
 \item{alf_yrs}{ALFRESCO run years.}
 
-\item{emp_yrs}{empircal data years.}
+\item{emp_yrs}{empirical data years.}
 }
 \value{
 side effect of saving plots to disk.

@@ -26,7 +26,7 @@ prep_comArgs <- function(comArgs){
 #' @param comArgs output from \code{commandArgs(TRUE)}.
 #' @param out character, output directory.
 #'
-#' @return side effects of creating output directory, \code{sink}-ing message.
+#' @return invisible, side effects of creating output directory and \code{sink} message to disk.
 #' @export
 #'
 #' @examples
@@ -38,4 +38,5 @@ prep_alf_frp <- function(comArgs, out){
   sink(file = file.path(out, "message.txt"), append = TRUE)
   cat("Below is a link to a preliminary R Shiny Alfresco FRP/FRI results app.\n")
   sink()
+  invisible()
 }

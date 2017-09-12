@@ -55,9 +55,9 @@ prep_fire_events <- function(k, pts, locs, replicates, source="Modeled", buffer_
       }
       cells <- dplyr::bind_rows(cells)
     } else r.hold <- r.hold + r
-    cells <- dplyr::mutate(cells, Value=r[!!as.name("Cell")])
+    cells <- dplyr::mutate(cells, Value=r[.data[["Cell"]]])
     d[[i]] <- dplyr::group_by(cells, .data[["Buffer_km"]], .data[["Location"]]) %>%
-      dplyr::summarise(Value = mean((!!as.name("Value")), na.rm=TRUE)) %>% dplyr::mutate(Year = yrs[i])
+      dplyr::summarise(Value = mean((.data[["Value"]]), na.rm=TRUE)) %>% dplyr::mutate(Year = yrs[i])
   }
   a <- c("Source", "Replicate", "Buffer_km", "Location", "Year", "Value")
   d <- dplyr::bind_rows(d) %>% dplyr::mutate(
@@ -104,9 +104,9 @@ prep_fire_events_emp <- function(b, pts, locs, replicates = "Observed", source =
       }
       cells <- dplyr::bind_rows(cells)
     } else r.hold <- r.hold + r
-    cells <- dplyr::mutate(cells, Value = r[(!!as.name("Cell"))])
+    cells <- dplyr::mutate(cells, Value = r[.data[["Cell"]]])
     d[[i]] <- dplyr::group_by(cells, .data[["Buffer_km"]], .data[["Location"]]) %>%
-      dplyr::summarise(Value = mean((!!as.name("Value")), na.rm=TRUE)) %>% dplyr::mutate(Year = yrs[i])
+      dplyr::summarise(Value = mean((.data[["Value"]]), na.rm=TRUE)) %>% dplyr::mutate(Year = yrs[i])
   }
   a <- c("Source", "Replicate", "Buffer_km", "Location", "Year", "Value")
   d <- dplyr::bind_rows(d) %>% dplyr::mutate(
@@ -129,7 +129,7 @@ prep_fire_events_emp <- function(b, pts, locs, replicates = "Observed", source =
 #' @param fire_area_history shapefile of fire area history.
 #' @param out output directory.
 #' @param domain character, ALFRESCO domain, \code{Statewide} or \code{Noatak}.
-#' @param emp_yrs empircal data years.
+#' @param emp_yrs empirical data years.
 #' @param alf_yrs ALFRESCO run years.
 #'
 #' @return side effect of saving plots to disk.
@@ -210,10 +210,10 @@ pp_fire_events <- function(alf_data, emp_data, domain, group_name, run_name, emp
   d_emp <- pp_df_prep(emp_data, FALSE)
   d <- pp_df_prep(alf_data)
   d2_emp <- dplyr::group_by(d_emp, .data[[g[1]]], .data[[g[2]]], .data[[g[3]]], .data[[g[4]]]) %>%
-    dplyr::summarise(FRP = length((!!as.name("Year"))) / sum((!!as.name("Value"))))
+    dplyr::summarise(FRP = length(.data[["Year"]]) / sum(.data[["Value"]]))
 
   d2 <- dplyr::group_by(d, .data[[g[1]]], .data[[g[2]]], .data[[g[3]]], .data[[g[4]]]) %>%
-    dplyr::summarise(FRP = length((!!as.name("Year"))) / sum((!!as.name("Value"))))
+    dplyr::summarise(FRP = length(.data[["Year"]]) / sum(.data[["Value"]]))
   # Additional objects to transport to app
   buffersize <- unique(d_emp$Buffer_km)
   obs.years.range <- range(d_emp$Year) # nolint

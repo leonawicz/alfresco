@@ -12,7 +12,7 @@ prep_alf_frp(comArgs, out)
 \item{out}{character, output directory.}
 }
 \value{
-side effects of creating output directory, \code{sink}-ing message.
+invisible, side effects of creating output directory and \code{sink} message to disk.
 }
 \description{
 Helper function for Fire Return Period processing.

@@ -1,6 +1,6 @@
 #' Obtain total cumulative burn area ratios
 #'
-#' Obtain ratios of modeled total CBA tro that of observed data as well as to baseline model run output.
+#' Obtain ratios of modeled total CBA to that of observed data as well as to baseline model run output.
 #'
 #' The table of ratios show minimum, mean and maximums across ALFRESCO replicates for CBA and
 #' the corresponding percent change vs. both the empirically observed CBA and the baseline/status quo (no fire management options)
