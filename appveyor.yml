@@ -16,6 +16,7 @@ cache:
 # Adapt as necessary starting from here
 
 environment:
+  _R_CHECK_FORCE_SUGGESTS_: false
   global:
     USE_RTOOLS: true
 
