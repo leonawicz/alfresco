@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Helper function for FRP processing — prep_alf_frp â€¢ alfresco</title>
+<title>Extract ALFRESCO data — extract_alf â€¢ alfresco</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -188,31 +188,73 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Helper function for FRP processing</h1>
+    <h1>Extract ALFRESCO data</h1>
     </div>
 
     
-    <p>Helper function for Fire Return Period processing.</p>
+    <p>Extract ALFRESCO data from simulation model run outputs.</p>
     
 
-    <pre class="usage"><span class='fu'>prep_alf_frp</span>(<span class='no'>comArgs</span>, <span class='no'>out</span>)</pre>
+    <pre class="usage"><span class='fu'>extract_alf</span>(<span class='no'>i</span>, <span class='no'>type</span>, <span class='no'>loop_by</span>, <span class='no'>main_dir</span>, <span class='kw'>age_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reps</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>years</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>cells</span>, <span class='no'>...</span>)
+
+<span class='fu'>prep_alf_files</span>(<span class='no'>i</span>, <span class='no'>loop_by</span>, <span class='no'>main_dir</span>, <span class='no'>reps</span>, <span class='no'>years</span>)
+
+<span class='fu'>extract_fsv</span>(<span class='no'>i</span>, <span class='no'>loop_by</span>, <span class='no'>main_dir</span>, <span class='kw'>reps</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>years</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>cells</span>, <span class='no'>...</span>)
+
+<span class='fu'>extract_av</span>(<span class='no'>i</span>, <span class='no'>loop_by</span>, <span class='no'>main_dir</span>, <span class='kw'>age_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reps</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>years</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>cells</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>comArgs</th>
-      <td><p>output from <code>commandArgs(TRUE)</code>.</p></td>
+      <th>i</th>
+      <td><p>numeric, iterator.</p></td>
     </tr>
     <tr>
-      <th>out</th>
-      <td><p>character, output directory.</p></td>
+      <th>type</th>
+      <td><p><code>"av"</code> or <code>"fsv"</code> for vegetation age and cover area data extraction or fire sizes by vegetation cover type data extraction, respectively.</p></td>
+    </tr>
+    <tr>
+      <th>loop_by</th>
+      <td><p>character, loop over files by <code>"rep"</code> or by <code>"year"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>main_dir</th>
+      <td><p>main input directory.</p></td>
+    </tr>
+    <tr>
+      <th>age_dir</th>
+      <td><p>age inputs directory.</p></td>
+    </tr>
+    <tr>
+      <th>reps</th>
+      <td><p>integer vector, ALFRESCO simulation replicate indices for data extraction.</p></td>
+    </tr>
+    <tr>
+      <th>years</th>
+      <td><p>numeric vector, years for data extraction. Defaults to <code>2008:2100</code>.</p></td>
+    </tr>
+    <tr>
+      <th>cells</th>
+      <td><p>data frame containing cell indices for the appropriate ALFRESCO spatial domain.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional arguments.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>invisible, side effects of creating output directory and <code>sink</code> message to disk.</p>
+    <p>a data frame is returned for further processing as well as there being a side effect of additional files being written directly to disk.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The ALFRESCO wildfire model outputs collections of geotiff files for each year and simulation replicate of a model run.
+These functions assist with extracting data from these map layers for use in statistical analysis and other applications.
+    <code>prep_alf_files</code> prepares ALFRESCO output map file lists for ingestion by the data extraction functions.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -225,6 +267,8 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
