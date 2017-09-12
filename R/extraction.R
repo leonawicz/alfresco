@@ -1,3 +1,333 @@
+#' ALFRESCO extraction stop error checks
+#'
+#' Helper function to check for missing objects and stop process if necessary.
+#'
+#' @return invisible, or an error.
+#' @export
+#'
+#' @examples
+#' \dontrun{extract_alf_stops}
+extract_alf_stops <- function(){
+  if(!exists("modelIndex", envir = .GlobalEnv))
+    stop("Must provide a modelIndex 1 to 15, e.g., modelIndex=1")
+  stopifnot(length(get("modelIndex", envir = .GlobalEnv)) == 1)
+  if(!exists("domain", envir = .GlobalEnv))
+    stop("Must provide domain, e.g., domain = 'akcan1km' or domain = 'ak1km'")
+  if(!exists("years", envir = .GlobalEnv))
+    stop("Must provide a year range, e.g., 1950:2013, 2008:2100, based on project.")
+  if(!exists("reps", envir = .GlobalEnv))
+    stop("Must provide replicates as integer(s) 1:200, e.g., reps = 1:25")
+  if(!exists("project", envir = .GlobalEnv)) stop("Must provide a `project` name.")
+  invisible()
+}
+
+#' Load cell index data frame for subregions
+#'
+#' Load data frame of raster grid cell indices defining groups of spatial subregions.
+#'
+#' @param domain character, the ALFRESCO run spatial domain, either \code{"akcan1km"} or \code{"ak1km"}.
+#' @param cells character, file name of cell index table rds file. If missing, default path taken from \code{snapprep::snapdef()} based on \code{domain}.
+#'
+#' @return a data frame.
+#' @export
+#'
+#' @examples
+#' \dontrun{cells <- get_domain_cells()}
+get_domain_cells <- function(domain = "akcan1km", cells){
+  if(domain=="akcan1km"){
+    if(missing(cells)) cells <- snapprep::snapdef()$cells_akcan1km2km
+    cells <- readRDS(cells) %>% dplyr::filter(.data[["Source"]] == "akcan1km") %>%
+      dplyr::ungroup() %>% dplyr::select(-.data[["Source"]]) %>%
+      dplyr::group_by(.data[["LocGroup"]], .data[["Location"]])
+  } else if(domain=="ak1km"){
+    if(missing(cells)) cells <- snapprep::snapdef()$cells_ak1km
+    cells <- readRDS(cells) %>% dplyr::filter(.data[["Source"]] == "ak1km") %>%
+      dplyr::ungroup() %>% dplyr::select(-.data[["Source"]]) %>%
+      dplyr::group_by(.data[["LocGroup"]], .data[["Location"]])
+  }
+  if(exists("locgroup", envir = .GlobalEnv)){
+    locgroup <- gsub("_", " ", locgroup)
+    cat("locgroup = "); cat(locgroup); cat("\n")
+    if(is.character(locgroup))
+      cells <- dplyr::filter(cells, .data[["LocGroup"]] %in% locgroup)
+    if(is.numeric(locgroup))
+      cells <- dplyr::filter(cells, .data[["LocGroup"]] %in% unique(cells$LocGroup)[locgroup])
+    print(unique(cells$LocGroup))
+    stopifnot(nrow(cells) > 0)
+  }
+  cells
+}
+
+#' Get vegetation labels
+#'
+#' Get vegetation labels based on ALFRESCO domain, which is suggestive of the vegetation base map.
+#'
+#' @param domain character, the ALFRESCO run spatial domain, either \code{"akcan1km"} or \code{"ak1km"}.
+#'
+#' @return a vector of vegetation labels.
+#' @export
+#'
+#' @examples
+#' get_veg_labels()
+get_veg_labels <- function(domain = "akcan1km"){
+  if(domain == "akcan1km"){
+    c("Black Spruce", "White Spruce", "Deciduous", "Shrub Tundra", "Graminoid Tundra",
+      "Wetland Tundra", "Barren lichen-moss", "Temperate Rainforest")
+  } else if(domain == "ak1km"){
+    c("Alpine Tundra", "Black Spruce", "White Spruce", "Deciduous", "Shrub Tundra",
+      "Graminoid Tundra", "Wetland Tundra")
+  } else {
+    stop("`domain` must be 'akcan1km' or 'ak1km'.")
+  }
+}
+
+#' Get ALFRESCO output directories
+#'
+#' Get ALFRESCO output directories for an ALFRESCO project.
+#'
+#' This function supports data extraction procedures for ALFRESCO model geotiff map outputs.
+#' A project refers to a collection of output directories pertaining to the set of climate models and emissions scenarios/RCPs
+#' that were used in project simulations. This function returns the full file path to each pertinent directory, given a valid \code{domain}
+#' and \code{project}.
+#' Valid projects for Alaska/western Canada include \code{"IEM"} and \code{"FMO_Calibrated"}. For Alaska "statewide", it is \code{"CMIP5_SW"}.
+#'
+#' @param domain character, the ALFRESCO run spatial domain, either \code{"akcan1km"} or \code{"ak1km"}.
+#' @param project character, valid projects based on the domain. See details.
+#' @param cru logical, whether data extraction is for historical years (ALFRESCO runs based on CRU data) or projected years (GCM data).
+#'
+#' @return a vector of project climate model/emissions scenario ALFRESCO output directories.
+#' @export
+#'
+#' @examples
+#' \dontrun{domain = "ak1km", project = "CMIP5_SW", cru = TRUE}
+get_out_dirs <- function(domain, project, cru){
+  if(!domain %in% c("akcan1km", "ak1km")) stop("`domain` must be 'akcan1km' or 'ak1km'.")
+  if(!project %in% .valid_alf_projects(domain))
+    stop(paste(project, "is not a valid project in the", domain, "domain"))
+  .alf_project_dirs(project, cru)
+}
+
+.valid_alf_projects <- function(domain){
+  switch(domain,
+         "akcan1km" = c("IEM", "FMO_Calibrated"),
+         "ak1km" = "CMIP5_SW")
+}
+
+.alf_project_dirs <- function(project, cru){
+  if(cru){
+    pat <- cru
+  } else {
+    pat <- switch(project, "IEM" = ".*.sres.*.", "FMO_Calibrated" = ".*.rcp.*.", "CMIP5_SW" = "^rcp.*.")
+  }
+  switch(project,
+         "IEM" = list.files(
+           "/atlas_scratch/mfleonawicz/alfresco/IEM/outputs/FinalCalib", # nolint
+           pattern = pat, full.names = TRUE),
+         "FMO_Calibrated" = list.files(
+           "/atlas_scratch/apbennett/Calibration/HighCalib/FMO_Calibrated", # nolint
+           pattern = pat, full.names = TRUE),
+         "CMIP5_SW" = list.files(
+           "/atlas_scratch/mfleonawicz/alfresco/CMIP5_Statewide/outputs/5m", # nolint
+           pattern = pat, full.names = TRUE))
+}
+
+swapModelName <- function(x){
+  switch(x,
+         cccma_cgcm3_1 = "CCCMAcgcm31", gfdl_cm2_1 = "GFDLcm21", miroc3_2_medres = "MIROC32m",
+         mpi_echam5 = "MPIecham5", ukmo_hadcm3="ukmoHADcm3",
+         CCSM4 = "CCSM4", "GFDL-CM3" = "GFDL-CM3", "GISS-E2-R" = "GISS-E2-R",
+         "IPSL-CM5A-LR" = "IPSL-CM5A-LR", "MRI-CGCM3" = "MRI-CGCM3"
+  )
+}
+
+swapScenarioName <- function(x){
+  switch(x,
+         sresb1 = "SRES B1", sresa1b = "SRES A1B", sresa2 = "SRES A2",
+         rcp45 = "RCP 4.5", rcp60 = "RCP 6.0", rcp85 = "RCP 8.5"
+  )
+}
+
+getPhase <- function(x){
+  switch(x,
+         sresb1 = "AR4", sresa1b = "AR4", sresa2 = "AR4",
+         rcp45 = "AR5", rcp60 = "AR5", rcp85 = "AR5"
+  )
+}
+
+#' Run ALFRESCO data extraction
+#'
+#' Extract data for different variables from ALFRESCO model outputs.
+#'
+#' The extracted data depends on \code{type}, which is \code{"fsv"} for fire size by vegetation class data or
+#' \code{"av"} for vegetation age and vegetation cover area data.
+#' A project refers to a collection of output directories pertaining to the set of climate models and emmissions scenarios/RCPs
+#' that were used in project simulations. This function returns the full file path to each pertinent directory, given a valid \code{domain}
+#' and \code{project}.
+#' Valid projects for Alaska/western Canada include \code{"IEM"} and \code{"FMO_Calibrated"}. For Alaska "statewide", it is \code{"CMIP5_SW"}.
+#' \code{mc.cores} is used explicitly when \code{rmpi = FALSE} for \code{parallel::mclapply} instead of multi-node processing.
+#'
+#' @param domain character, the ALFRESCO run spatial domain, either \code{"akcan1km"} or \code{"ak1km"}.
+#' @param type \code{"fsv"} or \code{"av"}. See details.
+#' @param loop_by \code{"rep"} or \code{"year"} (default).
+#' @param main_dir input directory.
+#' @param out_dir output directory. If missing, a default is provided by \code{alfdef()$alf_extract_dir}.
+#' @param project character, valid projects based on the domain. See details.
+#' @param reps integer vector, simulation replicates included in data extraction, e.g., \code{1:200}.
+#' @param years ALFRESCO model run years included in data extraction.
+#' @param cells data frame of raster grid cell indices appropriate to \code{domain}. See \code{get_domain_cells}.
+#' @param veg_labels vegetation labels appropriate to domain/vegetation input map for ALFRESCO runs. See \code{get_veg_labels}.
+#' @param cru logical, whether data extraction is for historical years (ALFRESO runs based on CRU data) or projected years (GCM data).
+#' @param cru_id character, label for CRU data. Defaults to \code{"CRU 3.2"}.
+#' @param itervar integer vector, iterator, defaults to \code{1:length(years)}.
+#' @param mc.cores number of processors. See details.
+#' @param rmpi logical, use Rmpi. Defaults to \code{TRUE}.
+#'
+#' @return invisible, writes files.
+#' @export
+#'
+#' @examples
+#' # Not run; decontextualized example.
+#' \dontrun{run_alf_extraction(type = "fsv", main_dir = "Maps", project = "MyProject",
+#'   reps = 1:200, years = 2014:2099, cells = cells, veg_labels = veg_labels)}
+run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_dir, out_dir,
+                               project, reps, years, cells, veg_labels,
+                               cru = FALSE, cru_id = "CRU 3.2",
+                               itervar = seq_along(years), mc.cores = 32, rmpi = TRUE){
+  if(!domain %in% c("akcan1km", "ak1km"))
+    stop("`domain` must be 'akcan1km' or 'ak1km'.")
+  if(!type %in% c("fsv", "av"))
+    stop("`type` must be 'fsv' or 'av'.")
+  if(missing(out_dir)) out_dir <- alfdef()$alf_extract_dir
+  scen.levels <- c("SRES B1", "SRES A1B", "SRES A2", "RCP 4.5", "RCP 6.0", "RCP 8.5")
+  modname <- unique(basename(dirname(main_dir)))
+  mod.scen <- unlist(strsplit(modname, "\\."))
+  if(domain == "ak1km") mod.scen <- rev(mod.scen)
+
+  if(type == "fsv"){
+    cat(paste("Compiling", type, "statistics...\n"))
+    cells <- dplyr::select(cells, -.data[["Cell_rmNA"]])
+    if(rmpi){
+      x <- Rmpi::mpi.remote.exec(
+        extract_alf(i = itervar[id], type = type, loop_by = loop_by, main_dir = main_dir, reps = reps,
+                    years = years, cells = cells, veg_labels = veg_labels) )
+      x <- dplyr::bind_rows(x)
+    } else {
+      len <- length(itervar)
+      if(len <= mc.cores){
+        x <- parallel::mclapply(itervar, extract_alf, type = type, loop_by = loop_by,
+                                  main_dir = main_dir, reps = reps, years = years,
+                                  cells = cells, veg_labels = veg_labels, mc.cores = mc.cores)
+        x <- dplyr::bind_rows(x)
+      } else {
+        serial_iters <- ceiling(len / mc.cores)
+        mc.cores2 <- which(len / (1:mc.cores) < serial_iters)[1]
+        x <- vector("list", serial_iters)
+        for(j in 1:serial_iters){
+          itervar_tmp <- 1:mc.cores2 + (j - 1) * mc.cores2
+          itervar_tmp <- itervar_tmp[itervar_tmp <= max(itervar)]
+          x_tmp <- parallel::mclapply(
+            itervar_tmp, extract_alf, type = type, loop_by = loop_by, main_dir = main_dir,
+            reps = reps, years = years, cells = cells, veg_labels = veg_labels, mc.cores = mc.cores)
+          x[[j]] <- dplyr::bind_rows(x_tmp)
+          rm(x_tmp)
+          gc()
+          print(paste("Replicate batch", j, "of", serial_iters, "complete."))
+        }
+        x <- dplyr::bind_rows(x)
+      }
+    }
+    x <- .add_columns(x, mod.scen, scen.levels, cru, cru_id)
+    .save_alf_rds(x, out_dir, project, "fsv", cru, cru_id, modname)
+    return(invisible())
+  } else {
+    cat(paste("Compiling", type, "statistics...\n"))
+    cells <- dplyr::select(cells, -.data[["Cell"]])
+    if(rmpi){
+      va <- Rmpi::mpi.remote.exec(
+        extract_alf(i = itervar[id], type = type, loop_by = loop_by, main_dir = main_dir, reps = reps,
+                    years = years, cells = cells, veg_labels = veg_labels) )
+      d.area <- dplyr::bind_rows(purrr::map(va, ~.x$d.area))
+      d.age <- dplyr::bind_rows(purrr::map(va, ~.x$d.age))
+    } else {
+      len <- length(itervar)
+      if(len <= mc.cores){
+        va <- parallel::mclapply(
+          itervar, extract_alf, type = type, loop_by = loop_by, main_dir = main_dir, reps = reps,
+          years = years, cells = cells, veg_labels = veg_labels, mc.cores = mc.cores)
+        d.area <- dplyr::bind_rows(purrr::map(va, ~.x$d.area))
+        d.age <- dplyr::bind_rows(purrr::map(va, ~.x$d.age))
+      } else {
+        serial_iters <- ceiling(len / mc.cores)
+        mc.cores2 <- which(len / (1:mc.cores) < serial_iters)[1]
+        d.age <- d.area <- vector("list", serial_iters)
+        for(j in 1:serial_iters){
+          itervar_tmp <- 1:mc.cores2 + (j - 1) * mc.cores2
+          itervar_tmp <- itervar_tmp[itervar_tmp <= max(itervar)]
+          va <- parallel::mclapply(
+            itervar_tmp, extract_alf, type = type, loop_by = loop_by, main_dir = main_dir, reps = reps,
+            years = years, cells = cells, veg_labels = veg_labels, mc.cores = mc.cores)
+          d.area[[j]] <- dplyr::bind_rows(lapply(va, function(x) x$d.area))
+          d.age[[j]] <- dplyr::bind_rows(lapply(va, function(x) x$d.age))
+          rm(va)
+          gc()
+          print(paste("Replicate batch", j, "of", serial_iters, "complete."))
+        }
+        d.area <- dplyr::bind_rows(d.area)
+        d.age <- dplyr::bind_rows(d.age)
+      }
+    }
+    d.area <- .add_columns(d.area, mod.scen, scen.levels, cru, cru_id)
+    .save_alf_rds(d.area, out_dir, project, "veg", cru, cru_id, modname)
+    d.age <- .add_columns(d.age, mod.scen, scen.levels, cru, cru_id)
+    .save_alf_rds(d.age, out_dir, project, "age", cru, cru_id, modname)
+    invisible()
+  }
+}
+
+.save_alf_rds <- function(d, out_dir, project, var_id, cru, cru_id, modname){
+  txt <- switch(
+    var_id,
+    "fsv" = paste0(
+      "Fire size by vegetation class completed.\n",
+      "Saving fire size by vegetation class data frames by location to .RData file.\n"),
+    "veg" = paste0(
+      "Vegetation area completed.\n",
+      "Saving vegetation area data tables by location to .RData files.\n"),
+    "age" = paste0(
+      "Vegetation area by age completed.\n",
+      "Saving vegetation area by age data tables by location to .RData files.\n"))
+  cat(txt)
+  locs <- unique(d$Location)
+  dir.create(var_dir <- file.path(out_dir, project, "extractions", var_id),
+             recursive = TRUE, showWarnings = FALSE)
+  for(j in seq_along(locs)){
+    if(cru){
+      filename_tmp <- paste0(var_id, "__", locs[j], "__", gsub("\\.| ", "", cru_id))
+    } else {
+      filename_tmp <- paste0(var_id, "__", locs[j], "__", modname)
+    }
+    d2 <- d[locs[j]]
+    saveRDS(d2, file = paste0(var_dir, "/", filename_tmp, ".rds"))
+    print(paste(filename_tmp, "object", j, "of", length(locs), "saved."))
+  }
+  invisible()
+}
+
+.add_columns <- function(d, mod.scen, scen.levels, cru, cru_id){
+  names_ini <- names(d)
+  if(cru){
+    d <- dplyr::mutate(d, Phase = "Observed", Scenario = "Historical", Model = cru_id)
+  } else {
+    d <- dplyr::mutate(
+      d,
+      Phase = getPhase(mod.scen[2]),
+      Scenario = factor(swapScenarioName(mod.scen[2]), levels=scen.levels),
+      Model = swapModelName(mod.scen[1]))
+  }
+  d_names <- c("Phase", "Scenario", "Model", names_ini)
+  dplyr::select_(d, .dots = d_names)
+}
+
 #' Extract ALFRESCO data
 #'
 #' Extract ALFRESCO data from simulation model run outputs.
