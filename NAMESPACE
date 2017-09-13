@@ -2,6 +2,7 @@
 
 export(alfdef)
 export(ba_ratios)
+export(copy_alf_outputs)
 export(extract_alf)
 export(extract_alf_stops)
 export(extract_av)
@@ -25,4 +26,3 @@ export(prep_points)
 export(run_alf_extraction)
 export(wgs2ak)
 importFrom(magrittr,"%>%")
-importFrom(rlang,"!!")

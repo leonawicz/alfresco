@@ -10,7 +10,6 @@ globalVariables(c("rmpi_proc_id", ".", ".x", ".data", "Value", "Year",
 #' @name alfresco
 NULL
 
-#' @importFrom rlang !!
 #' @importFrom magrittr %>%
 NULL
 
