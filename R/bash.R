@@ -32,7 +32,7 @@ copy_alf_outputs <- function(project, in_dir, out_dir = alfdef()$alf_extract_dir
                              file = "copy_alf_outputs.sh", domain = "akcan1km", cru_id = "CRU32"){
   if(!domain %in% c("akcan1km", "ak1km"))
     stop("`domain` must be 'akcan1km' or 'ak1km'.")
-  ak <- domain == "akcan1km"
+  ak <- domain == "ak1km"
   if(ak){
     hist_year_limits <- c(1950, 2013)
     proj_year_limits <- c(2014, 2099)
