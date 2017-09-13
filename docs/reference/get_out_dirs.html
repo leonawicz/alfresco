@@ -195,7 +195,7 @@
     <p>Get ALFRESCO output directories for an ALFRESCO project.</p>
     
 
-    <pre class="usage"><span class='fu'>get_out_dirs</span>(<span class='no'>domain</span>, <span class='no'>project</span>, <span class='no'>cru</span>)</pre>
+    <pre class="usage"><span class='fu'>get_out_dirs</span>(<span class='no'>domain</span>, <span class='no'>project</span>, <span class='no'>cru</span>, <span class='kw'>cru_id</span> <span class='kw'>=</span> <span class='st'>"CRU 3.2"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -211,6 +211,10 @@
     <tr>
       <th>cru</th>
       <td><p>logical, whether data extraction is for historical years (ALFRESCO runs based on CRU data) or projected years (GCM data).</p></td>
+    </tr>
+    <tr>
+      <th>cru_id</th>
+      <td><p>character, label for CRU data. Defaults to <code>"CRU 3.2"</code>.</p></td>
     </tr>
     </table>
     

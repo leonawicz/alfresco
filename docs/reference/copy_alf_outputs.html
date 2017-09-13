@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • alfresco</title>
+<title>Generate bash script for copying ALFRESCO map outputs � copy_alf_outputs • alfresco</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -49,7 +49,7 @@
   </head>
 
   <body>
-    <div class="container template-vignette-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
@@ -185,20 +185,83 @@
       
       </header>
 
-      <div class="page-header">
-  <h1>Articles <small>version&nbsp;0.1.0</small></h1>
-</div>
-
-<div class="row">
-  <div class="col-md-9">
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <ul>
-        <li><a href="alfresco.html">Introduction to alfresco R package</a></li>
-      </ul>
+      <div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header">
+    <h1>Generate bash script for copying ALFRESCO map outputs</h1>
     </div>
+
+    
+    <p>Generate bash script for copying ALFRESCO map outputs from one file system location to another.</p>
+    
+
+    <pre class="usage"><span class='fu'>copy_alf_outputs</span>(<span class='no'>project</span>, <span class='no'>in_dir</span>, <span class='kw'>out_dir</span> <span class='kw'>=</span> <span class='fu'><a href='alfdef.html'>alfdef</a></span>()$<span class='no'>alf_extract_dir</span>,
+  <span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"copy_alf_outputs.sh"</span>, <span class='kw'>domain</span> <span class='kw'>=</span> <span class='st'>"akcan1km"</span>, <span class='kw'>cru_id</span> <span class='kw'>=</span> <span class='st'>"CRU32"</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>project</th>
+      <td><p>character, a (new) name for the project, not required to match anything in source data directories.</p></td>
+    </tr>
+    <tr>
+      <th>in_dir</th>
+      <td><p>input directory, the parent directory above model (GCM/RCP) run subdirectories.</p></td>
+    </tr>
+    <tr>
+      <th>out_dir</th>
+      <td><p>output directory.</p></td>
+    </tr>
+    <tr>
+      <th>file</th>
+      <td><p>name of shell script.</p></td>
+    </tr>
+    <tr>
+      <th>domain</th>
+      <td><p>character, the ALFRESCO run spatial domain, either <code>"akcan1km"</code> or <code>"ak1km"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>cru_id</th>
+      <td><p>character, label for CRU data. Defaults to <code>"CRU 3.2"</code>.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>invisible, writes a file to disk.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function is used for generating a bash script that is used for making a copy of a subset of ALFRESCO geotiff map outputs for subsequent analyses.
+The historical and projected periods (years subset) are inferred from the choice of ALFRESCO spatial domain.
+The file copy process adjusts the new file path structure, creates more consistency, and limits the number of geotiffs
+to only to required ones. This means not only limiting to standard year ranges but also retaining only
+fire scar, vegetation type and vegetation age maps. The bash script itself is run on SNAP's Atlas cluster.</p>
+<p>Note that this function is intended to be run on the Atlas cluster. If you make a bash script like this on Windows,
+you may have to run a command line utility like <code>dos2unix</code> on the file.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'>copy_alf_outputs</span>(
+  <span class='st'>"JFSP"</span>,
+  <span class='st'>"/big_scratch/shiny/Runs_Statewide/JFSP"</span>,
+  <span class='kw'>domain</span> <span class='kw'>=</span> <span class='st'>"ak1km"</span>)
+<span class='co'># }</span></pre>
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
   </div>
 </div>
 
