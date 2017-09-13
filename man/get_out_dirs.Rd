@@ -4,7 +4,7 @@
 \alias{get_out_dirs}
 \title{Get ALFRESCO output directories}
 \usage{
-get_out_dirs(domain, project, cru)
+get_out_dirs(domain, project, cru, cru_id = "CRU 3.2")
 }
 \arguments{
 \item{domain}{character, the ALFRESCO run spatial domain, either \code{"akcan1km"} or \code{"ak1km"}.}
@@ -12,6 +12,8 @@ get_out_dirs(domain, project, cru)
 \item{project}{character, valid projects based on the domain. See details.}
 
 \item{cru}{logical, whether data extraction is for historical years (ALFRESCO runs based on CRU data) or projected years (GCM data).}
+
+\item{cru_id}{character, label for CRU data. Defaults to \code{"CRU 3.2"}.}
 }
 \value{
 a vector of project climate model/emissions scenario ALFRESCO output directories.
