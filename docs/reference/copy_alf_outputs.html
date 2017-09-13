@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Generate bash script for copying ALFRESCO map outputs — copy_alf_outputs â€¢ alfresco</title>
+<title>Generate bash script for copying ALFRESCO maps — copy_alf_outputs â€¢ alfresco</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -188,7 +188,7 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Generate bash script for copying ALFRESCO map outputs</h1>
+    <h1>Generate bash script for copying ALFRESCO maps</h1>
     </div>
 
     
@@ -234,9 +234,9 @@
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This function is used for generating a bash script that is used for making a copy of a subset of ALFRESCO geotiff map outputs for subsequent analyses.
-The historical and projected periods (years subset) are inferred from the choice of ALFRESCO spatial domain.
+The historical and projected periods (years subsets) are inferred from the choice of ALFRESCO spatial domain.
 The file copy process adjusts the new file path structure, creates more consistency, and limits the number of geotiffs
-to only to required ones. This means not only limiting to standard year ranges but also retaining only
+to only the required ones. This means not only limiting to standard year ranges but also retaining only
 fire scar, vegetation type and vegetation age maps. The bash script itself is run on SNAP's Atlas cluster.</p>
 <p>Note that this function is intended to be run on the Atlas cluster. If you make a bash script like this on Windows,
 you may have to run a command line utility like <code>dos2unix</code> on the file.</p>

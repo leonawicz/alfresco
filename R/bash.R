@@ -1,11 +1,11 @@
-#' Generate bash script for copying ALFRESCO map outputs
+#' Generate bash script for copying ALFRESCO maps
 #'
 #' Generate bash script for copying ALFRESCO map outputs from one file system location to another.
 #'
 #' This function is used for generating a bash script that is used for making a copy of a subset of ALFRESCO geotiff map outputs for subsequent analyses.
-#' The historical and projected periods (years subset) are inferred from the choice of ALFRESCO spatial domain.
+#' The historical and projected periods (years subsets) are inferred from the choice of ALFRESCO spatial domain.
 #' The file copy process adjusts the new file path structure, creates more consistency, and limits the number of geotiffs
-#' to only to required ones. This means not only limiting to standard year ranges but also retaining only
+#' to only the required ones. This means not only limiting to standard year ranges but also retaining only
 #' fire scar, vegetation type and vegetation age maps. The bash script itself is run on SNAP's Atlas cluster.
 #'
 #' Note that this function is intended to be run on the Atlas cluster. If you make a bash script like this on Windows,

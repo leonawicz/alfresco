@@ -2,7 +2,7 @@
 % Please edit documentation in R/bash.R
 \name{copy_alf_outputs}
 \alias{copy_alf_outputs}
-\title{Generate bash script for copying ALFRESCO map outputs}
+\title{Generate bash script for copying ALFRESCO maps}
 \usage{
 copy_alf_outputs(project, in_dir, out_dir = alfdef()$alf_extract_dir,
   file = "copy_alf_outputs.sh", domain = "akcan1km", cru_id = "CRU32")
@@ -28,9 +28,9 @@ Generate bash script for copying ALFRESCO map outputs from one file system locat
 }
 \details{
 This function is used for generating a bash script that is used for making a copy of a subset of ALFRESCO geotiff map outputs for subsequent analyses.
-The historical and projected periods (years subset) are inferred from the choice of ALFRESCO spatial domain.
+The historical and projected periods (years subsets) are inferred from the choice of ALFRESCO spatial domain.
 The file copy process adjusts the new file path structure, creates more consistency, and limits the number of geotiffs
-to only to required ones. This means not only limiting to standard year ranges but also retaining only
+to only the required ones. This means not only limiting to standard year ranges but also retaining only
 fire scar, vegetation type and vegetation age maps. The bash script itself is run on SNAP's Atlas cluster.
 
 Note that this function is intended to be run on the Atlas cluster. If you make a bash script like this on Windows,
