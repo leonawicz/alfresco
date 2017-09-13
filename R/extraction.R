@@ -199,7 +199,7 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
     stop("`type` must be 'fsv' or 'av'.")
   if(missing(out_dir)) out_dir <- alfdef()$alf_extract_dir
   scen.levels <- c("SRES B1", "SRES A1B", "SRES A2", "RCP 4.5", "RCP 6.0", "RCP 8.5")
-  modname <- unique(basename(dirname(main_dir)))
+  modname <- basename(dirname(main_dir))
   mod.scen <- unlist(strsplit(modname, "\\."))
   if(domain == "ak1km") mod.scen <- rev(mod.scen)
 
