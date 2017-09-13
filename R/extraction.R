@@ -94,17 +94,18 @@ get_veg_labels <- function(domain = "akcan1km"){
 #' @param domain character, the ALFRESCO run spatial domain, either \code{"akcan1km"} or \code{"ak1km"}.
 #' @param project character, valid projects based on the domain. See details.
 #' @param cru logical, whether data extraction is for historical years (ALFRESCO runs based on CRU data) or projected years (GCM data).
+#' @param cru_id character, label for CRU data. Defaults to \code{"CRU 3.2"}.
 #'
 #' @return a vector of project climate model/emissions scenario ALFRESCO output directories.
 #' @export
 #'
 #' @examples
 #' \dontrun{domain = "ak1km", project = "CMIP5_SW", cru = TRUE}
-get_out_dirs <- function(domain, project, cru){
+get_out_dirs <- function(domain, project, cru, cru_id = "CRU 3.2"){
   if(!domain %in% c("akcan1km", "ak1km")) stop("`domain` must be 'akcan1km' or 'ak1km'.")
   if(!project %in% .valid_alf_projects(domain))
     stop(paste(project, "is not a valid project in the", domain, "domain"))
-  .alf_project_dirs(project, cru)
+  .alf_project_dirs(project, cru, cru_id)
 }
 
 .valid_alf_projects <- function(domain){
@@ -113,9 +114,9 @@ get_out_dirs <- function(domain, project, cru){
          "ak1km" = "CMIP5_SW")
 }
 
-.alf_project_dirs <- function(project, cru){
+.alf_project_dirs <- function(project, cru, cru_id){
   if(cru){
-    pat <- cru
+    pat <- gsub("\\.| ", "", cru_id)
   } else {
     pat <- switch(project, "IEM" = ".*.sres.*.", "FMO_Calibrated" = ".*.rcp.*.", "CMIP5_SW" = "^rcp.*.")
   }
