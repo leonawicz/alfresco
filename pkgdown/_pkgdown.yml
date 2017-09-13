@@ -45,9 +45,10 @@ reference:
 - title: Fire management options
   contents:
   - ba_ratios
-- title: Bridging subsequent model runs
+- title: File system data organization
   contents:
   - outputs_as_inputs
+  - copy_alf_outputs
 - title: Projections
   contents:
   - wgs2ak
