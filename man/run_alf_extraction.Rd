@@ -30,7 +30,7 @@ run_alf_extraction(domain = "akcan1km", type, loop_by = "rep", main_dir,
 
 \item{veg_labels}{vegetation labels appropriate to domain/vegetation input map for ALFRESCO runs. See \code{get_veg_labels}.}
 
-\item{cru}{logical, whether data extraction is for historical years (ALFRESO runs based on CRU data) or projected years (GCM data).}
+\item{cru}{logical, whether data extraction is for historical years (ALFRESCO runs based on CRU data) or projected years (GCM data).}
 
 \item{cru_id}{character, label for CRU data. Defaults to \code{"CRU 3.2"}.}
 
@@ -49,7 +49,7 @@ Extract data for different variables from ALFRESCO model outputs.
 \details{
 The extracted data depends on \code{type}, which is \code{"fsv"} for fire size by vegetation class data or
 \code{"av"} for vegetation age and vegetation cover area data.
-A project refers to a collection of output directories pertaining to the set of climate models and emmissions scenarios/RCPs
+A project refers to a collection of output directories pertaining to the set of climate models and emissions scenarios/RCPs
 that were used in project simulations. This function returns the full file path to each pertinent directory, given a valid \code{domain}
 and \code{project}.
 Valid projects for Alaska/western Canada include \code{"IEM"} and \code{"FMO_Calibrated"}. For Alaska "statewide", it is \code{"CMIP5_SW"}.

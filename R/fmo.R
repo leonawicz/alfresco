@@ -14,7 +14,7 @@
 #' @param limited numeric, ratio value to set for limited fire management grid cells.
 #' @param modified numeric, ratio value to set for modified fire management grid cells.
 #' @param full numeric, ratio value to set for full fire management grid cells.
-#' @param critical numeric, ratio value to set for crtical fire management grid cells.
+#' @param critical numeric, ratio value to set for critical fire management grid cells.
 #' @param width numeric, png width.
 #' @param height numeric, png height.
 #'

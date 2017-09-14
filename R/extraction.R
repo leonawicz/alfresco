@@ -161,7 +161,7 @@ getPhase <- function(x){
 #'
 #' The extracted data depends on \code{type}, which is \code{"fsv"} for fire size by vegetation class data or
 #' \code{"av"} for vegetation age and vegetation cover area data.
-#' A project refers to a collection of output directories pertaining to the set of climate models and emmissions scenarios/RCPs
+#' A project refers to a collection of output directories pertaining to the set of climate models and emissions scenarios/RCPs
 #' that were used in project simulations. This function returns the full file path to each pertinent directory, given a valid \code{domain}
 #' and \code{project}.
 #' Valid projects for Alaska/western Canada include \code{"IEM"} and \code{"FMO_Calibrated"}. For Alaska "statewide", it is \code{"CMIP5_SW"}.
@@ -177,7 +177,7 @@ getPhase <- function(x){
 #' @param years ALFRESCO model run years included in data extraction.
 #' @param cells data frame of raster grid cell indices appropriate to \code{domain}. See \code{get_domain_cells}.
 #' @param veg_labels vegetation labels appropriate to domain/vegetation input map for ALFRESCO runs. See \code{get_veg_labels}.
-#' @param cru logical, whether data extraction is for historical years (ALFRESO runs based on CRU data) or projected years (GCM data).
+#' @param cru logical, whether data extraction is for historical years (ALFRESCO runs based on CRU data) or projected years (GCM data).
 #' @param cru_id character, label for CRU data. Defaults to \code{"CRU 3.2"}.
 #' @param itervar integer vector, iterator, defaults to \code{1:length(years)}.
 #' @param mc.cores number of processors. See details.

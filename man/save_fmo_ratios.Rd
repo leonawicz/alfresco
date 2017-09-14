@@ -21,7 +21,7 @@ save_fmo_ratios(type = "both", out_dir = ".", unmanaged = 1,
 
 \item{full}{numeric, ratio value to set for full fire management grid cells.}
 
-\item{critical}{numeric, ratio value to set for crtical fire management grid cells.}
+\item{critical}{numeric, ratio value to set for critical fire management grid cells.}
 
 \item{width}{numeric, png width.}
 
