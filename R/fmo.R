@@ -78,7 +78,7 @@ save_fmo_ratios <- function(type = "both", base_path = ".", unmanaged = 1, limit
 #' @export
 #'
 #' @examples
-#' save_fmo_panel()
+#' \dontrun{save_fmo_panel()}
 save_fmo_panel <- function(out_dir = ".", width = 1200, height = 800){
   r <- raster::ratify(snapgrid::swfmoBuffer)
   classes <- c("Domain", "Limited", "Modified", "Critical", "Full")

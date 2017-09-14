@@ -45,6 +45,8 @@ reference:
 - title: Fire management options
   contents:
   - ba_ratios
+  - save_fmo_ratios
+  - save_fmo_panel
 - title: File system data organization
   contents:
   - outputs_as_inputs
