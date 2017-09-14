@@ -1,5 +1,5 @@
 Package: alfresco
-Version: 0.1.0
+Version: 0.1.1
 Title: R Functions For ALFRESCO Wildfire Model
 Description: R is used to manipulate and analyze data that both feed into and come out of the ALFRESCO wildfire model. 
     This package contains functions for working with ALFRESCO input and output data. 
@@ -20,10 +20,12 @@ Suggests:
     knitr,
     rmarkdown
 Imports: 
+    Cairo,
+    rgdal,
     raster,
+    rasterVis,
     dplyr,
     purrr,
-    rgdal,
     tibble,
     magrittr,
     rlang,

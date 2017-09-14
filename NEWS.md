@@ -1,3 +1,7 @@
+# alfresco 0.1.1 (Release date: 2017-09-13)
+
+* Added functions for saving fire management options geotiff and png maps.
+
 # alfresco 0.1.0 (Release date: 2017-09-13)
 
 * Added functions for fire events processing, general data extraction, fire management options, and bridging consecutive ALFRESCO model runs.
