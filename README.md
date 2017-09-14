@@ -15,8 +15,9 @@ The `alfresco` package includes functions that assist with the following analyse
 -   Fire events processing immediately following ALFRESCO runs
 -   Post-ALFRESCO run, automated Shiny app creation.
 -   Hierarchical data extractions from ALFRESCO run output geotiff map sets.
--   Calculations for burn area ratios across fire management scenarios.
+-   Calculations for burn area ratios across multiple ALFRESCO run scenarios.
 -   Copying and organizing subsets of ALFRESCO outputs for consecutive model runs and in preparation for other analyses.
+-   Generating fire management options ratios geotiffs and related graphics.
 
 This is a subset of eventual functionality. The package is under active development.
 
