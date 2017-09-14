@@ -20,6 +20,7 @@ Suggests:
     knitr,
     rmarkdown
 Imports: 
+    RColorBrewer,
     Cairo,
     rgdal,
     raster,
