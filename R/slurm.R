@@ -1,0 +1,121 @@
+#' Generate slurm script for ALFRESCO data extractions
+#'
+#' Generate slurm script for ALFRESCO data extractions from output maps.
+#'
+#' This function is used for generating a slurm script that is used for extracting data from ALFRESCO geotiff map outputs for subsequent analyses.
+#' The generated slurm script leverages \code{Rmpi} for multi-node cluster processing.
+#' The scripts are typically used in this fashion, but they can also be generating with \code{rmpi = FALSE}, in which case \code{nodes}
+#' need only be 1.
+#'
+#' Formal SLURM job arguments are passed by \code{ntasks}, \code{nodes}, \code{ntasks_per_node}, \code{exclusive} and \code{email}.
+#' General script setup arguments include \code{base_dir}, \code{file} and \code{max_cores}.
+#' All other arguments refer to those passed to the \code{Rscript} call within the slurm script.
+#' Any of these that are \code{NULL} are ignored and it is assumed they will be passed explicitly as name-value pairs (in any order)
+#' at the command line by the user when the generated slurm script is executed.
+#' Any of these arguments that are not \code{NULL} are hardcoded into the string of arguments listed after \code{Rscript}.
+#'
+#' This provides flexible generality when generating ALFRESCO data extraction slurm scripts.
+#' Note that the number of non-null arguments among these decreases the number of available general arguments available at the command line
+#' when the script is executed. For example, if seven of the nine arguments available to \code{Rscript} are hardcoded into the slurm
+#' script by passing them to \code{alf_extract_slurm} explicitly, then the generated script will show only an additional \code{$1 $2}
+#' after the fixed arguments rather than \code{$1 $2... $9}.
+#'
+#' If \code{years} is missing, then the formal SLURM job arguments \code{ntasks}, \code{nodes} and \code{ntasks_per_node}
+#' must be provided and it is assumed that a year range that matches the number of tasks will be provided when the slurm script is executed.
+#' These arguments are always intended to be hardcoded into a generated script.
+#'
+#' Alternatively, if \code{years} is provided explicitly, then if these job arguments are missing they can be inferred internally
+#' based on the number of years to be processed using the script and the \code{max_cores} to be used per node.
+#' Since these scripts are run on SNAP's Atlas cluster, the default \code{max_cores} is 32.
+#' This can be lowered for intensive extraction jobs that
+#' may reach node RAM limits otherwise.
+#'
+#' Note that this function is intended to be run on the Atlas cluster. If you make a bash script like this on Windows,
+#' you may have to run a command line utility like \code{dos2unix} on the file.
+#'
+#' @param base_dir the directory containing \code{file}.
+#' @param file the R script to be called by \code{Rscript} when the generated slurm script is executed.
+#' @param ntasks numeric, SLURM number of tasks. See details.
+#' @param nodes numeric, SLURM number of compute nodes. See details.
+#' @param ntasks_per_node numeric, SLURM number of tasks per node. See details.
+#' @param exclusive logical, put nodes into exclusive use for the job when the generated slurm script is executed. Defaults to \code{TRUE}.
+#' @param domain character, the ALFRESCO run spatial domain, either \code{"akcan1km"} or \code{"ak1km"}.
+#' @param rmpi logical, use \code{Rmpi}, defaults to \code{TRUE}.
+#' @param modelIndex integer, iterator, refers to the position in the list of a project's ALFRESCO model run GCM/RCP output directories.
+#' @param project character, a (new) project name for extracted data. It need not match any directory names pertaining to the raw ALFRESCO outputs.
+#' @param years numeric vector of years for data extraction.
+#' @param reps numeric vector of ALFRESCO simulation replicates for data extraction, e.g. \code{1:200}.
+#' @param cru logical, whether data extraction is for historical years (ALFRESCO runs based on CRU data) or projected years (GCM data).
+#' @param repSample optional numeric vector of reps for subsampling, e.g., \code{1:30}.
+#' @param locgroup optional character string naming a specific Location Group to process extraction for instead of all Location Groups.
+#' @param email defaults to the author/maintainer/user.
+#' @param max_cores maximum number of processors to use on a single Atlas node, defaults to 32.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' alf_extract_slurm(
+#'   domain = "ak1km", project = "JFSP", years = 1950:2013,
+#'   reps = 1:32, cru = TRUE
+#' )
+#' }
+alf_extract_slurm <- function( # nolint start
+  base_dir = alfdef()$alf_slurm_dir, file = "alf_extract.R",
+  ntasks, nodes, ntasks_per_node, exclusive = TRUE,
+  domain = "akcan1km", rmpi = TRUE, modelIndex = NULL, project = NULL, years = NULL, reps = NULL,
+  cru = NULL, repSample = NULL, locgroup = NULL, email = "mfleonawicz@alaska.edu", max_cores = 32){
+
+  if(!is.null(domain) && !domain %in% c("akcan1km", "ak1km"))
+    stop("`domain` must be 'akcan1km' or 'ak1km' if not NULL.")
+  slurm_file <- gsub("\\.R$", ".slurm", file)
+  job_name <- gsub("\\.R$", "", file)
+  if(!is.null(years)){
+    if(missing(ntasks)) ntasks <- length(years)
+    if(missing(nodes)) nodes <- ceiling(ntasks / max_cores)
+    if(missing(ntasks_per_node)) ntasks_per_node <- ceiling(ntasks / nodes)
+  } else {
+    if(missing(ntasks)) stop("Must supply `ntasks` if `years` is not supplied.")
+    if(missing(nodes)) stop("Must supply `nodes` if `years` is not supplied.")
+    if(missing(ntasks_per_node)) stop("Must supply `ntasks_per_node` if `years` is not supplied.")
+  }
+  x <- "#!/bin/bash\n"
+  if(exclusive) x <- paste0(x, "#SBATCH --exclusive\n")
+  x <- paste0(
+    x, "#SBATCH --mail-type=END\n#SBATCH --mail-user=", email, "\n#SBATCH --account=snap\n#SBATCH -p main\n",
+    "#SBATCH --ntasks=", ntasks, " # one for each year\n", "#SBATCH --job-name=", job_name, "\n",
+    "#SBATCH --nodes=", nodes, "\n#SBATCH --ntasks-per-node=", ntasks_per_node, "\n\n")
+  x <- paste0(
+    x,
+    "# Required arguments: modelIndex, domain, project, years, reps.\n",
+    "# Optional arguments: rmpi, cru, repSample, locgroup.\n",
+    "# Example useage: modelIndex=1, domain=\'akcan1km\', reps=1:200, years=1950:2013, locgroup=\"stringName\".\n",
+    "# Constraints: domain must 'akcan1km' (SNAP standard CMIP5 data) or 'ak1km' (Statewide CMIP5 JFSP).\n",
+    "# Defaults: rmpi=TRUE and use_cru=FALSE. repSample and locgroup are ignored.\n",
+    "# Notes: rmpi=FALSE means use R's parallel package on a single node.\n",
+    "#   use_cru=TRUE means outputs are parsed identically on any given Alfresco \"model\", but are relabeled properly as historical CRU-based outputs afterward.\n",
+    "#   This is intended for running on known historical years only, e.g., 1900-2007 for IEM Alfresco outputs.\n",
+    "#   For known GCM-based years, leave useCRU=FALSE to avoid improper relabeling.\n",
+    "#   repSample, optional, e.g., repSample=30, means randomly sample 30 replicates from the full set.\n\n") # nolint end
+
+  x <- paste0(x, "mpirun --oversubscribe -np 1 Rscript ", file.path(base_dir, file))
+  rscript_args <- list(domain = domain, rmpi = rmpi, modelIndex = modelIndex, project = project,
+                       years = years, reps = reps, cru = cru, repSample = repSample, locgroup = locgroup)
+  rscript_args <- rscript_args[!sapply(rscript_args, is.null)]
+  if(length(rscript_args)){
+    for(i in seq_along(rscript_args)){
+      id <- names(rscript_args)[i]
+      value <- rscript_args[[i]]
+      value <- if(is.character(value)) paste0("\\'", value, "\\'") else deparse(value)
+      x <- paste0(x, " ", id, "=", value)
+    }
+    if(length(rscript_args) < 9)
+      x <- paste0(x, " ", paste(paste0("$", seq(1, 9 - length(rscript_args))), collapse = " "), "\n")
+  } else {
+    x <- paste(x, "$1 $2 $3 $4 $5 $6 $7 $8 $9\n")
+  }
+  sink(file = slurm_file)
+  cat(x)
+  sink()
+  invisible()
+}
