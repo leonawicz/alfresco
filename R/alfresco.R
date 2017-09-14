@@ -43,6 +43,7 @@ alfdef <- function(){
     noa_shp = file.path(bsalf, "noa_basin2/Noa_basin2.shp"),
     sw_shp = file.path(bsalf, "statewide_shape/Alaska_Albers_ESRI.shp"),
     alf_extract_dir = alfex,
-    alf_slurm_dir = file.path(proj, "SNAPQAQC/code/alfresco") # nolint end
+    alf_slurm_dir = file.path(alfex, "slurm_jobs"),
+    raster_tmp_dir = "/atlas_scratch/mfleonawicz/tmp" # nolint end
   )
 }
