@@ -4,14 +4,14 @@
 \alias{save_fmo_ratios}
 \title{Save FMO ratios maps}
 \usage{
-save_fmo_ratios(type = "both", base_path = ".", unmanaged = 1,
+save_fmo_ratios(type = "both", out_dir = ".", unmanaged = 1,
   limited = 1, modified = 1.25, full = 1.5, critical = 1.75,
   width = 1000, height = 1000)
 }
 \arguments{
 \item{type}{character, \code{"sensitivity"}, \code{"ignition"} or \code{"both"}.}
 
-\item{base_path}{output directory.}
+\item{out_dir}{output directory.}
 
 \item{unmanaged}{numeric, ratio value to set for unmanaged grid cells.}
 

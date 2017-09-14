@@ -9,7 +9,7 @@
 #' the same FMO ratios map that this function creates using default arguments.
 #'
 #' @param type character, \code{"sensitivity"}, \code{"ignition"} or \code{"both"}.
-#' @param base_path output directory.
+#' @param out_dir output directory.
 #' @param unmanaged numeric, ratio value to set for unmanaged grid cells.
 #' @param limited numeric, ratio value to set for limited fire management grid cells.
 #' @param modified numeric, ratio value to set for modified fire management grid cells.
@@ -22,8 +22,9 @@
 #'
 #' @examples
 #' \dontrun{save_fmo_ratios()}
-save_fmo_ratios <- function(type = "both", base_path = ".", unmanaged = 1, limited = 1,
+save_fmo_ratios <- function(type = "both", out_dir = ".", unmanaged = 1, limited = 1,
                             modified = 1.25, full = 1.5, critical = 1.75, width = 1000, height = 1000){
+  if(!isNamespaceLoaded("raster")) attachNamespace("raster")
   if(!type %in% c("both", "sensitivity", "ignition"))
     stop("`type` must be 'sensitivity', 'ignition' or 'both'.")
   r0 <- snapgrid::swfmoBuffer
@@ -34,11 +35,11 @@ save_fmo_ratios <- function(type = "both", base_path = ".", unmanaged = 1, limit
   r[r0 == 3] <- critical
   r[r0 == 4] <- full
   if(type == "both"){
-    file <- paste0(base_path, "/fmo_2017_buffered_", c("ig", "fs"), ".tif") # nolint
+    file <- paste0(out_dir, "/fmo_2017_buffered_", c("ig", "fs"), ".tif") # nolint
     purrr::walk(file, ~raster::writeRaster(r, .x[1], overwrite = TRUE, datatype = "FLT4S"))
   } else {
     suffix <- switch(type, "sensitivity" = "fs", "ignition" = "ig")
-    file <- paste0(base_path, "/fmo_2017_buffered_", suffix, ".tif") # nolint
+    file <- paste0(out_dir, "/fmo_2017_buffered_", suffix, ".tif") # nolint
     raster::writeRaster(r, file, overwrite = TRUE, datatype = "FLT4S")
   }
   r <- raster::ratify(r)
@@ -46,20 +47,20 @@ save_fmo_ratios <- function(type = "both", base_path = ".", unmanaged = 1, limit
   clrs <- c("#eeeeee", rev(RColorBrewer::brewer.pal(9, "Spectral")[1:(length(lev$ID) - 1)]))
   suffix <- if(type != "sensitivity") "ignition" else "sensitivity"
   suffix2 <- if(type != "sensitivity") "ignition factor" else "fire sensitivity"
-  file <- paste0(base_path, "/fmo_ratios_", suffix, ".png") # nolint
+  file <- paste0(out_dir, "/fmo_ratios_", suffix, ".png") # nolint
   Cairo::CairoPNG(file, width = width, height = height)
-  rasterVis::levelplot(
+  print(rasterVis::levelplot(
     r, att = "ID", col.regions = clrs,
     maxpixels = 1e6, main = paste("Fire suppression effort ratios:", suffix2),
-    xlab = NULL, ylab = NULL, scales = list(draw = FALSE), colorkey = list(space = "bottom"))
+    xlab = NULL, ylab = NULL, scales = list(draw = FALSE), colorkey = list(space = "bottom")))
   grDevices::dev.off()
   if(type == "both"){
-    file <- paste0(base_path, "/fmo_ratios_sensitivity.png") # nolint
+    file <- paste0(out_dir, "/fmo_ratios_sensitivity.png") # nolint
     Cairo::CairoPNG(file, width = width, height = height)
-    rasterVis::levelplot(
+    print(rasterVis::levelplot(
       r, att = "ID", col.regions = clrs,
       maxpixels = 1e6, main = "Fire suppression effort ratios: fire sensitivity",
-      xlab = NULL, ylab = NULL, scales = list(draw = FALSE), colorkey = list(space = "bottom"))
+      xlab = NULL, ylab = NULL, scales = list(draw = FALSE), colorkey = list(space = "bottom")))
     grDevices::dev.off()
   }
   invisible()
@@ -80,6 +81,7 @@ save_fmo_ratios <- function(type = "both", base_path = ".", unmanaged = 1, limit
 #' @examples
 #' \dontrun{save_fmo_panel()}
 save_fmo_panel <- function(out_dir = ".", width = 1200, height = 800){
+  if(!isNamespaceLoaded("raster")) attachNamespace("raster")
   r <- raster::ratify(snapgrid::swfmoBuffer)
   classes <- c("Domain", "Limited", "Modified", "Critical", "Full")
   suppressWarnings(levels(r) <- data.frame(ID = 0:4, class = factor(classes, levels = classes)))
@@ -91,10 +93,10 @@ save_fmo_panel <- function(out_dir = ".", width = 1200, height = 800){
   s <- raster::stack(c(purrr::map(1:4, ~slice_ratified(r, .x)), r))
   names(s) <- c(classes[-1], "Stacked")
   Cairo::CairoPNG(file.path(out_dir, "fmo.png"), width = width, height = height)
-  rasterVis::levelplot(
+  print(rasterVis::levelplot(
     s, att = "class", col.regions = c("#eeeeee", RColorBrewer::brewer.pal(6, "Set2")[c(6, 2, 4, 1)]),
     maxpixels = 1e6, main = "15-km buffered FMO: individual and stacked overlapping layers",
-    xlab = NULL, ylab = NULL, scales = list(draw=FALSE), colorkey = list(space = "bottom"))
+    xlab = NULL, ylab = NULL, scales = list(draw = FALSE), colorkey = list(space = "bottom")))
   grDevices::dev.off()
   invisible()
 }
