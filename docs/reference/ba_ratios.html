@@ -232,7 +232,7 @@ model run over the same historical period.</p>
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>ba_ratios</span>(<span class='no'>files</span>)
 
 <span class='fu'>library</span>(<span class='no'>dplyr</span>)
-<span class='fu'><a href='http://www.rdocumentation.org/packages/dplyr/topics/select'>select</a></span>(<span class='no'>x</span>, -<span class='no'>PctIgSupp</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/dplyr/topics/group_by'>group_by</a></span>(<span class='no'>PctFsSupp</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/dplyr/topics/summarise_all'>summarise_all</a></span>(<span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'>round</span>(<span class='fu'>mean</span>(<span class='no'>x</span>), <span class='fl'>3</span>))
+<span class='fu'><a href='http://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>x</span>, -<span class='no'>PctIgSupp</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span>(<span class='no'>PctFsSupp</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://dplyr.tidyverse.org/reference/summarise_all.html'>summarise_all</a></span>(<span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'>round</span>(<span class='fu'>mean</span>(<span class='no'>x</span>), <span class='fl'>3</span>))
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
