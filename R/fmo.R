@@ -52,7 +52,7 @@ save_fmo_ratios <- function(type = "both", base_path = ".", unmanaged = 1, limit
     r, att = "ID", col.regions = clrs,
     maxpixels = 1e6, main = paste("Fire suppression effort ratios:", suffix2),
     xlab = NULL, ylab = NULL, scales = list(draw = FALSE), colorkey = list(space = "bottom"))
-  dev.off()
+  grDevices::dev.off()
   if(type == "both"){
     file <- paste0(base_path, "/fmo_ratios_sensitivity.png") # nolint
     Cairo::CairoPNG(file, width = width, height = height)
@@ -60,7 +60,7 @@ save_fmo_ratios <- function(type = "both", base_path = ".", unmanaged = 1, limit
       r, att = "ID", col.regions = clrs,
       maxpixels = 1e6, main = "Fire suppression effort ratios: fire sensitivity",
       xlab = NULL, ylab = NULL, scales = list(draw = FALSE), colorkey = list(space = "bottom"))
-    dev.off()
+    grDevices::dev.off()
   }
   invisible()
 }
@@ -95,6 +95,6 @@ save_fmo_panel <- function(out_dir = ".", width = 1200, height = 800){
     s, att = "class", col.regions = c("#eeeeee", RColorBrewer::brewer.pal(6, "Set2")[c(6, 2, 4, 1)]),
     maxpixels = 1e6, main = "15-km buffered FMO: individual and stacked overlapping layers",
     xlab = NULL, ylab = NULL, scales = list(draw=FALSE), colorkey = list(space = "bottom"))
-  dev.off()
+  grDevices::dev.off()
   invisible()
 }

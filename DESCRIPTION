@@ -34,10 +34,12 @@ Imports:
     ggplot2,
     tidyr,
     grDevices,
-    snapprep
+    snapprep,
+    snapgrid
 Remotes:
     leonawicz/snapmeta,
-    leonawicz/snapprep
+    leonawicz/snapprep,
+    leonawicz/snapgrid
 Enhances:
     Rmpi
 RoxygenNote: 6.0.1

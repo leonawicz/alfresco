@@ -12,6 +12,7 @@ addons:
 r_github_packages:
  - leonawicz/snapmeta
  - leonawicz/snapprep
+ - leonawicz/snapgrid
 
 after_success:
   - Rscript -e 'covr::codecov()'
