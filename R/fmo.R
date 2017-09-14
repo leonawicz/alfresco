@@ -34,32 +34,32 @@ save_fmo_ratios <- function(type = "both", base_path = ".", unmanaged = 1, limit
   r[r0 == 3] <- critical
   r[r0 == 4] <- full
   if(type == "both"){
-    file <- paste0(base_path, "/fmo_2017_buffered_", c("ig", "fs"), ".tif")
-    purrr::walk(file, ~raster::writeRaster(r, .x[1], overwrite = TRUE, datatype = 'FLT4S'))
+    file <- paste0(base_path, "/fmo_2017_buffered_", c("ig", "fs"), ".tif") # nolint
+    purrr::walk(file, ~raster::writeRaster(r, .x[1], overwrite = TRUE, datatype = "FLT4S"))
   } else {
     suffix <- switch(type, "sensitivity" = "fs", "ignition" = "ig")
-    file <- paste0(base_path, "/fmo_2017_buffered_", suffix, ".tif")
-    raster::writeRaster(r, file, overwrite = TRUE, datatype = 'FLT4S')
+    file <- paste0(base_path, "/fmo_2017_buffered_", suffix, ".tif") # nolint
+    raster::writeRaster(r, file, overwrite = TRUE, datatype = "FLT4S")
   }
-  r <- ratify(r)
+  r <- raster::ratify(r)
   lev <- levels(r)[[1]]
   clrs <- c("#eeeeee", rev(RColorBrewer::brewer.pal(9, "Spectral")[1:(length(lev$ID) - 1)]))
   suffix <- if(type != "sensitivity") "ignition" else "sensitivity"
   suffix2 <- if(type != "sensitivity") "ignition factor" else "fire sensitivity"
-  file <- paste0(base_path, "/fmo_ratios_", suffix, ".png")
+  file <- paste0(base_path, "/fmo_ratios_", suffix, ".png") # nolint
   Cairo::CairoPNG(file, width = width, height = height)
   rasterVis::levelplot(
     r, att = "ID", col.regions = clrs,
     maxpixels = 1e6, main = paste("Fire suppression effort ratios:", suffix2),
-    xlab = NULL, ylab = NULL, scales = list(draw = FALSE), colorkey = list(space = 'bottom'))
+    xlab = NULL, ylab = NULL, scales = list(draw = FALSE), colorkey = list(space = "bottom"))
   dev.off()
   if(type == "both"){
-    file <- paste0(base_path, "/fmo_ratios_sensitivity.png")
+    file <- paste0(base_path, "/fmo_ratios_sensitivity.png") # nolint
     Cairo::CairoPNG(file, width = width, height = height)
     rasterVis::levelplot(
       r, att = "ID", col.regions = clrs,
       maxpixels = 1e6, main = "Fire suppression effort ratios: fire sensitivity",
-      xlab = NULL, ylab = NULL, scales = list(draw = FALSE), colorkey = list(space = 'bottom'))
+      xlab = NULL, ylab = NULL, scales = list(draw = FALSE), colorkey = list(space = "bottom"))
     dev.off()
   }
   invisible()
@@ -92,9 +92,9 @@ save_fmo_panel <- function(out_dir = ".", width = 1200, height = 800){
   names(s) <- c(classes[-1], "Stacked")
   Cairo::CairoPNG(file.path(out_dir, "fmo.png"), width = width, height = height)
   rasterVis::levelplot(
-    s, att = "class", col.regions = c("#eeeeee", RColorBrewer::brewer.pal(6, "Set2")[c(6,2,4,1)]),
+    s, att = "class", col.regions = c("#eeeeee", RColorBrewer::brewer.pal(6, "Set2")[c(6, 2, 4, 1)]),
     maxpixels = 1e6, main = "15-km buffered FMO: individual and stacked overlapping layers",
-    xlab = NULL, ylab = NULL, scales = list(draw=FALSE), colorkey = list(space = 'bottom'))
+    xlab = NULL, ylab = NULL, scales = list(draw=FALSE), colorkey = list(space = "bottom"))
   dev.off()
   invisible()
 }
