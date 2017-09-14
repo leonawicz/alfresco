@@ -33,7 +33,6 @@ reference:
   - frp_maps_no_buffer
 - title: General data extraction
   contents:
-  - alf_extract_slurm
   - run_alf_extraction
   - extract_alf
   - extract_fsv
@@ -42,6 +41,8 @@ reference:
   - get_domain_cells
   - get_veg_labels
   - get_out_dirs
+  - alf_extract_slurm
+  - alf_extract_rscript
   - extract_alf_stops
 - title: Fire management options
   contents:
