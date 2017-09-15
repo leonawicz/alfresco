@@ -51,9 +51,11 @@ if(rmpi){
 }
 
 run_alf_extraction(domain, type = "fsv", main_dir = main_dir, project = project, reps = reps,
-                   years = years, cells = cells, veg_labels = veg_labels, cru = cru)
+                   years = years, cells = cells, veg_labels = veg_labels, cru = cru, cru_id = "CRU 3.2",
+                   itervar = seq_along(years), rmpi = rmpi)
 run_alf_extraction(domain, type = "av", main_dir = main_dir, project = project, reps = reps,
-                   years = years, cells = cells, veg_labels = veg_labels, cru = cru)
+                   years = years, cells = cells, veg_labels = veg_labels, cru = cru, cru_id = "CRU 3.2",
+                   itervar = seq_along(years), rmpi = rmpi)
 
 if(rmpi){
   mpi.close.Rslaves(dellog = FALSE)
