@@ -25,6 +25,7 @@ cells <- get_domain_cells(domain)
 veg_labels <- get_veg_labels(domain)
 dirs <- get_out_dirs(domain, project, cru)
 main_dirs <- rep(paste0(dirs, "/Maps")[modelIndex], each = length(years))
+main_dir <- main_dirs[1] # all equal when single modelIndex
 
 # Export objects to slaves
 if(rmpi){
@@ -38,14 +39,12 @@ if(rmpi){
 
 # Issue commands to slaves
 if(rmpi){
-  mpi.bcast.cmd( main_dir <- main_dirs[rmpi_proc_id] )
   mpi.bcast.cmd( library(alfresco) )
   mpi.bcast.cmd( dir.create(
     tmp_dir <- paste0(alfdef()$raster_tmp_dir, "/proc", rmpi_proc_id), showWarnings = FALSE) )
   mpi.bcast.cmd( rasterOptions(chunksize = 10e10, maxmemory = 10e11, tmpdir = tmp_dir) )
   print("mpi.bcast.cmd calls completed. Now running mpi.remote.exec...")
 } else {
-  main_dir <- main_dirs[1]
   tmp_dir <- paste0(alfdef()$raster_tmp_dir, "procX")
   rasterOptions(chunksize = 10e10, maxmemory = 10e11, tmpdir = tmp_dir)
 }
