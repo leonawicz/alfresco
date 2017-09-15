@@ -111,7 +111,7 @@ get_out_dirs <- function(domain, project, cru, cru_id = "CRU 3.2"){
 .valid_alf_projects <- function(domain){
   switch(domain,
          "akcan1km" = c("IEM", "FMO_Calibrated"),
-         "ak1km" = "CMIP5_SW")
+         "ak1km" =c("JFSP", "CMIP5_SW"))
 }
 
 .alf_project_dirs <- function(project, cru, cru_id){
