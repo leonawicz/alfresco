@@ -119,8 +119,9 @@ alf_extract_slurm <- function( # nolint start
   } else {
     x <- paste(x, "$1 $2 $3 $4 $5 $6 $7 $8 $9\n")
   }
+  dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
   if(copy_rscript) alf_extract_rscript(out_dir, file)
-  sink(file = slurm_file)
+  sink(file = file.path(out_dir, slurm_file))
   cat(x)
   sink()
   invisible()
