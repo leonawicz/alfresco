@@ -118,7 +118,8 @@ get_out_dirs <- function(domain, project, cru, cru_id = "CRU 3.2"){
   if(cru){
     pat <- gsub("\\.| ", "", cru_id)
   } else {
-    pat <- switch(project, "IEM" = ".*.sres.*.", "FMO_Calibrated" = ".*.rcp.*.", "CMIP5_SW" = "^rcp.*.")
+    pat <- switch(project, "IEM" = ".*.sres.*.", "FMO_Calibrated" = ".*.rcp.*.",
+                  "CMIP5_SW" = "^rcp.*.", "JFSP" = "^fmo.*.")
   }
   switch(project,
          "IEM" = list.files(
@@ -129,6 +130,9 @@ get_out_dirs <- function(domain, project, cru, cru_id = "CRU 3.2"){
            pattern = pat, full.names = TRUE),
          "CMIP5_SW" = list.files(
            "/atlas_scratch/mfleonawicz/alfresco/CMIP5_Statewide/outputs/5m", # nolint
+           pattern = pat, full.names = TRUE),
+         "JFSP" = list.files(
+           "/atlas_scratch/mfleonawicz/alfresco/JFSP/outputs", # nolint
            pattern = pat, full.names = TRUE))
 }
 
