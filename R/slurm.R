@@ -84,7 +84,7 @@ alf_extract_slurm <- function( # nolint start
     if(missing(nodes)) stop("Must supply `nodes` if `years` is not supplied.")
     if(missing(ntasks_per_node)) stop("Must supply `ntasks_per_node` if `years` is not supplied.")
   }
-  x <- "#!/bin/bash\n"
+  x <- "#!/bin/bash\nexport LD_LIBRARY_PATH=/usr/lib64/openmpi/lib:$LD_LIBRARY_PATH\n"
   if(exclusive) x <- paste0(x, "#SBATCH --exclusive\n")
   x <- paste0(
     x, "#SBATCH --mail-type=END\n#SBATCH --mail-user=", email, "\n#SBATCH --account=snap\n#SBATCH -p main\n",
