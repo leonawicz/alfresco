@@ -24,7 +24,7 @@ if(rmpi){
 cells <- get_domain_cells(domain)
 veg_labels <- get_veg_labels(domain)
 dirs <- get_out_dirs(domain, project, cru)
-main_dirs <- rep(paste0(dirs, "/Maps")[modelIndex], each = length(itervar))
+main_dirs <- rep(paste0(dirs, "/Maps")[modelIndex], each = length(years))
 
 # Export objects to slaves
 if(rmpi){
@@ -51,11 +51,9 @@ if(rmpi){
 }
 
 run_alf_extraction(domain, type = "fsv", main_dir = main_dir, project = project, reps = reps,
-                   years = years, cells = cells, veg_labels = veg_labels, cru = cru, cru_id = "CRU 3.2",
-                   itervar = seq_along(years), rmpi = rmpi)
+                   years = years, cells = cells, veg_labels = veg_labels, cru = cru)
 run_alf_extraction(domain, type = "av", main_dir = main_dir, project = project, reps = reps,
-                   years = years, cells = cells, veg_labels = veg_labels, cru = cru, cru_id = "CRU 3.2",
-                   itervar = seq_along(years), rmpi = rmpi)
+                   years = years, cells = cells, veg_labels = veg_labels, cru = cru)
 
 if(rmpi){
   mpi.close.Rslaves(dellog = FALSE)
