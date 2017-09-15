@@ -57,7 +57,7 @@ copy_alf_outputs <- function(project, in_dir, out_dir = alfdef()$alf_extract_dir
     x <- paste0(
       x,
       "inDir=", in_dir, "/$fmo*$rcp*$model/Maps # source Maps directory\n",
-      "outDir=", out_dir, "/", project, "/outputs/$fmo/$rcp.$modelOut/Maps # destination Maps directory\n")
+      "outDir=", out_dir, "/", project, "/outputs/$fmo.$rcp.$modelOut/Maps # destination Maps directory\n")
   } else {
     x <- paste0(
       x,
