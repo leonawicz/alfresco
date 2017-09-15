@@ -12,7 +12,7 @@ if(exists("repSample") && is.numeric(repSample)){
 if(!exists("cru")) cru <- FALSE
 
 if(rmpi){
-  library(rmpi)
+  library(Rmpi)
   mpi.spawn.Rslaves(needlog = TRUE)
   mpi.bcast.cmd( rmpi_proc_id <- mpi.comm.rank() )
   mpi.bcast.cmd( np <- mpi.comm.size() )
