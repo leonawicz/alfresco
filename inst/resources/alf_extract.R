@@ -1,3 +1,5 @@
+library(rgdal)
+library(raster)
 library(alfresco)
 cargs <- (commandArgs(TRUE))
 if(!length(cargs)) q("no") else for(i in 1:length(cargs)) eval(parse(text = cargs[[i]]))
@@ -39,6 +41,8 @@ if(rmpi){
 
 # Issue commands to slaves
 if(rmpi){
+  mpi.bcast.cmd( library(rgdal) )
+  mpi.bcast.cmd( library(raster) )
   mpi.bcast.cmd( library(alfresco) )
   mpi.bcast.cmd( dir.create(
     tmp_dir <- paste0(alfdef()$raster_tmp_dir, "/proc", rmpi_proc_id), showWarnings = FALSE) )
@@ -50,9 +54,9 @@ if(rmpi){
 }
 
 run_alf_extraction(domain, type = "fsv", main_dir = main_dir, project = project, reps = reps,
-                   years = years, cells = cells, veg_labels = veg_labels, cru = cru)
+                   years = years, cells = cells, veg_labels = veg_labels, cru = cru, rmpi = rmpi)
 run_alf_extraction(domain, type = "av", main_dir = main_dir, project = project, reps = reps,
-                   years = years, cells = cells, veg_labels = veg_labels, cru = cru)
+                   years = years, cells = cells, veg_labels = veg_labels, cru = cru, rmpi = rmpi)
 
 if(rmpi){
   mpi.close.Rslaves(dellog = FALSE)
