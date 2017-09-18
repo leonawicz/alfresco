@@ -325,15 +325,14 @@ if (rmpi) {
 <div id="alf_prep-r" class="section level4">
 <h4 class="hasAnchor">
 <a href="#alf_prep-r" class="anchor"></a>alf_prep.R</h4>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rgdal)
-<span class="kw">library</span>(raster)
-<span class="kw">library</span>(alfresco)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(alfresco)
 <span class="kw">library</span>(parallel)
 
 cargs &lt;-<span class="st"> </span>(<span class="kw">commandArgs</span>(<span class="ot">TRUE</span>))
 if (!<span class="kw">length</span>(cargs)) <span class="kw">q</span>(<span class="st">"no"</span>) else for (z in <span class="dv">1</span>:<span class="kw">length</span>(cargs)) <span class="kw">eval</span>(<span class="kw">parse</span>(<span class="dt">text =</span> cargs[[z]]))
 <span class="kw">prep_alf_stops</span>()
-if (!<span class="kw">exists</span>(<span class="st">"in_dir"</span>)) in_dir &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw"><a href="../reference/alfdef.html">alfdef</a></span>()$alf_extract_dir, <span class="st">"extractions"</span>)
+if (!<span class="kw">exists</span>(<span class="st">"in_dir"</span>)) in_dir &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw"><a href="../reference/alfdef.html">alfdef</a></span>()$alf_extract_dir, project, 
+    <span class="st">"extractions"</span>)
 in_dir &lt;-<span class="st"> </span><span class="kw">file.path</span>(in_dir, variable)
 if (!<span class="kw">exists</span>(<span class="st">"out_dir"</span>)) out_dir &lt;-<span class="st"> </span><span class="kw">file.path</span>(snapprep::<span class="kw">snapdef</span>()$dist_dir, <span class="st">"alfresco"</span>, 
     project)
