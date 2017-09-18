@@ -191,7 +191,7 @@ As with data extraction, generate a slurm and R script pair:
 alf_prep_slurm(project = "JFSP", reps = 1:32)
 ```
 
-```{bash slurm_example, eval = FALSE}
+```{bash slurm_example2, eval = FALSE}
 #!/bin/bash
 #SBATCH --exclusive
 #SBATCH --mail-type=END
