@@ -208,6 +208,25 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
   mod.scen <- unlist(strsplit(modname, "\\."))
   if(domain == "ak1km") mod.scen <- rev(mod.scen)
 
+  if(rmpi){
+    Rmpi::mpi.bcast.cmd( rmpi_proc_id <- Rmpi::mpi.comm.rank() ) # nolint start
+    Rmpi::mpi.bcast.cmd( np <- Rmpi::mpi.comm.size() )
+    Rmpi::mpi.bcast.cmd( host <- Rmpi::mpi.get.processor.name() ) # nolint end
+    Rmpi::mpi.bcast.Robj2slave(itervar)
+    Rmpi::mpi.bcast.Robj2slave(type)
+    Rmpi::mpi.bcast.Robj2slave(loop_by)
+    Rmpi::mpi.bcast.Robj2slave(cells)
+    Rmpi::mpi.bcast.Robj2slave(reps)
+    Rmpi::mpi.bcast.Robj2slave(years)
+    Rmpi::mpi.bcast.Robj2slave(main_dir)
+    Rmpi::mpi.bcast.Robj2slave(veg_labels)
+    cat("mpi.bcast.Robj2slave calls completed.\n")
+    Rmpi::mpi.bcast.cmd(dir.create(
+      tmp_dir <- paste0(alfdef()$raster_tmp_dir, "/proc", rmpi_proc_id), showWarnings = FALSE)) # nolint
+    Rmpi::mpi.bcast.cmd(raster::rasterOptions(chunksize = 10e10, maxmemory = 10e11, tmpdir = tmp_dir))
+    cat("mpi.bcast.cmd calls completed. Now running mpi.remote.exec...\n")
+  }
+
   if(type == "fsv"){
     cat(paste("Compiling", type, "statistics...\n"))
     cells <- dplyr::select(cells, -.data[["Cell_rmNA"]])
