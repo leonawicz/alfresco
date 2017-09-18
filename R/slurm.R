@@ -201,8 +201,6 @@ alf_prep_slurm <- function( # nolint start
   inputs = NULL, outputs = NULL, project = NULL, variable = NULL, period = NULL, reps = NULL,
   email = "mfleonawicz@alaska.edu", exclusive = TRUE, copy_rscript = TRUE){
 
-  if(!is.null(domain) && !domain %in% c("akcan1km", "ak1km"))
-    stop("`domain` must be 'akcan1km' or 'ak1km' if not NULL.")
   slurm_file <- gsub("\\.R$", ".slurm", file)
   job_name <- gsub("\\.R$", "", file)
 
@@ -211,7 +209,7 @@ alf_prep_slurm <- function( # nolint start
   x <- paste0(
     x, "#SBATCH --mail-type=END\n#SBATCH --mail-user=", email, "\n#SBATCH --account=snap\n#SBATCH -p main\n",
     "#SBATCH --ntasks=32\n", "#SBATCH --job-name=alf_prep_", job_name, "\n",
-    "#SBATCH --nodes=1\n#SBATCH --ntasks-per-node=", ntasks_per_node, "\n\n")
+    "#SBATCH --nodes=1\n\n")
   x <- paste0(
     x,
     "# Required arguments: project, variable, period, reps.\n",
@@ -220,7 +218,7 @@ alf_prep_slurm <- function( # nolint start
     "# Defaults: in_dir and out_dir use alfresco package defaults from alfdef().\n\n") # nolint end
 
   x <- paste0(x, "Rscript ", file.path(out_dir, file))
-  rscript_args <- list(in_dir = in_dir, out_dir = out_dir, project = project, variable = variable,
+  rscript_args <- list(in_dir = inputs, out_dir = outputs, project = project, variable = variable,
                        period = period, reps = reps)
   rscript_args <- rscript_args[!sapply(rscript_args, is.null)]
   if(length(rscript_args)){
