@@ -251,40 +251,40 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
       va <- Rmpi::mpi.remote.exec(
         extract_alf(i = itervar[rmpi_proc_id], type = type, loop_by = loop_by, main_dir = main_dir, reps = reps,
                     years = years, cells = cells, veg_labels = veg_labels) )
-      d.area <- dplyr::bind_rows(purrr::map(va, ~.x$d.area))
-      d.age <- dplyr::bind_rows(purrr::map(va, ~.x$d.age))
+      d_area <- dplyr::bind_rows(purrr::map(va, ~.x$area))
+      d_age <- dplyr::bind_rows(purrr::map(va, ~.x$age))
     } else {
       len <- length(itervar)
       if(len <= mc.cores){
         va <- parallel::mclapply(
           itervar, extract_alf, type = type, loop_by = loop_by, main_dir = main_dir, reps = reps,
           years = years, cells = cells, veg_labels = veg_labels, mc.cores = mc.cores)
-        d.area <- dplyr::bind_rows(purrr::map(va, ~.x$d.area))
-        d.age <- dplyr::bind_rows(purrr::map(va, ~.x$d.age))
+        d_area <- dplyr::bind_rows(purrr::map(va, ~.x$area))
+        d_age <- dplyr::bind_rows(purrr::map(va, ~.x$age))
       } else {
         serial_iters <- ceiling(len / mc.cores)
         mc.cores2 <- which(len / (1:mc.cores) < serial_iters)[1]
-        d.age <- d.area <- vector("list", serial_iters)
+        d_age <- d_area <- vector("list", serial_iters)
         for(j in 1:serial_iters){
           itervar_tmp <- 1:mc.cores2 + (j - 1) * mc.cores2
           itervar_tmp <- itervar_tmp[itervar_tmp <= max(itervar)]
           va <- parallel::mclapply(
             itervar_tmp, extract_alf, type = type, loop_by = loop_by, main_dir = main_dir, reps = reps,
             years = years, cells = cells, veg_labels = veg_labels, mc.cores = mc.cores)
-          d.area[[j]] <- dplyr::bind_rows(lapply(va, function(x) x$d.area))
-          d.age[[j]] <- dplyr::bind_rows(lapply(va, function(x) x$d.age))
+          d_area[[j]] <- dplyr::bind_rows(lapply(va, function(x) x$area))
+          d_age[[j]] <- dplyr::bind_rows(lapply(va, function(x) x$age))
           rm(va)
           gc()
           print(paste("Replicate batch", j, "of", serial_iters, "complete."))
         }
-        d.area <- dplyr::bind_rows(d.area)
-        d.age <- dplyr::bind_rows(d.age)
+        d_area <- dplyr::bind_rows(d_area)
+        d_age <- dplyr::bind_rows(d_age)
       }
     }
-    d.area <- .add_columns(d.area, mod.scen, scen.levels, cru, cru_id)
-    .save_alf_rds(d.area, out_dir, project, "veg", cru, cru_id, modname)
-    d.age <- .add_columns(d.age, mod.scen, scen.levels, cru, cru_id)
-    .save_alf_rds(d.age, out_dir, project, "age", cru, cru_id, modname)
+    d_area <- .add_columns(d_area, mod.scen, scen.levels, cru, cru_id)
+    .save_alf_rds(d_area, out_dir, project, "veg", cru, cru_id, modname)
+    d_age <- .add_columns(d_age, mod.scen, scen.levels, cru, cru_id)
+    .save_alf_rds(d_age, out_dir, project, "age", cru, cru_id, modname)
     invisible()
   }
 }
@@ -311,7 +311,7 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
     } else {
       filename_tmp <- paste0(var_id, "__", locs[j], "__", modname)
     }
-    d2 <- d[locs[j]]
+    d2 <- dplyr::filter(d, .data[["Location"]] == locs[j])
     saveRDS(d2, file = paste0(var_dir, "/", filename_tmp, ".rds"))
     print(paste(filename_tmp, "object", j, "of", length(locs), "saved."))
   }
@@ -348,7 +348,7 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
 #' @param main_dir main input directory.
 #' @param age_dir age inputs directory.
 #' @param reps integer vector, ALFRESCO simulation replicate indices for data extraction.
-#' @param years numeric vector, years for data extraction. Defaults to \code{2008:2100}.
+#' @param years numeric vector, years for data extraction.
 #' @param cells data frame containing cell indices for the appropriate ALFRESCO spatial domain.
 #' @param ... additional arguments.
 #'
@@ -357,8 +357,7 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
 #'
 #' @examples
 #' # not run
-extract_alf <- function(i, type, loop_by, main_dir, age_dir = NULL, reps = NULL, years = NULL,
-                         cells, ...){
+extract_alf <- function(i, type, loop_by, main_dir, age_dir = NULL, reps, years, cells, ...){
   stopifnot(length(type) > 0 && type %in% c("av", "fsv"))
   if(type == "av")
     return(extract_av(i, loop_by, main_dir, age_dir, reps, years, cells, ...))
@@ -369,7 +368,6 @@ extract_alf <- function(i, type, loop_by, main_dir, age_dir = NULL, reps = NULL,
 #' @export
 #' @rdname extract_alf
 prep_alf_files <- function(i, loop_by, main_dir, reps, years){
-  if(is.null(years)) years <- 2008:2100
   if(loop_by == "rep"){
     iter <- reps
     keep <- reps - 1
@@ -413,7 +411,7 @@ extract_fsv <- function(i, loop_by, main_dir, reps=NULL, years=NULL, cells, ...)
   } else veg_labels <- list(...)$veg_labels
   x <- prep_alf_files(i = i, loop_by = loop_by, main_dir = main_dir, reps = reps, years = years)
   cells <- dplyr::ungroup(cells) %>% dplyr::group_by(.data[["LocGroup"]], .data[["Location"]])
-  d.fs <- vector("list", length(x$iter))
+  d_fs <- vector("list", length(x$iter))
   for(j in 1:length(x$iter)){ # nolint fire size by vegetation class
     v <- list(
       FID = raster::getValues(raster::raster(x$FID[j], band = 2)),
@@ -426,21 +424,21 @@ extract_fsv <- function(i, loop_by, main_dir, reps=NULL, years=NULL, cells, ...)
       dplyr::group_by(.data[["LocGroup"]], .data[["Location"]], .data[["Vegetation"]], .data[["FID"]]) %>%
       dplyr::summarise(Val = length(.data[["Cell"]]), Var = "Fire Size")
     if(loop_by == "rep"){
-      d.fs[[j]] <- dplyr::mutate(d, Replicate = x$iter[j])
+      d_fs[[j]] <- dplyr::mutate(d, Replicate = x$iter[j])
     } else {
-      d.fs[[j]] <-  dplyr::mutate(d, Year = x$iter[j])
+      d_fs[[j]] <-  dplyr::mutate(d, Year = x$iter[j])
     }
     print(switch(loop_by,
                  "rep" = paste0("Year ", years[i], ": Replicate ", x$iter[j]),
                  "year" = paste0("Replicate ", i, ": Year ", years[x$iter[j]])))
   }
   if(loop_by == "rep"){
-    d.fs <- dplyr::bind_rows(d.fs) %>% dplyr::mutate(Year = as.integer(years[i]))
+    d_fs <- dplyr::bind_rows(d_fs) %>% dplyr::mutate(Year = as.integer(years[i]))
   } else {
-    d.fs <- dplyr::bind_rows(d.fs) %>% dplyr::mutate(Replicate = as.integer(i))
+    d_fs <- dplyr::bind_rows(d_fs) %>% dplyr::mutate(Replicate = as.integer(i))
   }
-  d.fs <- dplyr::select(
-    d.fs, .data[["LocGroup"]], .data[["Location"]], .data[["Var"]], .data[["Vegetation"]],
+  d_fs <- dplyr::select(
+    d_fs, .data[["LocGroup"]], .data[["Location"]], .data[["Var"]], .data[["Vegetation"]],
     .data[["Year"]], .data[["Val"]], .data[["FID"]], .data[["Replicate"]]) %>% dplyr::ungroup() %>%
     dplyr::group_by(.data[["LocGroup"]], .data[["Location"]], .data[["Var"]],
                     .data[["Vegetation"]], .data[["Year"]]) %>%
@@ -448,7 +446,7 @@ extract_fsv <- function(i, loop_by, main_dir, reps=NULL, years=NULL, cells, ...)
                    .data[["Var"]], .data[["Vegetation"]],
                    .data[["Year"]], .data[["Val"]])
   print(paste("Returning fire size by vegetation class data table."))
-  d.fs
+  d_fs
 }
 
 #' @export
@@ -463,7 +461,7 @@ extract_av <- function(i, loop_by, main_dir, age_dir=NULL, reps=NULL, years=NULL
   r <- raster::getValues(raster::raster(x$Age[1])) # use as a template
   idx <- which(!is.na(r))
   idx.rmNA <- which(idx %in% 1:length(r))
-  d.age <- vector("list", length(x$iter))
+  d_age <- vector("list", length(x$iter))
   for(j in 1:length(x$iter)){
     v <- list(
       Age = raster::getValues(raster::raster(x$Age[j]))[idx],
@@ -477,47 +475,48 @@ extract_av <- function(i, loop_by, main_dir, age_dir=NULL, reps=NULL, years=NULL
       dplyr::group_by(.data[["LocGroup"]], .data[["Location"]], .data[["Vegetation"]], .data[["Age"]]) %>%
       dplyr::summarise(Freq = length(.data[["Cell_rmNA"]]))
     if(loop_by=="rep"){
-      d.age[[j]] <- dplyr::mutate(d, Replicate = x$iter[j])
+      d_age[[j]] <- dplyr::mutate(d, Replicate = x$iter[j])
     } else {
-      d.age[[j]] <- dplyr::mutate(d, Year = x$iter[j])
+      d_age[[j]] <- dplyr::mutate(d, Year = x$iter[j])
     }
     print(switch(loop_by,
                  "rep" = paste0("Year ", years[i], ": Replicate ", x$iter[j]),
                  "year" = paste0("Replicate ", i, ": Year ", years[x$iter[j]])))
   }
   if(loop_by=="rep"){
-    d.age <- dplyr::bind_rows(d.age) %>% dplyr::mutate(Year = as.integer(years[i]))
+    d_age <- dplyr::bind_rows(d_age) %>% dplyr::mutate(Year = as.integer(years[i]))
   } else {
-    d.age <- dplyr::bind_rows(d.age) %>% dplyr::mutate(Replicate = as.integer(i))
+    d_age <- dplyr::bind_rows(d_age) %>% dplyr::mutate(Replicate = as.integer(i))
   }
-  d.age <- dplyr::ungroup() %>%
-    dplyr::group_by(d.age, .data[["LocGroup"]], .data[["Location"]], .data[["Year"]],
+  d_age <- dplyr::ungroup(d_age) %>%
+    dplyr::group_by(.data[["LocGroup"]], .data[["Location"]], .data[["Year"]],
                     .data[["Vegetation"]]) %>%
-    dplyr::arrange(.data[["LocGroup"]], .data[["Location"]], .data[["Var"]], .data[["Year"]],
+    dplyr::arrange(.data[["LocGroup"]], .data[["Location"]], .data[["Year"]],
                    .data[["Vegetation"]], .data[["Age"]], .data[["Freq"]])
-  d.area <- dplyr::group_by(d.age, .data[["Replicate"]], add = TRUE) %>%
+  d_area <- dplyr::group_by(d_age, .data[["Replicate"]], add = TRUE) %>%
     dplyr::summarise(Val = sum(.data[["Freq"]]))
-  d.area <- dplyr::mutate(d.area, Var = "Vegetated Area") %>%
+  d_area <- dplyr::mutate(d_area, Var = "Vegetated Area") %>%
     dplyr::select(.data[["LocGroup"]], .data[["Location"]], .data[["Var"]], .data[["Vegetation"]],
                   .data[["Year"]], .data[["Val"]], .data[["Replicate"]])
-  locs <- unique(d.age$Location)
+  locs <- unique(d_age$Location)
   if(loop_by == "rep"){
-    d.age <- dplyr::group_by(d.age, .data[["Age"]], add = TRUE) %>%
-      dplyr::summarise(Freq = sum(.data[["Freq"]])) %>% dplyr::mutate(d.age, Var = "Vegetation Age") %>%
-      dplyr::select(d.age, .data[["LocGroup"]], .data[["Location"]], .data[["Var"]],
+    d_age <- dplyr::group_by(d_age, .data[["Age"]], add = TRUE) %>%
+      dplyr::summarise(Freq = sum(.data[["Freq"]])) %>% dplyr::ungroup() %>%
+      dplyr::mutate(Var = "Vegetation Age") %>%
+      dplyr::select(.data[["LocGroup"]], .data[["Location"]], .data[["Var"]],
                     .data[["Vegetation"]], .data[["Year"]], .data[["Age"]], .data[["Freq"]])
-    return(list(d.area = d.area, d.age = d.age))
+    return(list(area = d_area, age = d_age))
   } else {
     for(j in 1:length(locs)){
       obj_name_tmp <- paste0("age__", locs[j], "__rep", i)
-      assign(obj_name_tmp, d.age[locs[j]])
+      assign(obj_name_tmp, d_age[locs[j]])
       save(list = c("locs", obj_name_tmp), file = paste0(age_dir, "/", obj_name_tmp, ".RData"))
       print(paste(obj_name_tmp, "object", j, "of", length(locs), "saved."))
       rm(list = obj_name_tmp)
       gc()
     }
-    rm(d.age)
+    rm(d_age)
     gc()
-    return(list(d.area = d.area))
+    return(list(area = d_area))
   }
 }

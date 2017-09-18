@@ -51,9 +51,7 @@ pp_fsv <- function(d, main_dir, veg, shp, years, obs = NULL){
   d <- dplyr::bind_rows(dlist)
   if(nrow(d) > 0){
     d <- dplyr::mutate(d, Source = "Modeled", Replicate = paste("Rep", gsub("_", "", reps)))
-    s <- names(d)[c(3, 5, 6, 1, 4, 2)]
-    d <- dplyr::select(d, .data[[s[1]]], .data[[s[2]]], .data[[s[3]]], # nolint
-                       .data[[s[4]]], .data[[s[5]]], .data[[s[6]]]) # no lint
+    d <- dplyr::select(d, c(3, 5, 6, 1, 4, 2))
   } else d <- NULL
   d
 }
@@ -69,8 +67,7 @@ pp_fsv_emp <- function(i, b, veg, shp, years, obs = NULL){
   dl <- purrr::map(vid, ~.pp_fsv(.x, veg, v.fid, obs))
   d <- dplyr::bind_rows(dl) %>% dplyr::mutate(Year = years[i], Source = "Observed", Replicate = "Observed") %>%
     dplyr::ungroup()
-  s <- names(d)[c(3, 5, 6, 1, 4, 2)]
-  dplyr::select(d, .data[[s[1]]], .data[[s[2]]], .data[[s[3]]], .data[[s[4]]], .data[[s[5]]], .data[[s[6]]]) # nolint
+  dplyr::select(d, c(3, 5, 6, 1, 4, 2))
 }
 
 .pp_fsv <- function(i, v, f, obs = NULL){
@@ -106,7 +103,7 @@ pp_fsv_save <- function(d, main_dir, veg, shp, alf_yrs, emp_yrs, obs, i, b, out,
                      mc.cores = mc.cores) %>% dplyr::bind_rows()
   fs.alf <- parallel::mclapply(d, pp_fsv, main_dir = main_dir, veg = veg, shp = shp, years = alf_yrs,
                      obs = obs, mc.cores = mc.cores) %>% dplyr::bind_rows()
-  d.fs <- dplyr::bind_rows(fs.emp, fs.alf) %>% dplyr::mutate(Vegetation = v.names[.data[["Vegetation"]]]) # nolint
+  d.fs <- dplyr::bind_rows(fs.emp, fs.alf) %>% dplyr::mutate(Vegetation = v.names[.data[["Vegetation"]]])
   d.fs <- tidyr::complete(d.fs, Domain,
                           tidyr::nesting(Source, Replicate),
                           Vegetation,
@@ -130,14 +127,13 @@ pp_fsv_save <- function(d, main_dir, veg, shp, alf_yrs, emp_yrs, obs, i, b, out,
   grDevices::dev.off()
 
   veg.lev <- c("Combined Area", unique(d.fs$Vegetation))
-  g <- c("Domain", "Source", "Replicate", "Vegetation", "Year")
   d.fs2 <- dplyr::filter(d.fs, .data[[Domain]] == "Full") %>%
     dplyr::mutate(FS = ifelse(.data[["Source"]] == "Modeled",
                               .data[["FS"]] * empba_totalba_ratio, .data[["FS"]])) %>%
-    dplyr::group_by(.data[[g[1]]], .data[[g[2]]], .data[[g[3]]], .data[[g[5]]])
+    dplyr::group_by(.data[["Domain"]], .data[["Source"]], .data[["Replicate"]], .data[["Year"]])
   d.fs2 <- d.fs2 %>% dplyr::bind_rows(
     d.fs2 %>% dplyr::summarise(FS = sum(.data[["FS"]]), Vegetation = veg.lev[1])) %>%
-    dplyr::group_by(.data[[g[1]]], .data[[g[2]]], .data[[g[3]]], .data[[g[4]]]) %>%
+    dplyr::group_by(.data[["Domain"]], .data[["Source"]], .data[["Replicate"]], .data[["Vegetation"]]) %>%
     dplyr::arrange(.data[["FS"]]) %>% dplyr::mutate(CAB = cumsum(.data[["FS"]])) %>% dplyr::ungroup() %>%
     dplyr::mutate(Vegetation = factor(.data[["Vegetation"]], levels = veg.lev),
                   Source = factor(.data[["Source"]], levels = c("Observed", "Modeled")))
@@ -179,9 +175,9 @@ pp_fsv_save <- function(d, main_dir, veg, shp, alf_yrs, emp_yrs, obs, i, b, out,
 
 plot_rtab_time_veg <- function(data, year.range, cumulative = F, subject, grp = "", colpal, fontsize = 16,
                                lgd.pos = "top", facet.by = NULL, facet.cols = 1, facet.scales = NULL, ...){
-  a <- c("Domain", "Source", "Replicate", "Vegetation", "Year")
   d <- dplyr::filter(data, Year >= year.range[1] & Year <= year.range[2]) %>%
-    dplyr::group_by(.data[[a[1]]], .data[[a[2]]], .data[[a[3]]], .data[[a[4]]], .data[[a[5]]]) # nolint
+    dplyr::group_by(.data[["Domain"]], .data[["Source"]], .data[["Replicate"]],
+                    .data[["Vegetation"]], .data[["Year"]])
   given.veg <- "| Vegetation"
   xlb <- "Year"
   if(cumulative){
@@ -191,7 +187,7 @@ plot_rtab_time_veg <- function(data, year.range, cumulative = F, subject, grp = 
                        "Regional Cumulative Total Area Burned ~ Time", given.veg)
     ylb <- expression("CTAB ("~km^2~")")
   } else {
-    d <- dplyr::summarise(d, Value = sum(.data[["FS"]])) # nolint
+    d <- dplyr::summarise(d, Value = sum(.data[["FS"]]))
     maintitle <- paste(year.range[1], "-", year.range[2],
                        "Regional Total Area Burned ~ Time", given.veg)
     ylb <- expression("TAB ("~km^2~")")
@@ -200,7 +196,7 @@ plot_rtab_time_veg <- function(data, year.range, cumulative = F, subject, grp = 
   if(cumulative){
     if(grp != ""){
       g <- g + ggplot2::geom_step(data = dplyr::filter(
-        d, .data[["Source"]] == "Modeled"), colour = "gray") # nolint
+        d, .data[["Source"]] == "Modeled"), colour = "gray")
       g <- g + ggplot2::geom_step(ggplot2::aes_string(colour = grp),
                                   data = dplyr::filter(d, .data[["Source"]] == "Observed"), size = 1) +
         ggplot2::scale_color_manual(values = colpal[-c(1, 2)]) +
@@ -211,10 +207,10 @@ plot_rtab_time_veg <- function(data, year.range, cumulative = F, subject, grp = 
   } else {
     if(grp != ""){
       g <- g + ggplot2::geom_point(data = dplyr::filter(
-        d, .data[["Source"]] == "Modeled"), colour = "gray") # nolint
+        d, .data[["Source"]] == "Modeled"), colour = "gray")
       g <- g + ggplot2::geom_point(ggplot2::aes_string(colour = grp),
                                    data = dplyr::filter(
-                                     d, .data[["Source"]] == "Observed"), size = 2.5) + # nolint
+                                     d, .data[["Source"]] == "Observed"), size = 2.5) +
         ggplot2::scale_color_manual(values = colpal[-c(1, 2)]) +
         ggplot2::scale_fill_manual(values = colpal[-c(1, 2)])
     } else g <- g + ggplot2::geom_point() +

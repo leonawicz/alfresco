@@ -7,8 +7,8 @@
 \alias{extract_av}
 \title{Extract ALFRESCO data}
 \usage{
-extract_alf(i, type, loop_by, main_dir, age_dir = NULL, reps = NULL,
-  years = NULL, cells, ...)
+extract_alf(i, type, loop_by, main_dir, age_dir = NULL, reps, years, cells,
+  ...)
 
 prep_alf_files(i, loop_by, main_dir, reps, years)
 
@@ -30,7 +30,7 @@ extract_av(i, loop_by, main_dir, age_dir = NULL, reps = NULL,
 
 \item{reps}{integer vector, ALFRESCO simulation replicate indices for data extraction.}
 
-\item{years}{numeric vector, years for data extraction. Defaults to \code{2008:2100}.}
+\item{years}{numeric vector, years for data extraction.}
 
 \item{cells}{data frame containing cell indices for the appropriate ALFRESCO spatial domain.}
 

@@ -59,13 +59,14 @@ prep_fire_events <- function(k, pts, locs, replicates, source="Modeled", buffer_
     d[[i]] <- dplyr::group_by(cells, .data[["Buffer_km"]], .data[["Location"]]) %>%
       dplyr::summarise(Value = mean((.data[["Value"]]), na.rm=TRUE)) %>% dplyr::mutate(Year = yrs[i])
   }
-  a <- c("Source", "Replicate", "Buffer_km", "Location", "Year", "Value")
   d <- dplyr::bind_rows(d) %>% dplyr::mutate(
     Source = factor(source, levels=c("Observed", "Modeled")),
     Replicate = factor(replicates[k], levels = unique(c("Observed", replicates)))) %>%
     dplyr::ungroup() %>%
-    dplyr::arrange(.data[[a[1]]], .data[[a[2]]], .data[[a[3]]], .data[[a[4]]], .data[[a[5]]]) %>%
-    dplyr::select(.data[[a[1]]], .data[[a[2]]], .data[[a[3]]], .data[[a[4]]], .data[[a[5]]], .data[[a[6]]])
+    dplyr::arrange(.data[["Source"]], .data[["Replicate"]], .data[["Buffer_km"]],
+                   .data[["Location"]], .data[["Year"]]) %>%
+    dplyr::select(.data[["Source"]], .data[["Replicate"]], .data[["Buffer_km"]],
+                  .data[["Location"]], .data[["Year"]], .data[["Value"]])
   list(rasters = r.hold, points = d, years = n, years.vec = yrs)
 }
 
@@ -108,13 +109,14 @@ prep_fire_events_emp <- function(b, pts, locs, replicates = "Observed", source =
     d[[i]] <- dplyr::group_by(cells, .data[["Buffer_km"]], .data[["Location"]]) %>%
       dplyr::summarise(Value = mean((.data[["Value"]]), na.rm=TRUE)) %>% dplyr::mutate(Year = yrs[i])
   }
-  a <- c("Source", "Replicate", "Buffer_km", "Location", "Year", "Value")
   d <- dplyr::bind_rows(d) %>% dplyr::mutate(
     Source = factor(source, levels=c("Observed", "Modeled")),
     Replicate = factor(replicates[1], levels=unique(c("Observed", replicates)))) %>%
     dplyr::ungroup() %>%
-    dplyr::arrange(.data[[a[1]]], .data[[a[2]]], .data[[a[3]]], .data[[a[4]]], .data[[a[5]]]) %>%
-    dplyr::select(.data[[a[1]]], .data[[a[2]]], .data[[a[3]]], .data[[a[4]]], .data[[a[5]]], .data[[a[6]]])
+    dplyr::arrange(.data[["Source"]], .data[["Replicate"]], .data[["Buffer_km"]],
+                   .data[["Location"]], .data[["Year"]]) %>%
+    dplyr::select(.data[["Source"]], .data[["Replicate"]], .data[["Buffer_km"]],
+                  .data[["Location"]], .data[["Year"]], .data[["Value"]])
   list(rasters = r.hold, points = d, years = n)
 }
 
@@ -177,11 +179,11 @@ frp_maps_no_buffer <- function(i, alf_data, emp_data, shp, fire_area_history, ou
 #' @examples
 #' # not run
 pp_df_prep <- function(x, multiple_reps = TRUE){
-  g <- c("Source", "Replicate", "Buffer_km", "Location", "Year")
   if(!multiple_reps) x <- list(x)
   x <- purrr::map(x, ~.x[[2]])
   dplyr::bind_rows(x) %>% tibble::as_data_frame() %>%
-    dplyr::group_by(.data[[g[1]]], .data[[g[2]]], .data[[g[3]]], .data[[g[4]]], .data[[g[5]]])
+    dplyr::group_by(.data[["Source"]], .data[["Replicate"]], .data[["Buffer_km"]],
+                    .data[["Location"]], .data[["Year"]])
 }
 
 #' Prepare list of data frames during ALFRESCO post-processing
@@ -204,15 +206,16 @@ pp_df_prep <- function(x, multiple_reps = TRUE){
 #' # not run
 pp_fire_events <- function(alf_data, emp_data, domain, group_name, run_name, emp_yrs, out,
                            send_to_app = TRUE){
-  g <- c("Source", "Replicate", "Buffer_km", "Location", "Year")
   alf_yrs <- alf_data[[1]][[4]]
   # Organize empirical and modeled data
   d_emp <- pp_df_prep(emp_data, FALSE)
   d <- pp_df_prep(alf_data)
-  d2_emp <- dplyr::group_by(d_emp, .data[[g[1]]], .data[[g[2]]], .data[[g[3]]], .data[[g[4]]]) %>%
+  d2_emp <- dplyr::group_by(d_emp, .data[["Source"]], .data[["Replicate"]],
+                            .data[["Buffer_km"]], .data[["Location"]]) %>%
     dplyr::summarise(FRP = length(.data[["Year"]]) / sum(.data[["Value"]]))
 
-  d2 <- dplyr::group_by(d, .data[[g[1]]], .data[[g[2]]], .data[[g[3]]], .data[[g[4]]]) %>%
+  d2 <- dplyr::group_by(d, .data[["Source"]], .data[["Replicate"]], .data[["Buffer_km"]],
+                        .data[["Location"]]) %>%
     dplyr::summarise(FRP = length(.data[["Year"]]) / sum(.data[["Value"]]))
   # Additional objects to transport to app
   buffersize <- unique(d_emp$Buffer_km)
@@ -220,18 +223,18 @@ pp_fire_events <- function(alf_data, emp_data, domain, group_name, run_name, emp
   mod.years.range <- range(alf_yrs) # nolint
   # Assemble final data frames
   rab.dat <- dplyr::bind_rows(d, d_emp) %>% tibble::as_data_frame() %>% dplyr::ungroup() %>%
-    dplyr::arrange(.data[[g[2]]], .data[[g[3]]], .data[[g[4]]])
+    dplyr::arrange(.data[["Replicate"]], .data[["Buffer_km"]], .data[["Location"]])
   frp.dat <- dplyr::bind_rows(d2, d2_emp) %>% tibble::as_data_frame() %>% dplyr::ungroup() %>%
-    dplyr::arrange(.data[[g[2]]], .data[[g[3]]], .data[[g[4]]])
+    dplyr::arrange(.data[["Replicate"]], .data[["Buffer_km"]], .data[["Location"]])
   rab.dat <- dplyr::mutate(Source = ifelse(Replicate == "Observed", "Observed", "Modeled"))
   frp.dat <- dplyr::mutate(Source = ifelse(Replicate == "Observed", "Observed", "Modeled"))
   # Make Fire Return Interval data frame
   # no fires = one FRI of period length; one fire = one FRI of time from fire to period end
   fri.dat <- dplyr::filter(rab.dat, .data[["Value"]] != 0) %>%
-    dplyr::group_by(.data[[g[1]]], .data[[g[2]]], .data[[g[3]]], .data[[g[4]]]) %>%
+    dplyr::group_by(.data[["Source"]], .data[["Replicate"]], .data[["Buffer_km"]], .data[["Location"]]) %>%
     dplyr::mutate(FRI = c(NA, diff(.data[["Year"]])))
   fri.dat <- dplyr::left_join(rab.dat, fri.dat) %>%
-    dplyr::group_by(.data[[g[1]]], .data[[g[2]]], .data[[g[3]]], .data[[g[4]]]) %>%
+    dplyr::group_by(.data[["Source"]], .data[["Replicate"]], .data[["Buffer_km"]], .data[["Location"]]) %>%
     dplyr::do(tibble::data_frame(FRI = censor(.[["FRI"]], .[["Value"]]))) %>% tibble::as_data_frame
 
   if(domain == "Noatak"){
