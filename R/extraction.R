@@ -6,7 +6,10 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{extract_alf_stops}
+#' \dontrun{
+#' extract_alf_stops()
+#' prep_alf_stops()
+#' }
 extract_alf_stops <- function(){
   if(!exists("modelIndex", envir = .GlobalEnv))
     stop("Must provide a modelIndex 1 to 15, e.g., modelIndex=1")
@@ -15,6 +18,23 @@ extract_alf_stops <- function(){
     stop("Must provide domain, e.g., domain = 'akcan1km' or domain = 'ak1km'")
   if(!exists("years", envir = .GlobalEnv))
     stop("Must provide a year range, e.g., 1950:2013, 2008:2100, based on project.")
+  if(!exists("reps", envir = .GlobalEnv))
+    stop("Must provide replicates as integer(s) 1:200, e.g., reps = 1:25")
+  if(!exists("project", envir = .GlobalEnv)) stop("Must provide a `project` name.")
+  invisible()
+}
+
+#' @export
+#' @rdname extract_alf_stops
+prep_alf_stops <- function(){
+  if(!exists("period", envir = .GlobalEnv))
+    stop("Must provide `period`. Options are \\'historical\\' or \\'projected\\'.")
+  p <- get("period", envir = .GlobalEnv)
+  stopifnot(length(p) == 1 && p %in% c("historical", "projected"))
+  if(!exists("variable"))
+    stop("Must provide `variable` in escaped quotes. Options are 'age', 'veg' or 'fsv'.")
+  v <- get("variable", envir = .GlobalEnv)
+  stopifnot(length(v) == 1 && v %in% c("age", "veg", "fsv"))
   if(!exists("reps", envir = .GlobalEnv))
     stop("Must provide replicates as integer(s) 1:200, e.g., reps = 1:25")
   if(!exists("project", envir = .GlobalEnv)) stop("Must provide a `project` name.")
@@ -171,6 +191,8 @@ getPhase <- function(x){
 #' Valid projects for Alaska/western Canada include \code{"IEM"} and \code{"FMO_Calibrated"}. For Alaska "statewide", it is \code{"CMIP5_SW"}.
 #' \code{mc.cores} is used explicitly when \code{rmpi = FALSE} for \code{parallel::mclapply} instead of multi-node processing.
 #'
+#' Extracted data are subsequently curated into estimated probability distribution tables by \link{run_alf_extraction}.
+#'
 #' @param domain character, the ALFRESCO run spatial domain, either \code{"akcan1km"} or \code{"ak1km"}.
 #' @param type \code{"fsv"} or \code{"av"}. See details.
 #' @param loop_by \code{"rep"} or \code{"year"} (default).
@@ -189,6 +211,7 @@ getPhase <- function(x){
 #'
 #' @return invisible, writes files.
 #' @export
+#' @seealso alf_dist
 #'
 #' @examples
 #' # Not run; decontextualized example.
@@ -234,7 +257,6 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
       x <- Rmpi::mpi.remote.exec(
         extract_alf(i = itervar[rmpi_proc_id], type = type, loop_by = loop_by, main_dir = main_dir, reps = reps,
                     years = years, cells = cells, veg_labels = veg_labels) )
-      print(x)
       x <- dplyr::bind_rows(x)
     } else {
       len <- length(itervar)
@@ -271,7 +293,6 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
       va <- Rmpi::mpi.remote.exec(
         extract_alf(i = itervar[rmpi_proc_id], type = type, loop_by = loop_by, main_dir = main_dir, reps = reps,
                     years = years, cells = cells, veg_labels = veg_labels) )
-      print(va)
       d_area <- dplyr::bind_rows(purrr::map(va, ~.x$area))
       d_age <- dplyr::bind_rows(purrr::map(va, ~.x$age))
     } else {
@@ -315,13 +336,13 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
     var_id,
     "fsv" = paste0(
       "Fire size by vegetation class completed.\n",
-      "Saving fire size by vegetation class data frames by location to .RData file.\n"),
+      "Saving fire size by vegetation class data frames by location.\n"),
     "veg" = paste0(
       "Vegetation area completed.\n",
-      "Saving vegetation area data tables by location to .RData files.\n"),
+      "Saving vegetation area data tables by location.\n"),
     "age" = paste0(
       "Vegetation area by age completed.\n",
-      "Saving vegetation area by age data tables by location to .RData files.\n"))
+      "Saving vegetation area by age data tables by location.\n"))
   cat(txt)
   locs <- unique(d$Location)
   dir.create(var_dir <- file.path(out_dir, project, "extractions", var_id),
@@ -347,7 +368,7 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
     d <- dplyr::mutate(
       d,
       Phase = getPhase(mod.scen[2]),
-      Scenario = factor(swapScenarioName(mod.scen[2]), levels=scen.levels),
+      Scenario = factor(swapScenarioName(mod.scen[2]), levels = scen.levels),
       Model = swapModelName(mod.scen[1]))
   }
   d_names <- c("Phase", "Scenario", "Model", names_ini)
@@ -431,11 +452,7 @@ extract_fsv <- function(i, loop_by, main_dir, reps=NULL, years=NULL, cells, ...)
                     "Graminoid Tundra", "Wetland Tundra", "Barren lichen-moss", "Temperate Rainforest")
   } else veg_labels <- list(...)$veg_labels
   x <- prep_alf_files(i = i, loop_by = loop_by, main_dir = main_dir, reps = reps, years = years)
-  cat("#### x:\n")
-  print(x)
   cells <- dplyr::ungroup(cells) %>% dplyr::group_by(.data[["LocGroup"]], .data[["Location"]])
-  cat("#### cells:\n")
-  print(cells)
   d_fs <- vector("list", length(x$iter))
   for(j in 1:length(x$iter)){ # nolint fire size by vegetation class
     v <- list(
@@ -448,8 +465,6 @@ extract_fsv <- function(i, loop_by, main_dir, reps=NULL, years=NULL, cells, ...)
         FID = v$FID[.data[["Cell"]]]) %>% dplyr::ungroup() %>%
       dplyr::group_by(.data[["LocGroup"]], .data[["Location"]], .data[["Vegetation"]], .data[["FID"]]) %>%
       dplyr::summarise(Val = length(.data[["Cell"]]), Var = "Fire Size")
-    cat("#### d:\n")
-    print(d)
     if(loop_by == "rep"){
       d_fs[[j]] <- dplyr::mutate(d, Replicate = x$iter[j])
     } else {
@@ -464,8 +479,6 @@ extract_fsv <- function(i, loop_by, main_dir, reps=NULL, years=NULL, cells, ...)
   } else {
     d_fs <- dplyr::bind_rows(d_fs) %>% dplyr::mutate(Replicate = as.integer(i))
   }
-  cat("#### d_fs:\n")
-  print(d_fs)
   d_fs <- dplyr::select(
     d_fs, .data[["LocGroup"]], .data[["Location"]], .data[["Var"]], .data[["Vegetation"]],
     .data[["Year"]], .data[["Val"]], .data[["FID"]], .data[["Replicate"]]) %>% dplyr::ungroup() %>%
@@ -474,7 +487,7 @@ extract_fsv <- function(i, loop_by, main_dir, reps=NULL, years=NULL, cells, ...)
     dplyr::arrange(.data[["Replicate"]], .data[["LocGroup"]], .data[["Location"]],
                    .data[["Var"]], .data[["Vegetation"]],
                    .data[["Year"]], .data[["Val"]])
-  print(paste("Returning fire size by vegetation class data table."))
+  print(paste("Returning fire size by vegetation class data frame."))
   d_fs
 }
 

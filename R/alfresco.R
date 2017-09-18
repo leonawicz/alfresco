@@ -1,4 +1,4 @@
-globalVariables(c("rmpi_proc_id", ".", ".x", ".data", "Value", "Year",
+globalVariables(c("rmpi_proc_id", ".", ".x", ".data", "n", "Value", "Year",
                   "Domain", "Replicate", "Source", "BUffer_km", "Vegetation"))
 
 #' alfresco: R functions for ALFRESCO wildfire model.
