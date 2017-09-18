@@ -3,4 +3,5 @@ urls:
   article: http://leonawicz.github.io//articles
 articles:
   alfresco: alfresco.html
+  jfsp_extract: jfsp_extract.html
 

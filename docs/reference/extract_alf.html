@@ -75,6 +75,18 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/jfsp_extract.html">JFSP data extraction</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">News</a>
 </li>
@@ -195,8 +207,8 @@
     <p>Extract ALFRESCO data from simulation model run outputs.</p>
     
 
-    <pre class="usage"><span class='fu'>extract_alf</span>(<span class='no'>i</span>, <span class='no'>type</span>, <span class='no'>loop_by</span>, <span class='no'>main_dir</span>, <span class='kw'>age_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reps</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>years</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>cells</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>extract_alf</span>(<span class='no'>i</span>, <span class='no'>type</span>, <span class='no'>loop_by</span>, <span class='no'>main_dir</span>, <span class='kw'>age_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>reps</span>, <span class='no'>years</span>, <span class='no'>cells</span>,
+  <span class='no'>...</span>)
 
 <span class='fu'>prep_alf_files</span>(<span class='no'>i</span>, <span class='no'>loop_by</span>, <span class='no'>main_dir</span>, <span class='no'>reps</span>, <span class='no'>years</span>)
 
@@ -234,7 +246,7 @@
     </tr>
     <tr>
       <th>years</th>
-      <td><p>numeric vector, years for data extraction. Defaults to <code>2008:2100</code>.</p></td>
+      <td><p>numeric vector, years for data extraction.</p></td>
     </tr>
     <tr>
       <th>cells</th>
