@@ -61,7 +61,7 @@ alf_dist <- function(j, in_dir, out_dir, period, reps, n_samples = 10000,
         .,
         Expanded = suppressMessages(dplyr::right_join( # expand to include reps w/ BA and FC zero
           ., tibble::data_frame(Replicate = as.integer(reps.all)))) %>%
-          tidyr::complete(nesting(.data[["Phase"]], .data[["Scenario"]], .data[["Model"]],
+          tidyr::complete(tidyr::nesting(.data[["Phase"]], .data[["Scenario"]], .data[["Model"]],
                                   .data[["Location"]], .data[["Var"]], .data[["Vegetation"]], .data[["Year"]]),
                           fill = list(BA = 0L, FC = 0L)) %>%
           tidyr::fill(.data[["Phase"]], .data[["Scenario"]], .data[["Model"]],
@@ -70,23 +70,12 @@ alf_dist <- function(j, in_dir, out_dir, period, reps, n_samples = 10000,
         dplyr::group_by(.data[["Phase"]], .data[["Scenario"]], .data[["Model"]], .data[["Location"]],
                         .data[["Var"]], .data[["Vegetation"]], .data[["Year"]])
       d <- rvtable::rvtable(d, density.args = density.args)
-      #d <- dplyr::do(d, tibble::data_frame(
-      #  Val = do.call(dtDen, list(.$Val, n = n_samples, out="list"))$x,
-      #  Prob=do.call(dtDen, list(.$Val, n=n_samples, out="list"))$y))
       d2.ba <- dplyr::select(d2, -.data[["FC"]]) %>% dplyr::rename(Val = .data[["BA"]]) %>%
         rvtable::rvtable(density.args = density.args) %>% dplyr::ungroup() %>%
         dplyr::mutate(Var = "Burn Area")
-      #d2.ba <- dplyr::do(d2, data.table::data.table(
-      #  Val=do.call(dtDen, list(.$BA, n=n_samples, out="list"))$x,
-      #  Prob=do.call(dtDen, list(.$BA, n=n_samples, out="list"))$y)) %>%
-      #  ungroup %>% mutate(Var="Burn Area")
       d2.fc <- dplyr::select(d2, -.data[["BA"]]) %>% dplyr::rename(Val = .data[["FC"]]) %>%
         rvtable::rvtable(density.args = density.args) %>% dplyr::ungroup() %>%
         dplyr::mutate(Var = "Fire Count")
-      #d2.fc <- dplyr::do(d2, data.table::data.table(
-      #  Val=do.call(dtDen, list(.$FC, n=n_samples, out="list"))$x,
-      #  Prob=do.call(dtDen, list(.$FC, n=n_samples, out="list"))$y)) %>%
-      #  ungroup %>% mutate(Var="Fire Count")
       rm(d2)
       d <- dplyr::bind_rows(d, d2.ba, d2.fc)
       rm(d2.ba, d2.fc)
@@ -97,16 +86,14 @@ alf_dist <- function(j, in_dir, out_dir, period, reps, n_samples = 10000,
                          .data[["Year"]])
     if(id == "age"){
       skip_veg <- c("Wetland Tundra", "Barren lichen-moss", "Temperate Rainforest")
-      d <- dplyr::filter(d, !(.data[["Vegetation"]] %in% skip_veg) & sum(.data[["Freq"]]) > 30) # min 30 pixels across reps
+      d <- dplyr::filter(
+        d, !(.data[["Vegetation"]] %in% skip_veg) & sum(.data[["Freq"]]) > 30) # min 30 pixels across reps
       if(nrow(d) == 0) return("Insufficient data.") # skip if any null df for location occurs for age
-      d <- dplyr::mutate(d, N = n()) %>% dplyr::group_by(.data[["Year"]], add = TRUE)
+      d <- dplyr::mutate(d, N = n()) %>% dplyr::group_by(.data[["Year"]], add = TRUE) # nolint
       d <- rvtable::rvtable(d, density.args = density.args)
-      #d <- dplyr::do(d, data.table::data.table( # constant age permitted (when length(Freq)==1)
-      #  Val=do.call(dtDen, list(ifelse(.$N==1, sample(.$Age, n_boot, T), sample(.$Age, n_boot, T, .$Freq)), n=n_samples, out="list"))$x,
-      #  Prob=do.call(dtDen, list(ifelse(.$N==1, sample(.$Age, n_boot, T), sample(.$Age, n_boot, T, .$Freq)), n=n_samples, out="list"))$y))
     }
     if(id == "veg"){
-      dx <- d %>% do(
+      dx <- d %>% dplyr::do(
         .,
         Expanded = suppressMessages(dplyr::right_join(
           ., tibble::data_frame(Replicate = as.integer(reps.all)))) %>% # expand to include reps w/ age zero
@@ -117,16 +104,13 @@ alf_dist <- function(j, in_dir, out_dir, period, reps, n_samples = 10000,
           tidyr::fill(.data[["Phase"]], .data[["Scenario"]], .data[["Model"]],
                       .data[["LocGroup"]], .data[["Location"]], .data[["Var"]],
                       .data[["Vegetation"]], .data[["Year"]])
-      ) %>% dplyr::select(.data[["Expanded"]]) %>% dplyr::unnest(.data[["Expanded"]]) %>% dplyr::ungroup() %>%
+      ) %>% dplyr::select(.data[["Expanded"]]) %>% tidyr::unnest(.data[["Expanded"]]) %>% dplyr::ungroup() %>%
         dplyr::group_by(.data[["Phase"]], .data[["Scenario"]], .data[["Model"]],
                         .data[["Location"]], .data[["Var"]], .data[["Vegetation"]], .data[["Year"]])
       d <- rvtable::rvtable(d, density.args = density.args)
-      #d <- dplyr::do(d, data.table::data.table(
-      #  Val=do.call(dtDen, list(.$Val, n=n_samples, out="list"))$x, Prob=do.call(dtDen, list(.$Val, n=n_samples, out="list"))$y))
     }
     get_stats <- function(data){
       data <- rvtable::sample_rvtable(data, n = n_samples, density.args = density.args)
-      #data <- dplyr::do(data, data.table::data.table(Val=do.call(dtBoot, list(.$Val,.$Prob, n_boot=n_boot))))
       dplyr::summarise(data, Mean = round(mean(.data[["Val"]])),
                        SD = round(stats::sd(.data[["Val"]]), 1),
                        Min = round(min(.data[["Val"]])),
