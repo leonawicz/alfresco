@@ -43,7 +43,7 @@ bash copy_alf_outputs.sh historical CRU32 historical fmo00s00i
 
 See the documentation for `copy_alf_outputs` for details on command line arguments.
 
-## Generate slurm and R scripts
+## Data extraction
 
 To perform effecient data extraction on ALFRESCO output maps for the JFSP project,
 the first step is to create a slurm script to be executed by the SLURM job manager on SNAP's Atlas cluster.
@@ -54,7 +54,7 @@ To generate these two files, do the following:
 alf_extract_slurm(domain = "ak1km", project = "JFSP", years = 1950:2013, reps = 1:32, cru = TRUE)
 ```
 
-### alf_extract.slurm
+#### alf_extract.slurm
 
 ```{bash slurm_example, eval = FALSE}
 #!/bin/bash
@@ -81,7 +81,7 @@ remember to escape them.
 The data extraction procedure makes use of the `Rmpi` package with a master R process running on the Atlas head node
 and 64 slave processes (one for each year) running on 32 CPUs across two different compute nodes.
 
-### alf_extract.R
+#### alf_extract.R
 
 This function also creates a template R script for standard extractions show below.
 It reveals that `Rmpi` is not a requirement. Alternatively, you can run the same R script on a single compute node, parallelizing
@@ -139,9 +139,9 @@ Unless specifying a custom location with `out_dir`, the generated scripts will b
 file paths stored in `alfresco::alfdef()`. See the documentation for `alf_extract_slurm` for usage details.
 
 
-## Initial geotiff data extraction
+### Extract dat from geotiffs
 
-The next step is to begin data extraction from the raster layer data output by ALFRESCO in geotiff files.
+The next step is to begin the data extraction from the raster layer data output by ALFRESCO in geotiff files.
 To do this, execute the slurm script at the Atlas command line, making sure to supply any required arguments that were
 not written directly into the slurm script when it was previously generated.
 Assuming you are in the directory where the slurm and R script live and created them as shown above,
@@ -169,7 +169,7 @@ This makes the `sbatch` call short, having only to iterate over `modelIndex` for
 For a different ALFRESCO project, you would generate a different slurm script. The template R script run by the slurm script is the same in every case.
 What is variable is how general or specific the slurm script is, which depends on what is explicitly specified in `alf_extract_slurm`.
 
-### Output
+### Extraction output
 
 The extracted data are saved to `.rds` files that contain a data frame of fire size by vegetation class for all simulation replicates for the selected
 model and scenario. There is a unique file for each geographic subdomain in `cells` (see above R script), which typically is based on standard region data sets compiled in the `snappoly` and `snapgrid` R packages. See their associated documentation for details.
@@ -203,7 +203,7 @@ As with data extraction, generate a slurm and R script pair:
 alf_prep_slurm(project = "JFSP", reps = 1:32)
 ```
 
-### alf_prep.slurm
+#### alf_prep.slurm
 
 ```{bash slurm_example2, eval = FALSE}
 #!/bin/bash
@@ -224,7 +224,7 @@ alf_prep_slurm(project = "JFSP", reps = 1:32)
 Rscript /atlas_scratch/mfleonawicz/alfresco/slurm_jobs/alf_prep.R project=\'JFSP\' reps=1:32 $1 $2 $3 $4
 ```
 
-### alf_prep.R
+#### alf_prep.R
 
 ```{r rscript_example2, eval = FALSE}
 library(rgdal)
@@ -246,7 +246,7 @@ mclapply(1:n, alf_dist, in_dir = in_dir, out_dir = out_dir,
          period = period, reps = reps, mc.cores = mc.cores)
 ```
 
-### Final output
+### Curated output
 
 Then for example, execute on the historical period extractions for each random variable set after exiting R.
 Remember that string arguments need to be escaped as shown below.
