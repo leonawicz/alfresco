@@ -20,7 +20,12 @@ extract_alf_stops <- function(){
     stop("Must provide a year range, e.g., 1950:2013, 2008:2100, based on project.")
   if(!exists("reps", envir = .GlobalEnv))
     stop("Must provide replicates as integer(s) 1:200, e.g., reps = 1:25")
-  if(!exists("project", envir = .GlobalEnv)) stop("Must provide a `project` name.")
+  if(!exists("project", envir = .GlobalEnv)){
+    stop("Must provide a `project` name.")
+  } else {
+    p <- get("project", envir = .GlobalEnv)
+    if(!inherits(p, "character")) stop("Must provide a `project` name.")
+  }
   invisible()
 }
 
@@ -37,7 +42,12 @@ prep_alf_stops <- function(){
   stopifnot(length(v) == 1 && v %in% c("age", "veg", "fsv"))
   if(!exists("reps", envir = .GlobalEnv))
     stop("Must provide replicates as integer(s) 1:200, e.g., reps = 1:25")
-  if(!exists("project", envir = .GlobalEnv)) stop("Must provide a `project` name.")
+  if(!exists("project", envir = .GlobalEnv)){
+    stop("Must provide a `project` name.")
+  } else {
+    p <- get("project", envir = .GlobalEnv)
+    if(!inherits(p, "character")) stop("Must provide a `project` name.")
+  }
   invisible()
 }
 
@@ -284,7 +294,7 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
       }
     }
     x <- .add_columns(x, mod.scen, scen.levels, cru, cru_id)
-    .save_alf_rds(x, out_dir, project, "fsv", cru, cru_id, modname)
+    .save_alf_rds(x, out_dir, project, "fsv", cru, cru_id, domain, modname)
     return(invisible())
   } else {
     cat(paste("Compiling", type, "statistics...\n"))
@@ -324,14 +334,14 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
       }
     }
     d_area <- .add_columns(d_area, mod.scen, scen.levels, cru, cru_id)
-    .save_alf_rds(d_area, out_dir, project, "veg", cru, cru_id, modname)
+    .save_alf_rds(d_area, out_dir, project, "veg", cru, cru_id, domain, modname)
     d_age <- .add_columns(d_age, mod.scen, scen.levels, cru, cru_id)
-    .save_alf_rds(d_age, out_dir, project, "age", cru, cru_id, modname)
+    .save_alf_rds(d_age, out_dir, project, "age", cru, cru_id, domain, modname)
     invisible()
   }
 }
 
-.save_alf_rds <- function(d, out_dir, project, var_id, cru, cru_id, modname){
+.save_alf_rds <- function(d, out_dir, project, var_id, cru, cru_id, domain, modname){
   txt <- switch(
     var_id,
     "fsv" = paste0(
@@ -344,18 +354,25 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
       "Vegetation area by age completed.\n",
       "Saving vegetation area by age data tables by location.\n"))
   cat(txt)
-  locs <- unique(d$Location)
+  mod.scen <- unlist(strsplit(modname, "\\."))
+  if(domain == "ak1km") mod.scen <- rev(mod.scen)
+  cru_id2 <- gsub("\\.| ", "", cru_id)
+  if(cru & mod.scen[1] != cru_id2) mod.scen[1] <- cru_id2
+  mod.scen <- paste0(mod.scen, collapse = "__")
+  locs <- unique(paste0(d$LocGroup, "__", d$Location))
+  unique_name <- paste0(locs, "__", mod.scen)
   dir.create(var_dir <- file.path(out_dir, project, "extractions", var_id),
              recursive = TRUE, showWarnings = FALSE)
-  for(j in seq_along(locs)){
-    if(cru){
-      filename_tmp <- paste0(var_id, "__", locs[j], "__", gsub("\\.| ", "", cru_id))
-    } else {
-      filename_tmp <- paste0(var_id, "__", locs[j], "__", modname)
-    }
-    d2 <- dplyr::filter(d, .data[["Location"]] == locs[j])
-    saveRDS(d2, file = paste0(var_dir, "/", filename_tmp, ".rds"))
-    print(paste(filename_tmp, "object", j, "of", length(locs), "saved."))
+  for(j in seq_along(unique_name)){
+    filename_tmp <- paste0(var_id, "__", unique_name[j], ".rds")
+    d2 <- dplyr::filter(
+      d,
+      .data[["LocGroup"]] == strsplit(locs[j], "__")[[1]][1] &
+        .data[["Location"]] == strsplit(locs[j], "__")[[1]][2])
+    if(length(mod.scen) == 3)
+      d2 <- dplyr::filter(d2, .data[["FMO"]] == mod.scen[3])
+    saveRDS(d2, file = file.path(var_dir, filename_tmp))
+    print(paste("File", j, "of", length(unique_name), "saved:", filename_tmp))
   }
   invisible()
 }
@@ -372,6 +389,10 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
       Model = swapModelName(mod.scen[1]))
   }
   d_names <- c("Phase", "Scenario", "Model", names_ini)
+  if(length(mod.scen) == 3){
+    d <- dplyr::mutate(d, FMO = mod.scen[3])
+    d_names <- c(d_names, "FMO")
+  }
   dplyr::select_(d, .dots = d_names)
 }
 
