@@ -46,6 +46,8 @@ To generate these two files, do the following:
 alf_extract_slurm(domain = "ak1km", project = "JFSP", years = 1950:2013, reps = 1:32, cru = TRUE)
 ```
 
+### alf_extract.slurm
+
 ```{bash slurm_example, eval = FALSE}
 #!/bin/bash
 #SBATCH --exclusive
@@ -70,6 +72,8 @@ remember to escape them.
 
 The data extraction procedure makes use of the `Rmpi` package with a master R process running on the Atlas head node
 and 64 slave processes (one for each year) running on 32 CPUs across two different compute nodes.
+
+### alf_extract.R
 
 This function also creates a template R script for standard extractions show below.
 It reveals that `Rmpi` is not a requirement. Alternatively, you can run the same R script on a single compute node, parallelizing
@@ -191,6 +195,8 @@ As with data extraction, generate a slurm and R script pair:
 alf_prep_slurm(project = "JFSP", reps = 1:32)
 ```
 
+### alf_prep.slurm
+
 ```{bash slurm_example2, eval = FALSE}
 #!/bin/bash
 #SBATCH --exclusive
@@ -209,6 +215,8 @@ alf_prep_slurm(project = "JFSP", reps = 1:32)
 
 Rscript /atlas_scratch/mfleonawicz/alfresco/slurm_jobs/alf_prep.R project=\'JFSP\' reps=1:32 $1 $2 $3 $4
 ```
+
+### alf_prep.R
 
 ```{r rscript_example2, eval = FALSE}
 library(rgdal)
@@ -230,6 +238,8 @@ mclapply(1:n, alf_dist, in_dir = in_dir, out_dir = out_dir,
          period = period, reps = reps, mc.cores = mc.cores)
 ```
 
+### Final output
+
 Then for example, execute on the historical period extractions for each random variable set after exiting R.
 Remember that string arguments need to be escaped as shown below.
 
@@ -247,3 +257,10 @@ snapprep::snapdef()$dist_dir
 
 Note that you won't have access to this or some other directories on the Atlas file system or the SNAP network,
 so make sure to specify alternate `in_dir` and `out_dir` paths as necessary.
+
+These files represent the final output of the ALFRESCO outputs data processing pipeline.
+The .rds files containing the data frames of random variable empirical estimated probability densities
+for a range of geographic regions, climate models, emissions scenarios and time periods
+are utilized extensively in a number of downstream SNAP projects as well as incorporation into a variety of SNAPverse data packages
+for use by a broader audience.
+
