@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ALFRESCO extraction stop error checks — extract_alf_stops â€¢ alfresco</title>
+<title>Compute probability distribution tables — alf_dist â€¢ alfresco</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -200,33 +200,68 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>ALFRESCO extraction stop error checks</h1>
+    <h1>Compute probability distribution tables</h1>
     </div>
 
     
-    <p>Helper function to check for missing objects and stop process if necessary.</p>
+    <p>Compute and save to disk probability distributions of random variables from extracted ALFRESCO outputs.</p>
     
 
-    <pre class="usage"><span class='fu'>extract_alf_stops</span>()
+    <pre class="usage"><span class='fu'>alf_dist</span>(<span class='no'>j</span>, <span class='no'>in_dir</span>, <span class='no'>out_dir</span>, <span class='no'>period</span>, <span class='no'>reps</span>, <span class='kw'>n_samples</span> <span class='kw'>=</span> <span class='fl'>10000</span>,
+  <span class='kw'>density.args</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>adjust</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>from</span> <span class='kw'>=</span> <span class='fl'>0</span>))</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>j</th>
+      <td><p>integer, iterator, the sequence of unique geographic regions available among the extracted data.</p></td>
+    </tr>
+    <tr>
+      <th>in_dir</th>
+      <td><p>input directory where extracted data are located in .rds files.</p></td>
+    </tr>
+    <tr>
+      <th>out_dir</th>
+      <td><p>output directory where random variables distribution tables are saved as .rds files.</p></td>
+    </tr>
+    <tr>
+      <th>period</th>
+      <td><p>character, <code>"historical"</code> or <code>"projected"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>reps</th>
+      <td><p>integer vector, simulation replicates included in data extraction, e.g., <code>1:200</code>.</p></td>
+    </tr>
+    <tr>
+      <th>n_samples</th>
+      <td><p>numeric, number of samples when distribution sampling is required.</p></td>
+    </tr>
+    <tr>
+      <th>density.args</th>
+      <td><p>arguments passed to <code>density</code> during estimation. Used by the <code>rvtable</code> package.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-<span class='fu'>prep_alf_stops</span>()</pre>
-        
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>invisible, or an error.</p>
+    <p>This function estimates continuous probability distributions of random variables from extracted ALFRESCO
+model runs. The random variables available include fire size, burn area and fire frequency by vegetation class, as
+well as cover area and age for a vegetation class.</p>
+<p>This function estimates probability densities for outputs from <a href='run_alf_extraction.html'>run_alf_extraction</a>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>extract_alf_stops</span>()
-<span class='fu'>prep_alf_stops</span>()
+<span class='fu'>mclapply</span>(<span class='fl'>1</span>:<span class='no'>n.regions</span>, <span class='no'>alf_dist</span>, <span class='no'>in_dir</span>, <span class='no'>out_dir</span>, <span class='kw'>mc.cores</span> <span class='kw'>=</span> <span class='no'>n.cores</span>, <span class='kw'>period</span> <span class='kw'>=</span> <span class='no'>period</span>, <span class='kw'>reps</span> <span class='kw'>=</span> <span class='no'>reps</span>)
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

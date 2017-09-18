@@ -198,8 +198,11 @@
 <h2 class="hasAnchor">
 <a href="#generate-slurm-and-r-scripts" class="anchor"></a>Generate slurm and R scripts</h2>
 <p>To perform effecient data extraction on ALFRESCO output maps for the JFSP project, the first step is to create a slurm script to be executed by the SLURM job manager on SNAP’s Atlas cluster. This script will run an accompanying R script that performs the extraction on the geotiffs output by ALFRESCO. To generate these two files, do the following:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/alf_extract_slurm.html">alf_extract_slurm</a></span>(<span class="dt">domain =</span> <span class="st">"ak1km"</span>, <span class="dt">project =</span> <span class="st">"JFSP"</span>, <span class="dt">years =</span> <span class="dv">1950</span>:<span class="dv">2013</span>, <span class="dt">reps =</span> <span class="dv">1</span>:<span class="dv">30</span>, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/alf_extract_slurm.html">alf_extract_slurm</a></span>(<span class="dt">domain =</span> <span class="st">"ak1km"</span>, <span class="dt">project =</span> <span class="st">"JFSP"</span>, <span class="dt">years =</span> <span class="dv">1950</span>:<span class="dv">2013</span>, <span class="dt">reps =</span> <span class="dv">1</span>:<span class="dv">32</span>, 
     <span class="dt">cru =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div id="alf_extract-slurm" class="section level3">
+<h3 class="hasAnchor">
+<a href="#alf_extract-slurm" class="anchor"></a>alf_extract.slurm</h3>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="co">#!/bin/bash</span>
 <span class="co">#SBATCH --exclusive</span>
 <span class="co">#SBATCH --mail-type=END</span>
@@ -211,10 +214,14 @@
 <span class="co">#SBATCH --nodes=2</span>
 <span class="co">#SBATCH --ntasks-per-node=32</span>
 
-<span class="kw">mpirun</span> --oversubscribe -np 1 Rscript ./alf_extract.R domain=<span class="dt">\'</span>ak1km<span class="dt">\'</span> rmpi=TRUE project=<span class="dt">\'</span>JFSP<span class="dt">\'</span> years=1950:2013 reps=1:32 cru=TRUE <span class="ot">$1</span> <span class="ot">$2</span> <span class="ot">$3</span></code></pre></div>
-<p>This creates a slurm script with some hardcoded arguments that are passed on to the R script. This is convenient because the slurm script will be run several times for each combination of climate models and emissions scenarios (GCMs and RCPs) and it is nice to not have to repeatedly specify several other command line arguments that do not change from set of ALFRESCO outputs to the next.</p>
+<span class="kw">mpirun</span> --oversubscribe -np 1 Rscript /atlas_scratch/mfleonawicz/alfresco/slurm_jobs/alf_extract.R domain=<span class="dt">\'</span>ak1km<span class="dt">\'</span> rmpi=TRUE project=<span class="dt">\'</span>JFSP<span class="dt">\'</span> years=1950:2013 reps=1:32 cru=TRUE <span class="ot">$1</span> <span class="ot">$2</span> <span class="ot">$3</span></code></pre></div>
+<p>This creates a slurm script with some hardcoded arguments that are passed on to the R script. This is convenient because the slurm script will be run several times for each combination of climate models and emissions scenarios (GCMs and RCPs) and it is nice to not have to repeatedly specify several other command line arguments that do not change from set of ALFRESCO outputs to the next. Note hohw <code>domain</code> and <code>project</code> were coded into the script above. When passing string arguments at the command line to this and other slurm scripts, to be subsequently passed on to R, remember to escape them.</p>
 <p>The data extraction procedure makes use of the <code>Rmpi</code> package with a master R process running on the Atlas head node and 64 slave processes (one for each year) running on 32 CPUs across two different compute nodes.</p>
-<p>This function also creates a template R script for standard extractions show below. It reveals that <code>Rmpi</code> is not a requirement. Alternatively, we can run the same R script on a single compute node, parallelizing over multiple CPUs with the base R <code>parallel</code> package. However, using <code>Rmpi</code> on the Atlas cluster offers much greater access to total CPUs and RAM by coordinating the extractions across multiple compute nodes.</p>
+</div>
+<div id="alf_extract-r" class="section level3">
+<h3 class="hasAnchor">
+<a href="#alf_extract-r" class="anchor"></a>alf_extract.R</h3>
+<p>This function also creates a template R script for standard extractions show below. It reveals that <code>Rmpi</code> is not a requirement. Alternatively, you can run the same R script on a single compute node, parallelizing over multiple CPUs with the base R <code>parallel</code> package. However, using <code>Rmpi</code> on the Atlas cluster offers much greater access to total CPUs and RAM by coordinating the extractions across multiple compute nodes. Note that you do not need to write a script like this. The <code>alfresco</code> package creates it for you.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rgdal)
 <span class="kw">library</span>(raster)
 <span class="kw">library</span>(alfresco)
@@ -232,43 +239,21 @@ if (!<span class="kw">exists</span>(<span class="st">"cru"</span>)) cru &lt;-<sp
 
 if (rmpi) {
     <span class="kw">library</span>(Rmpi)
-    <span class="kw">mpi.spawn.Rslaves</span>(<span class="dt">needlog =</span> <span class="ot">TRUE</span>)
-    <span class="kw">mpi.bcast.cmd</span>(rmpi_proc_id &lt;-<span class="st"> </span><span class="kw">mpi.comm.rank</span>())
-    <span class="kw">mpi.bcast.cmd</span>(np &lt;-<span class="st"> </span><span class="kw">mpi.comm.size</span>())
-    <span class="kw">mpi.bcast.cmd</span>(host &lt;-<span class="st"> </span><span class="kw">mpi.get.processor.name</span>())
+    <span class="kw">mpi.spawn.Rslaves</span>(<span class="dt">needlog =</span> <span class="ot">TRUE</span>)  <span class="co"># remainder of setup performed by run_alf_extraction</span>
+    <span class="kw">mpi.bcast.cmd</span>(<span class="kw">library</span>(rgdal))
+    <span class="kw">mpi.bcast.cmd</span>(<span class="kw">library</span>(raster))
+    <span class="kw">mpi.bcast.cmd</span>(<span class="kw">library</span>(alfresco))
 } else {
     <span class="kw">library</span>(parallel)
     n.cores &lt;-<span class="st"> </span><span class="dv">32</span>
+    tmp_dir &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw"><a href="../reference/alfdef.html">alfdef</a></span>()$raster_tmp_dir, <span class="st">"procX"</span>)
+    <span class="kw">rasterOptions</span>(<span class="dt">chunksize =</span> <span class="fl">1e+11</span>, <span class="dt">maxmemory =</span> <span class="fl">1e+12</span>, <span class="dt">tmpdir =</span> tmp_dir)
 }
 cells &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_domain_cells.html">get_domain_cells</a></span>(domain)
 veg_labels &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_veg_labels.html">get_veg_labels</a></span>(domain)
 dirs &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_out_dirs.html">get_out_dirs</a></span>(domain, project, cru)
 main_dirs &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">paste0</span>(dirs, <span class="st">"/Maps"</span>)[modelIndex], <span class="dt">each =</span> <span class="kw">length</span>(years))
 main_dir &lt;-<span class="st"> </span>main_dirs[<span class="dv">1</span>]  <span class="co"># all equal when single modelIndex</span>
-
-<span class="co"># Export objects to slaves</span>
-if (rmpi) {
-    <span class="kw">mpi.bcast.Robj2slave</span>(cells)
-    <span class="kw">mpi.bcast.Robj2slave</span>(reps)
-    <span class="kw">mpi.bcast.Robj2slave</span>(years)
-    <span class="kw">mpi.bcast.Robj2slave</span>(main_dirs)
-    <span class="kw">mpi.bcast.Robj2slave</span>(veg_labels)
-    <span class="kw">print</span>(<span class="st">"mpi.bcast.Robj2slave calls completed."</span>)
-}
-
-<span class="co"># Issue commands to slaves</span>
-if (rmpi) {
-    <span class="kw">mpi.bcast.cmd</span>(<span class="kw">library</span>(rgdal))
-    <span class="kw">mpi.bcast.cmd</span>(<span class="kw">library</span>(raster))
-    <span class="kw">mpi.bcast.cmd</span>(<span class="kw">library</span>(alfresco))
-    <span class="kw">mpi.bcast.cmd</span>(<span class="kw">dir.create</span>(tmp_dir &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw"><a href="../reference/alfdef.html">alfdef</a></span>()$raster_tmp_dir, <span class="st">"/proc"</span>, 
-        rmpi_proc_id), <span class="dt">showWarnings =</span> <span class="ot">FALSE</span>))
-    <span class="kw">mpi.bcast.cmd</span>(<span class="kw">rasterOptions</span>(<span class="dt">chunksize =</span> <span class="fl">1e+11</span>, <span class="dt">maxmemory =</span> <span class="fl">1e+12</span>, <span class="dt">tmpdir =</span> tmp_dir))
-    <span class="kw">print</span>(<span class="st">"mpi.bcast.cmd calls completed. Now running mpi.remote.exec..."</span>)
-} else {
-    tmp_dir &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw"><a href="../reference/alfdef.html">alfdef</a></span>()$raster_tmp_dir, <span class="st">"procX"</span>)
-    <span class="kw">rasterOptions</span>(<span class="dt">chunksize =</span> <span class="fl">1e+11</span>, <span class="dt">maxmemory =</span> <span class="fl">1e+12</span>, <span class="dt">tmpdir =</span> tmp_dir)
-}
 
 <span class="kw"><a href="../reference/run_alf_extraction.html">run_alf_extraction</a></span>(domain, <span class="dt">type =</span> <span class="st">"fsv"</span>, <span class="dt">main_dir =</span> main_dir, <span class="dt">project =</span> project, 
     <span class="dt">reps =</span> reps, <span class="dt">years =</span> years, <span class="dt">cells =</span> cells, <span class="dt">veg_labels =</span> veg_labels, <span class="dt">cru =</span> cru, 
@@ -278,21 +263,100 @@ if (rmpi) {
     <span class="dt">rmpi =</span> rmpi)
 
 if (rmpi) {
-    <span class="kw">mpi.close.Rslaves</span>(<span class="dt">dellog =</span> <span class="ot">FALSE</span>)
+    <span class="kw">mpi.close.Rslaves</span>(<span class="dt">dellog =</span> <span class="ot">TRUE</span>)
     <span class="kw">mpi.exit</span>()
 }</code></pre></div>
 <p>Note that the <code>alfresco</code> package assumes sensible defaults for file paths and organization based on the Atlas file system. Unless specifying a custom location with <code>out_dir</code>, the generated scripts will be placed in an Atlas directory based on file paths stored in <code><a href="http://www.rdocumentation.org/packages/alfresco/topics/alfdef">alfresco::alfdef()</a></code>. See the documentation for <code>alf_extract_slurm</code> for usage details.</p>
 </div>
+</div>
 <div id="initial-geotiff-data-extraction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#initial-geotiff-data-extraction" class="anchor"></a>Initial geotiff data extraction</h2>
-<p>The next step is to begin data extraction from the raster layer data output by ALFRESCO in geotiff files. To do this, execute the slurm script at the Atlas command line, making sure to supply any required arguments that were not written directly into the slurm script when it was previously generated. Assuming we are in the directory where the slurm and R script live and created them as shown above,</p>
+<p>The next step is to begin data extraction from the raster layer data output by ALFRESCO in geotiff files. To do this, execute the slurm script at the Atlas command line, making sure to supply any required arguments that were not written directly into the slurm script when it was previously generated. Assuming you are in the directory where the slurm and R script live and created them as shown above,</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/alfdef.html">alfdef</a></span>()$alf_slurm_dir
 <span class="co">#&gt; [1] "/atlas_scratch/mfleonawicz/alfresco/slurm_jobs"</span></code></pre></div>
-<p>we simply calls <code>sbatch</code> as follows:</p>
+<p>simply call <code>sbatch</code> as follows:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">sbatch</span> alf_extract.slurm modelIndex=1</code></pre></div>
 <p>The <code>modelIndex</code> refers to the position in the list of climate model (or climate model/RCP group) directories pertaining to the given ALFRESCO project. For example, if an ALFRESCO project uses five GCMs and 3 RCPs, there are 15 directories of ALFRESCO outputs under the project directory. Each of these contains GCM/RCP-specific run outputs in a <code>Maps</code> subdirectory. The <code>sbatch</code> call is made for each of these 15 sets of GCM/RCP outputs.</p>
-<p>In this example, we are working with only historical run output over 16 combinations of fire management options as part of an experimental design. WE conveniently built into the slurm script all the arguments that are constant across these 16 treatments, such as the project name, the spatial domain of the ALFRESCO runs, the fact that the runs are based on CRU historical climate data rather than projected GCM outputs, the set of years and the set of simulation replicates. This makes the <code>sbatch</code> call short, having only to iterate over <code>modelIndex</code> for all 16 ALFRESCO runs without specifying the rest. For a different ALFRESCO project, we would generate a different slurm script. The template R script run by the slurm script is the same in every case. What is variable is how general or specific the slurm script is, which depends on what is explicitly specified in <code>alf_extract_slurm</code>.</p>
+<p>This example deals only with historical run output over 16 combinations of fire management options as part of an experimental design. You have conveniently built into the slurm script all the arguments that are constant across these 16 treatments, such as the project name, the spatial domain of the ALFRESCO runs, the fact that the runs are based on CRU historical climate data rather than projected GCM outputs, the set of years and the set of simulation replicates. This makes the <code>sbatch</code> call short, having only to iterate over <code>modelIndex</code> for all 16 ALFRESCO runs without specifying the rest. For a different ALFRESCO project, you would generate a different slurm script. The template R script run by the slurm script is the same in every case. What is variable is how general or specific the slurm script is, which depends on what is explicitly specified in <code>alf_extract_slurm</code>.</p>
+<div id="output" class="section level3">
+<h3 class="hasAnchor">
+<a href="#output" class="anchor"></a>Output</h3>
+<p>The extracted data are saved to <code>.rds</code> files that contain a data frame of fire size by vegetation class for all simulation replicates for the selected model and scenario. There is a unique file for each geographic subdomain in <code>cells</code> (see above R script), which typically is based on standard region data sets compiled in the <code>snappoly</code> and <code>snapgrid</code> R packages. See their associated documentation for details.</p>
+<p>These files are used in a subsequent data prep process where finalized data frames are compiled that contain probability distributions of several random variables extracted from ALFRESCO model run outputs.</p>
+</div>
+</div>
+<div id="data-curation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#data-curation" class="anchor"></a>Data curation</h2>
+<p>The final step when extracting data from ALFRESCO ouput geotiffs is to compute distributions of random variables and store them in prepared tables for later use across a range of SNAP projects.</p>
+<p>Random variables whose probability distributions are estimated from ALFRESCO simulation output include:</p>
+<ul>
+<li>Fire size area by vegetation class</li>
+<li>Total burn area</li>
+<li>Number of fires</li>
+<li>Vegetated area</li>
+<li>Vegetation age</li>
+</ul>
+<p>Each of these random variables has a unique estimated probability distribution associated with each geographic region the data extractions and density estimations were applied to. For areas and counts, these refer to spatially aggregated random variables. Therefore, the distributions of these random variables are across ALFRESCO simulation replicates only. By comparison, when similar distributions are estimated for downscaled climate data, those variables vary in space only and do not have an analog to the set of repeated ALFRESCO simulations. Vegetation age is unique in that the distribution of stand ages is across both simulation replicates and space.</p>
+<p>As with data extraction, generate a slurm and R script pair:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">alf_prep_slurm</span>(<span class="dt">project =</span> <span class="st">"JFSP"</span>, <span class="dt">reps =</span> <span class="dv">1</span>:<span class="dv">32</span>)</code></pre></div>
+<div id="alf_prep-slurm" class="section level3">
+<h3 class="hasAnchor">
+<a href="#alf_prep-slurm" class="anchor"></a>alf_prep.slurm</h3>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="co">#!/bin/bash</span>
+<span class="co">#SBATCH --exclusive</span>
+<span class="co">#SBATCH --mail-type=END</span>
+<span class="co">#SBATCH --mail-user=mfleonawicz@alaska.edu</span>
+<span class="co">#SBATCH --account=snap</span>
+<span class="co">#SBATCH -p main</span>
+<span class="co">#SBATCH --ntasks=32</span>
+<span class="co">#SBATCH --job-name=alf_prep_alf_prep</span>
+<span class="co">#SBATCH --nodes=1</span>
+
+<span class="co"># Required arguments: project, variable, period, reps.</span>
+<span class="co"># Optional arguments: in_dir, out_dir.</span>
+<span class="co"># Example useage: project='JFSP', variable='fsv', period='historical', reps=1:32.</span>
+<span class="co"># Defaults: in_dir and out_dir use alfresco package defaults from alfdef().</span>
+
+<span class="kw">Rscript</span> /atlas_scratch/mfleonawicz/alfresco/slurm_jobs/alf_prep.R project=<span class="dt">\'</span>JFSP<span class="dt">\'</span> reps=1:32 <span class="ot">$1</span> <span class="ot">$2</span> <span class="ot">$3</span> <span class="ot">$4</span></code></pre></div>
+</div>
+<div id="alf_prep-r" class="section level3">
+<h3 class="hasAnchor">
+<a href="#alf_prep-r" class="anchor"></a>alf_prep.R</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rgdal)
+<span class="kw">library</span>(raster)
+<span class="kw">library</span>(alfresco)
+<span class="kw">library</span>(parallel)
+
+cargs &lt;-<span class="st"> </span>(<span class="kw">commandArgs</span>(<span class="ot">TRUE</span>))
+if (!<span class="kw">length</span>(cargs)) <span class="kw">q</span>(<span class="st">"no"</span>) else for (z in <span class="dv">1</span>:<span class="kw">length</span>(cargs)) <span class="kw">eval</span>(<span class="kw">parse</span>(<span class="dt">text =</span> cargs[[z]]))
+<span class="kw">prep_alf_stops</span>()
+if (!<span class="kw">exists</span>(<span class="st">"in_dir"</span>)) in_dir &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw"><a href="../reference/alfdef.html">alfdef</a></span>()$alf_extract_dir, <span class="st">"extractions"</span>)
+in_dir &lt;-<span class="st"> </span><span class="kw">file.path</span>(in_dir, variable)
+if (!<span class="kw">exists</span>(<span class="st">"out_dir"</span>)) out_dir &lt;-<span class="st"> </span><span class="kw">file.path</span>(snapprep::<span class="kw">snapdef</span>()$dist_dir, <span class="st">"alfresco"</span>, 
+    project)
+<span class="kw">dir.create</span>(out_dir, <span class="dt">showWarnings =</span> <span class="ot">FALSE</span>, <span class="dt">recursive =</span> <span class="ot">TRUE</span>)
+regions &lt;-<span class="st"> </span><span class="kw">unique</span>(<span class="kw">sapply</span>(<span class="kw">strsplit</span>(<span class="kw">list.files</span>(<span class="kw">file.path</span>(in_dir)), <span class="st">"__"</span>), <span class="st">"["</span>, 
+    <span class="dv">2</span>))
+n &lt;-<span class="st"> </span><span class="kw">length</span>(regions)
+mc.cores &lt;-<span class="st"> </span><span class="kw">min</span>(n, <span class="dv">32</span>)
+<span class="kw">mclapply</span>(<span class="dv">1</span>:n, alf_dist, <span class="dt">in_dir =</span> in_dir, <span class="dt">out_dir =</span> out_dir, <span class="dt">period =</span> period, 
+    <span class="dt">reps =</span> reps, <span class="dt">mc.cores =</span> mc.cores)</code></pre></div>
+</div>
+<div id="final-output" class="section level3">
+<h3 class="hasAnchor">
+<a href="#final-output" class="anchor"></a>Final output</h3>
+<p>Then for example, execute on the historical period extractions for each random variable set after exiting R. Remember that string arguments need to be escaped as shown below.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">sbatch</span> alf_prep.slurm period=<span class="dt">\'</span>historical<span class="dt">\'</span> variable=<span class="dt">\'</span>fsv<span class="dt">\'</span>
+<span class="kw">sbatch</span> alf_prep.slurm period=<span class="dt">\'</span>historical<span class="dt">\'</span> variable=<span class="dt">\'</span>veg<span class="dt">\'</span>
+<span class="kw">sbatch</span> alf_prep.slurm period=<span class="dt">\'</span>historical<span class="dt">\'</span> variable=<span class="dt">\'</span>age<span class="dt">\'</span></code></pre></div>
+<p>By default the .rds files containing the probability distributions data frames are saved to:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">snapprep::<span class="kw">snapdef</span>()$dist_dir
+<span class="co">#&gt; [1] "/workspace/UA/mfleonawicz/data"</span></code></pre></div>
+<p>Note that you won’t have access to this or some other directories on the Atlas file system or the SNAP network, so make sure to specify alternate <code>in_dir</code> and <code>out_dir</code> paths as necessary.</p>
+<p>These files represent the final output of the ALFRESCO outputs data processing pipeline. The .rds files containing the data frames of random variable empirical estimated probability densities for a range of geographic regions, climate models, emissions scenarios and time periods are utilized extensively in a number of downstream SNAP projects as well as incorporation into a variety of SNAPverse data packages for use by a broader audience.</p>
+</div>
 </div>
 </div>
   </div>
@@ -305,6 +369,7 @@ if (rmpi) {
 <li><a href="#preparing-files">Preparing files</a></li>
       <li><a href="#generate-slurm-and-r-scripts">Generate slurm and R scripts</a></li>
       <li><a href="#initial-geotiff-data-extraction">Initial geotiff data extraction</a></li>
+      <li><a href="#data-curation">Data curation</a></li>
       </ul>
 </div>
       </div>
