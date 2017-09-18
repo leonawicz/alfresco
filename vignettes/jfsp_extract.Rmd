@@ -14,11 +14,19 @@ knitr::opts_chunk$set(
 library(alfresco)
 ```
 
+This vignette provides an overview of the data extraction and data set curation pipeline for ALFRESCO simulation outputs.
+It uses the JFSP project as a case study.
+The processing chain involes two main stages: data extraction and data curation.
+In the first stage, data is extracted from geotiffs output by ALFRESCO.
+In the second stage this data is curated and prepared for use across other downstream SNAP projects.
+There is an initial round of file preparation, but this can be considered a minor step before beginning the overall
+process of extracting and curating the data.
+
 ## Preparing files
 
 Not all files output by ALFRESCO are necessary. Since there are so many, it is helpful to make an isolated, smaller copy
 of only the subset of required files. This also creates an opportunity to reorganize their structure in a way that is more
-useful and can bew made consistent across different ALFRESCO projects.
+useful and can be made consistent across different ALFRESCO projects.
 
 Create a bash script from R on Atlas. Note the working directory.
 
