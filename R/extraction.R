@@ -215,6 +215,7 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
       x <- Rmpi::mpi.remote.exec(
         extract_alf(i = itervar[rmpi_proc_id], type = type, loop_by = loop_by, main_dir = main_dir, reps = reps,
                     years = years, cells = cells, veg_labels = veg_labels) )
+      print(x)
       x <- dplyr::bind_rows(x)
     } else {
       len <- length(itervar)
@@ -251,6 +252,7 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
       va <- Rmpi::mpi.remote.exec(
         extract_alf(i = itervar[rmpi_proc_id], type = type, loop_by = loop_by, main_dir = main_dir, reps = reps,
                     years = years, cells = cells, veg_labels = veg_labels) )
+      print(va)
       d_area <- dplyr::bind_rows(purrr::map(va, ~.x$area))
       d_age <- dplyr::bind_rows(purrr::map(va, ~.x$age))
     } else {
@@ -410,7 +412,11 @@ extract_fsv <- function(i, loop_by, main_dir, reps=NULL, years=NULL, cells, ...)
                     "Graminoid Tundra", "Wetland Tundra", "Barren lichen-moss", "Temperate Rainforest")
   } else veg_labels <- list(...)$veg_labels
   x <- prep_alf_files(i = i, loop_by = loop_by, main_dir = main_dir, reps = reps, years = years)
+  cat("#### x:\n")
+  print(x)
   cells <- dplyr::ungroup(cells) %>% dplyr::group_by(.data[["LocGroup"]], .data[["Location"]])
+  cat("#### cells:\n")
+  print(cells)
   d_fs <- vector("list", length(x$iter))
   for(j in 1:length(x$iter)){ # nolint fire size by vegetation class
     v <- list(
@@ -423,6 +429,8 @@ extract_fsv <- function(i, loop_by, main_dir, reps=NULL, years=NULL, cells, ...)
         FID = v$FID[.data[["Cell"]]]) %>% dplyr::ungroup() %>%
       dplyr::group_by(.data[["LocGroup"]], .data[["Location"]], .data[["Vegetation"]], .data[["FID"]]) %>%
       dplyr::summarise(Val = length(.data[["Cell"]]), Var = "Fire Size")
+    cat("#### d:\n")
+    print(d)
     if(loop_by == "rep"){
       d_fs[[j]] <- dplyr::mutate(d, Replicate = x$iter[j])
     } else {
@@ -437,6 +445,8 @@ extract_fsv <- function(i, loop_by, main_dir, reps=NULL, years=NULL, cells, ...)
   } else {
     d_fs <- dplyr::bind_rows(d_fs) %>% dplyr::mutate(Replicate = as.integer(i))
   }
+  cat("#### d_fs:\n")
+  print(d_fs)
   d_fs <- dplyr::select(
     d_fs, .data[["LocGroup"]], .data[["Location"]], .data[["Var"]], .data[["Vegetation"]],
     .data[["Year"]], .data[["Val"]], .data[["FID"]], .data[["Replicate"]]) %>% dplyr::ungroup() %>%
