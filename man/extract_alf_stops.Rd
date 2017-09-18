@@ -2,9 +2,12 @@
 % Please edit documentation in R/extraction.R
 \name{extract_alf_stops}
 \alias{extract_alf_stops}
+\alias{prep_alf_stops}
 \title{ALFRESCO extraction stop error checks}
 \usage{
 extract_alf_stops()
+
+prep_alf_stops()
 }
 \value{
 invisible, or an error.
@@ -13,5 +16,8 @@ invisible, or an error.
 Helper function to check for missing objects and stop process if necessary.
 }
 \examples{
-\dontrun{extract_alf_stops}
+\dontrun{
+extract_alf_stops()
+prep_alf_stops()
+}
 }

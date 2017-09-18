@@ -2,7 +2,7 @@
 % Please edit documentation in R/slurm.R
 \name{alf_extract_slurm}
 \alias{alf_extract_slurm}
-\title{Generate slurm script for ALFRESCO data extractions}
+\title{Slurm script for ALFRESCO data extractions}
 \usage{
 alf_extract_slurm(out_dir = alfdef()$alf_slurm_dir, file = "alf_extract.R",
   ntasks, nodes, ntasks_per_node, exclusive = TRUE, domain = "akcan1km",

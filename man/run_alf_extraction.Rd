@@ -54,9 +54,14 @@ that were used in project simulations. This function returns the full file path 
 and \code{project}.
 Valid projects for Alaska/western Canada include \code{"IEM"} and \code{"FMO_Calibrated"}. For Alaska "statewide", it is \code{"CMIP5_SW"}.
 \code{mc.cores} is used explicitly when \code{rmpi = FALSE} for \code{parallel::mclapply} instead of multi-node processing.
+
+Extracted data are subsequently curated into estimated probability distribution tables by \link{run_alf_extraction}.
 }
 \examples{
 # Not run; decontextualized example.
 \dontrun{run_alf_extraction(type = "fsv", main_dir = "Maps", project = "MyProject",
   reps = 1:200, years = 2014:2099, cells = cells, veg_labels = veg_labels)}
+}
+\seealso{
+alf_dist
 }

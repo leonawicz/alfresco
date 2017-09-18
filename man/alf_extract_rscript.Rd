@@ -2,7 +2,7 @@
 % Please edit documentation in R/slurm.R
 \name{alf_extract_rscript}
 \alias{alf_extract_rscript}
-\title{Create template R script for ALFRESCO data extraction}
+\title{R script for ALFRESCO data extraction}
 \usage{
 alf_extract_rscript(out_dir = alfdef()$alf_slurm_dir,
   file = "alf_extract.R")
@@ -13,7 +13,7 @@ alf_extract_rscript(out_dir = alfdef()$alf_slurm_dir,
 \item{file}{R script.}
 }
 \description{
-Create a template R script on disk to be run by a slurm script made using \link{alf_extract_slurm}.
+Generate a template R script on disk to be run by a slurm script made using \link{alf_extract_slurm}.
 This function does not need to be called directly if \link{alf_extract_slurm} is run with the default \code{copy_rscript = TRUE}.
 }
 \details{
