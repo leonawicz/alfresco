@@ -1,12 +1,10 @@
-library(rgdal)
-library(raster)
 library(alfresco)
 library(parallel)
 
 cargs <- (commandArgs(TRUE))
 if(!length(cargs)) q("no") else for(z in 1:length(cargs)) eval(parse(text = cargs[[z]]))
 prep_alf_stops()
-if(!exists("in_dir")) in_dir <- file.path(alfdef()$alf_extract_dir, "extractions")
+if(!exists("in_dir")) in_dir <- file.path(alfdef()$alf_extract_dir, project, "extractions")
 in_dir <- file.path(in_dir, variable)
 if(!exists("out_dir")) out_dir <- file.path(snapprep::snapdef()$dist_dir, "alfresco", project)
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
