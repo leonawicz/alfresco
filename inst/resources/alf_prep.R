@@ -1,6 +1,7 @@
 library(rgdal)
 library(raster)
 library(alfresco)
+library(parallel)
 
 cargs <- (commandArgs(TRUE))
 if(!length(cargs)) q("no") else for(z in 1:length(cargs)) eval(parse(text = cargs[[z]]))
