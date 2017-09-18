@@ -139,7 +139,7 @@ Unless specifying a custom location with `out_dir`, the generated scripts will b
 file paths stored in `alfresco::alfdef()`. See the documentation for `alf_extract_slurm` for usage details.
 
 
-### Extract dat from geotiffs
+### Extract data from geotiffs
 
 The next step is to begin the data extraction from the raster layer data output by ALFRESCO in geotiff files.
 To do this, execute the slurm script at the Atlas command line, making sure to supply any required arguments that were
