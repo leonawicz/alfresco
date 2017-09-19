@@ -16,7 +16,7 @@ library(alfresco)
 
 This vignette provides an overview of the data extraction and data set curation pipeline for ALFRESCO simulation outputs.
 It uses the JFSP project as a case study.
-The processing chain involes two main stages: data extraction and data curation.
+The processing chain involves two main stages: data extraction and data curation.
 In the first stage, data is extracted from geotiffs output by ALFRESCO.
 In the second stage this data is curated and prepared for use across other downstream SNAP projects.
 There is an initial round of file preparation, but this can be considered a minor step before beginning the overall
@@ -45,7 +45,7 @@ See the documentation for `copy_alf_outputs` for details on command line argumen
 
 ## Data extraction
 
-To perform effecient data extraction on ALFRESCO output maps for the JFSP project,
+To perform efficient data extraction on ALFRESCO output maps for the JFSP project,
 the first step is to create a slurm script to be executed by the SLURM job manager on SNAP's Atlas cluster.
 This script will run an accompanying R script that performs the extraction on the geotiffs output by ALFRESCO.
 To generate these two files, do the following:
@@ -74,7 +74,7 @@ mpirun --oversubscribe -np 1 Rscript /atlas_scratch/mfleonawicz/alfresco/slurm_j
 This creates a slurm script with some hardcoded arguments that are passed on to the R script.
 This is convenient because the slurm script will be run several times for each combination of climate models
 and emissions scenarios (GCMs and RCPs) and it is nice to not have to repeatedly specify several other command line arguments 
-that do not change from set of ALFRESCO outputs to the next. Note hohw `domain` and `project` were coded into the script above.
+that do not change from one set of ALFRESCO outputs to the next. Note how `domain` and `project` were coded into the script above.
 When passing string arguments at the command line to this and other slurm scripts, to be subsequently passed on to R,
 remember to escape them.
 
@@ -178,7 +178,7 @@ These files are used in a subsequent data prep process where finalized data fram
 
 ## Data curation
 
-The final step when extracting data from ALFRESCO ouput geotiffs is to compute distributions of random variables and store them in prepared tables for 
+The final step when extracting data from ALFRESCO output geotiffs is to compute distributions of random variables and store them in prepared tables for 
 later use across a range of SNAP projects.
 
 Random variables whose probability distributions are estimated from ALFRESCO simulation output include:
