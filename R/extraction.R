@@ -36,10 +36,6 @@ prep_alf_stops <- function(){
     stop("Must provide `period`. Options are \\'historical\\' or \\'projected\\'.")
   p <- get("period", envir = .GlobalEnv)
   stopifnot(length(p) == 1 && p %in% c("historical", "projected"))
-  if(!exists("variable"))
-    stop("Must provide `variable` in escaped quotes. Options are 'age', 'veg' or 'fsv'.")
-  v <- get("variable", envir = .GlobalEnv)
-  stopifnot(length(v) == 1 && v %in% c("age", "veg", "fsv"))
   if(!exists("reps", envir = .GlobalEnv))
     stop("Must provide replicates as integer(s) 1:200, e.g., reps = 1:25")
   if(!exists("project", envir = .GlobalEnv)){
