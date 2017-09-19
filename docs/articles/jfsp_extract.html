@@ -182,7 +182,7 @@
     
     
 <div class="contents">
-<p>This vignette provides an overview of the data extraction and data set curation pipeline for ALFRESCO simulation outputs. It uses the JFSP project as a case study. The processing chain involes two main stages: data extraction and data curation. In the first stage, data is extracted from geotiffs output by ALFRESCO. In the second stage this data is curated and prepared for use across other downstream SNAP projects. There is an initial round of file preparation, but this can be considered a minor step before beginning the overall process of extracting and curating the data.</p>
+<p>This vignette provides an overview of the data extraction and data set curation pipeline for ALFRESCO simulation outputs. It uses the JFSP project as a case study. The processing chain involves two main stages: data extraction and data curation. In the first stage, data is extracted from geotiffs output by ALFRESCO. In the second stage this data is curated and prepared for use across other downstream SNAP projects. There is an initial round of file preparation, but this can be considered a minor step before beginning the overall process of extracting and curating the data.</p>
 <div id="preparing-files" class="section level2">
 <h2 class="hasAnchor">
 <a href="#preparing-files" class="anchor"></a>Preparing files</h2>
@@ -198,7 +198,7 @@
 <div id="data-extraction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-extraction" class="anchor"></a>Data extraction</h2>
-<p>To perform effecient data extraction on ALFRESCO output maps for the JFSP project, the first step is to create a slurm script to be executed by the SLURM job manager on SNAP’s Atlas cluster. This script will run an accompanying R script that performs the extraction on the geotiffs output by ALFRESCO. To generate these two files, do the following:</p>
+<p>To perform efficient data extraction on ALFRESCO output maps for the JFSP project, the first step is to create a slurm script to be executed by the SLURM job manager on SNAP’s Atlas cluster. This script will run an accompanying R script that performs the extraction on the geotiffs output by ALFRESCO. To generate these two files, do the following:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/alf_extract_slurm.html">alf_extract_slurm</a></span>(<span class="dt">domain =</span> <span class="st">"ak1km"</span>, <span class="dt">project =</span> <span class="st">"JFSP"</span>, <span class="dt">years =</span> <span class="dv">1950</span>:<span class="dv">2013</span>, <span class="dt">reps =</span> <span class="dv">1</span>:<span class="dv">32</span>, 
     <span class="dt">cru =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <div id="alf_extract-slurm" class="section level4">
@@ -216,7 +216,7 @@
 <span class="co">#SBATCH --ntasks-per-node=32</span>
 
 <span class="kw">mpirun</span> --oversubscribe -np 1 Rscript /atlas_scratch/mfleonawicz/alfresco/slurm_jobs/alf_extract.R domain=<span class="dt">\'</span>ak1km<span class="dt">\'</span> rmpi=TRUE project=<span class="dt">\'</span>JFSP<span class="dt">\'</span> years=1950:2013 reps=1:32 cru=TRUE <span class="ot">$1</span> <span class="ot">$2</span> <span class="ot">$3</span></code></pre></div>
-<p>This creates a slurm script with some hardcoded arguments that are passed on to the R script. This is convenient because the slurm script will be run several times for each combination of climate models and emissions scenarios (GCMs and RCPs) and it is nice to not have to repeatedly specify several other command line arguments that do not change from set of ALFRESCO outputs to the next. Note hohw <code>domain</code> and <code>project</code> were coded into the script above. When passing string arguments at the command line to this and other slurm scripts, to be subsequently passed on to R, remember to escape them.</p>
+<p>This creates a slurm script with some hardcoded arguments that are passed on to the R script. This is convenient because the slurm script will be run several times for each combination of climate models and emissions scenarios (GCMs and RCPs) and it is nice to not have to repeatedly specify several other command line arguments that do not change from one set of ALFRESCO outputs to the next. Note how <code>domain</code> and <code>project</code> were coded into the script above. When passing string arguments at the command line to this and other slurm scripts, to be subsequently passed on to R, remember to escape them.</p>
 <p>The data extraction procedure makes use of the <code>Rmpi</code> package with a master R process running on the Atlas head node and 64 slave processes (one for each year) running on 32 CPUs across two different compute nodes.</p>
 </div>
 <div id="alf_extract-r" class="section level4">
@@ -290,7 +290,7 @@ if (rmpi) {
 <div id="data-curation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-curation" class="anchor"></a>Data curation</h2>
-<p>The final step when extracting data from ALFRESCO ouput geotiffs is to compute distributions of random variables and store them in prepared tables for later use across a range of SNAP projects.</p>
+<p>The final step when extracting data from ALFRESCO output geotiffs is to compute distributions of random variables and store them in prepared tables for later use across a range of SNAP projects.</p>
 <p>Random variables whose probability distributions are estimated from ALFRESCO simulation output include:</p>
 <ul>
 <li>Fire size area by vegetation class</li>
