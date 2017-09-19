@@ -57,15 +57,28 @@ alf_dist <- function(j, in_dir, out_dir, period, reps){
       if(fmo) d <- dplyr::group_by(d, .data[["FMO"]], add = TRUE)
       d2 <- dplyr::group_by(d, .data[["Replicate"]], add = TRUE) %>%
         dplyr::summarise(BA = sum(.data[["Val"]]), FC = length(.data[["Val"]])) # burn area and fire frequency
-      d2 <- d2 %>% dplyr::do(
-        .,
-        Expanded = suppressMessages(dplyr::right_join( # expand to include reps w/ BA and FC zero
-          ., tibble::data_frame(Replicate = as.integer(reps.all)))) %>%
-          tidyr::complete(tidyr::nesting(Phase, Scenario, Model, LocGroup, Location, Var, Vegetation, Year),
-                          fill = list(BA = 0L, FC = 0L)) %>%
-          tidyr::fill(.data[["Phase"]], .data[["Scenario"]], .data[["Model"]],
-                      .data[["Location"]], .data[["Var"]], .data[["Vegetation"]], .data[["Year"]])
-      ) %>% dplyr::select(.data[["Expanded"]]) %>% tidyr::unnest(.data[["Expanded"]]) %>%
+      if(fmo){
+        d2 <- d2 %>% dplyr::do(
+          .,
+          Expanded = suppressMessages(dplyr::right_join( # expand to include reps w/ BA and FC zero
+            ., tibble::data_frame(Replicate = as.integer(reps.all)))) %>%
+            tidyr::complete(tidyr::nesting(Phase, Scenario, Model, LocGroup, Location, Var, Vegetation, Year,
+                                           FMO),
+                            fill = list(BA = 0L, FC = 0L)) %>%
+            tidyr::fill(.data[["Phase"]], .data[["Scenario"]], .data[["Model"]], .data[["LocGroup"]],
+                        .data[["Location"]], .data[["Var"]], .data[["Vegetation"]], .data[["Year"]],
+                        .data[["FMO"]]))
+      } else {
+        d2 <- d2 %>% dplyr::do(
+          .,
+          Expanded = suppressMessages(dplyr::right_join( # expand to include reps w/ BA and FC zero
+            ., tibble::data_frame(Replicate = as.integer(reps.all)))) %>%
+            tidyr::complete(tidyr::nesting(Phase, Scenario, Model, LocGroup, Location, Var, Vegetation, Year),
+                            fill = list(BA = 0L, FC = 0L)) %>%
+            tidyr::fill(.data[["Phase"]], .data[["Scenario"]], .data[["Model"]], .data[["LocGroup"]],
+                        .data[["Location"]], .data[["Var"]], .data[["Vegetation"]], .data[["Year"]]))
+      }
+     d2 <- dplyr::select(d2, .data[["Expanded"]]) %>% tidyr::unnest(.data[["Expanded"]]) %>%
         dplyr::ungroup()
       d <- dplyr::ungroup(d) %>% dplyr::select(-.data[["FID"]], -.data[["Replicate"]]) %>%
         rvtable::rvtable(discrete = TRUE)
