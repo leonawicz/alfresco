@@ -160,7 +160,7 @@ alf_extract_rscript <- function(out_dir = alfdef()$alf_slurm_dir, file = "alf_ex
 #' Formal SLURM job arguments are passed by \code{exclusive} and \code{email}.
 #' General script setup arguments include \code{out_dir}, \code{file} and \code{copy_rscript}.
 #' All other arguments refer to those passed to the \code{Rscript} call within the slurm script.
-#' These include \code{inputs}, \code{outputs}, \code{project} and \code{reps}.
+#' These include \code{inputs}, \code{outputs}, \code{project}, \code{period} and \code{reps}.
 #' If \code{NULL}, they are ignored.
 #' Provide non-\code{NULL} arguments to override \code{alfresco} package defaults for \code{inputs} and \code{outputs}.
 #' It is assumed that any of these four arguments will be passed as name-value pairs (in any order)
@@ -169,9 +169,9 @@ alf_extract_rscript <- function(out_dir = alfdef()$alf_slurm_dir, file = "alf_ex
 #'
 #' This provides flexible generality when generating ALFRESCO data prep slurm scripts.
 #' Note that the number of non-null arguments among these decreases the number of available general arguments available at the command line
-#' when the script is executed. For example, if two of four arguments available to \code{Rscript} are hardcoded into the slurm
+#' when the script is executed. For example, if three of five arguments available to \code{Rscript} are hardcoded into the slurm
 #' script by passing them to \code{alf_prep_slurm} explicitly, then the generated script will show only an additional \code{$1 $2}
-#' after the fixed arguments rather than \code{$1 $2 $3 $4}.
+#' after the fixed arguments rather than \code{$1 $2 $3 $4 $5}.
 #'
 #' Note that this function is intended to be run on the Atlas cluster. If you make a bash script like this on Windows,
 #' you may have to run a command line utility like \code{dos2unix} on the file.
@@ -182,7 +182,6 @@ alf_extract_rscript <- function(out_dir = alfdef()$alf_slurm_dir, file = "alf_ex
 #' @param inputs override the default directory where input .rds files containing extracted data are stored.
 #' @param outputs override the default directory where distributions .rds files are output.
 #' @param project character, a (new) project name for extracted data. It need not match any directory names pertaining to the raw ALFRESCO outputs.
-#' @param variable character, ALFRESCO output random variable:\ code{"fsv"}, \code{"veg"} or \code{"age"}.
 #' @param period character, \code{"historical"} or \code{"projected"}.
 #' @param reps numeric vector of ALFRESCO simulation replicates for data extraction, e.g. \code{1:200}.
 #' @param email defaults to the author/maintainer/user.
@@ -198,7 +197,7 @@ alf_extract_rscript <- function(out_dir = alfdef()$alf_slurm_dir, file = "alf_ex
 #'
 alf_prep_slurm <- function( # nolint start
   out_dir = alfdef()$alf_slurm_dir, file = "alf_prep.R",
-  inputs = NULL, outputs = NULL, project = NULL, variable = NULL, period = NULL, reps = NULL,
+  inputs = NULL, outputs = NULL, project = NULL, period = NULL, reps = NULL,
   email = "mfleonawicz@alaska.edu", exclusive = TRUE, copy_rscript = TRUE){
 
   slurm_file <- gsub("\\.R$", ".slurm", file)
@@ -212,14 +211,13 @@ alf_prep_slurm <- function( # nolint start
     "#SBATCH --nodes=1\n\n")
   x <- paste0(
     x,
-    "# Required arguments: project, variable, period, reps.\n",
+    "# Required arguments: project, period, reps.\n",
     "# Optional arguments: in_dir, out_dir.\n",
-    "# Example useage: project=\'JFSP\', variable=\'fsv\', period=\'historical\', reps=1:32.\n",
+    "# Example useage: project=\'JFSP\', period=\'historical\', reps=1:32.\n",
     "# Defaults: in_dir and out_dir use alfresco package defaults from alfdef().\n\n") # nolint end
 
   x <- paste0(x, "Rscript ", file.path(out_dir, file))
-  rscript_args <- list(in_dir = inputs, out_dir = outputs, project = project, variable = variable,
-                       period = period, reps = reps)
+  rscript_args <- list(in_dir = inputs, out_dir = outputs, project = project, period = period, reps = reps)
   rscript_args <- rscript_args[!sapply(rscript_args, is.null)]
   if(length(rscript_args)){
     for(i in seq_along(rscript_args)){
@@ -228,10 +226,10 @@ alf_prep_slurm <- function( # nolint start
       value <- if(is.character(value)) paste0("\\'", value, "\\'") else deparse(value)
       x <- paste0(x, " ", id, "=", value)
     }
-    if(length(rscript_args) < 6)
-      x <- paste0(x, " ", paste(paste0("$", seq(1, 6 - length(rscript_args))), collapse = " "), "\n")
+    if(length(rscript_args) < 5)
+      x <- paste0(x, " ", paste(paste0("$", seq(1, 5 - length(rscript_args))), collapse = " "), "\n")
   } else {
-    x <- paste(x, "$1 $2 $3 $4 $5 $6\n")
+    x <- paste(x, "$1 $2 $3 $4 $5\n")
   }
 
   dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)

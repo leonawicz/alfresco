@@ -216,12 +216,12 @@ alf_prep_slurm(project = "JFSP", reps = 1:32)
 #SBATCH --job-name=alf_prep_alf_prep
 #SBATCH --nodes=1
 
-# Required arguments: project, variable, period, reps.
+# Required arguments: project, period, reps.
 # Optional arguments: in_dir, out_dir.
-# Example useage: project='JFSP', variable='fsv', period='historical', reps=1:32.
+# Example useage: project='JFSP', period='historical', reps=1:32.
 # Defaults: in_dir and out_dir use alfresco package defaults from alfdef().
 
-Rscript /atlas_scratch/mfleonawicz/alfresco/slurm_jobs/alf_prep.R project=\'JFSP\' reps=1:32 $1 $2 $3 $4
+Rscript /atlas_scratch/mfleonawicz/alfresco/slurm_jobs/alf_prep.R project=\'JFSP\' reps=1:32 $1 $2 $3
 ```
 
 #### alf_prep.R
@@ -249,7 +249,7 @@ mclapply(1:n, alf_dist, in_dir = file.path(in_dir, "age"), out_dir = out_dir,
 
 ### Curated output
 
-Then for example, execute on the historical period extractions for each random variable set after exiting R.
+Then for example, execute on the historical period extractions after exiting R.
 Remember that string arguments need to be escaped as shown below.
 
 ```{bash sbatch2, eval = FALSE}
