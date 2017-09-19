@@ -301,7 +301,7 @@ if (rmpi) {
 </ul>
 <p>Each of these random variables has a unique estimated probability distribution associated with each geographic region the data extractions and density estimations were applied to. For areas and counts, these refer to spatially aggregated random variables. Therefore, the distributions of these random variables are across ALFRESCO simulation replicates only. By comparison, when similar distributions are estimated for downscaled climate data, those variables vary in space only and do not have an analog to the set of repeated ALFRESCO simulations. Vegetation age is unique in that the distribution of stand ages is across both simulation replicates and space.</p>
 <p>As with data extraction, generate a slurm and R script pair:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">alf_prep_slurm</span>(<span class="dt">project =</span> <span class="st">"JFSP"</span>, <span class="dt">reps =</span> <span class="dv">1</span>:<span class="dv">32</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/alf_prep_slurm.html">alf_prep_slurm</a></span>(<span class="dt">project =</span> <span class="st">"JFSP"</span>, <span class="dt">reps =</span> <span class="dv">1</span>:<span class="dv">32</span>)</code></pre></div>
 <div id="alf_prep-slurm" class="section level4">
 <h4 class="hasAnchor">
 <a href="#alf_prep-slurm" class="anchor"></a>alf_prep.slurm</h4>
@@ -327,30 +327,30 @@ if (rmpi) {
 <a href="#alf_prep-r" class="anchor"></a>alf_prep.R</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(alfresco)
 <span class="kw">library</span>(parallel)
-
 cargs &lt;-<span class="st"> </span>(<span class="kw">commandArgs</span>(<span class="ot">TRUE</span>))
 if (!<span class="kw">length</span>(cargs)) <span class="kw">q</span>(<span class="st">"no"</span>) else for (z in <span class="dv">1</span>:<span class="kw">length</span>(cargs)) <span class="kw">eval</span>(<span class="kw">parse</span>(<span class="dt">text =</span> cargs[[z]]))
-<span class="kw">prep_alf_stops</span>()
+<span class="kw"><a href="../reference/extract_alf_stops.html">prep_alf_stops</a></span>()
 if (!<span class="kw">exists</span>(<span class="st">"in_dir"</span>)) in_dir &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw"><a href="../reference/alfdef.html">alfdef</a></span>()$alf_extract_dir, project, 
     <span class="st">"extractions"</span>)
-in_dir &lt;-<span class="st"> </span><span class="kw">file.path</span>(in_dir, variable)
 if (!<span class="kw">exists</span>(<span class="st">"out_dir"</span>)) out_dir &lt;-<span class="st"> </span><span class="kw">file.path</span>(snapprep::<span class="kw">snapdef</span>()$dist_dir, <span class="st">"alfresco"</span>, 
     project)
 <span class="kw">dir.create</span>(out_dir, <span class="dt">showWarnings =</span> <span class="ot">FALSE</span>, <span class="dt">recursive =</span> <span class="ot">TRUE</span>)
-regions &lt;-<span class="st"> </span><span class="kw">unique</span>(<span class="kw">sapply</span>(<span class="kw">strsplit</span>(<span class="kw">list.files</span>(<span class="kw">file.path</span>(in_dir)), <span class="st">"__"</span>), <span class="st">"["</span>, 
-    <span class="dv">2</span>))
-n &lt;-<span class="st"> </span><span class="kw">length</span>(regions)
-mc.cores &lt;-<span class="st"> </span><span class="kw">min</span>(n, <span class="dv">32</span>)
-<span class="kw">mclapply</span>(<span class="dv">1</span>:n, alf_dist, <span class="dt">in_dir =</span> in_dir, <span class="dt">out_dir =</span> out_dir, <span class="dt">period =</span> period, 
-    <span class="dt">reps =</span> reps, <span class="dt">mc.cores =</span> mc.cores)</code></pre></div>
+inputs &lt;-<span class="st"> </span><span class="kw"><a href="../reference/alf_dist_inputs.html">alf_dist_inputs</a></span>(project)
+n &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(<span class="kw">paste</span>(inputs$LocGroup, inputs$Location)))
+mc.cores &lt;-<span class="st"> </span><span class="dv">32</span>
+
+<span class="kw">mclapply</span>(<span class="dv">1</span>:n, alf_dist, <span class="dt">in_dir =</span> <span class="kw">file.path</span>(in_dir, <span class="st">"fsv"</span>), <span class="dt">out_dir =</span> out_dir, 
+    <span class="dt">period =</span> period, <span class="dt">reps =</span> reps, <span class="dt">mc.cores =</span> mc.cores)
+<span class="kw">mclapply</span>(<span class="dv">1</span>:n, alf_dist, <span class="dt">in_dir =</span> <span class="kw">file.path</span>(in_dir, <span class="st">"veg"</span>), <span class="dt">out_dir =</span> out_dir, 
+    <span class="dt">period =</span> period, <span class="dt">reps =</span> reps, <span class="dt">mc.cores =</span> mc.cores)
+<span class="kw">mclapply</span>(<span class="dv">1</span>:n, alf_dist, <span class="dt">in_dir =</span> <span class="kw">file.path</span>(in_dir, <span class="st">"age"</span>), <span class="dt">out_dir =</span> out_dir, 
+    <span class="dt">period =</span> period, <span class="dt">reps =</span> reps, <span class="dt">mc.cores =</span> mc.cores)</code></pre></div>
 </div>
 <div id="curated-output" class="section level3">
 <h3 class="hasAnchor">
 <a href="#curated-output" class="anchor"></a>Curated output</h3>
 <p>Then for example, execute on the historical period extractions for each random variable set after exiting R. Remember that string arguments need to be escaped as shown below.</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">sbatch</span> alf_prep.slurm period=<span class="dt">\'</span>historical<span class="dt">\'</span> variable=<span class="dt">\'</span>fsv<span class="dt">\'</span>
-<span class="kw">sbatch</span> alf_prep.slurm period=<span class="dt">\'</span>historical<span class="dt">\'</span> variable=<span class="dt">\'</span>veg<span class="dt">\'</span>
-<span class="kw">sbatch</span> alf_prep.slurm period=<span class="dt">\'</span>historical<span class="dt">\'</span> variable=<span class="dt">\'</span>age<span class="dt">\'</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">sbatch</span> alf_prep.slurm period=<span class="dt">\'</span>historical<span class="dt">\'</span></code></pre></div>
 <p>By default the .rds files containing the probability distributions data frames are saved to:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">snapprep::<span class="kw">snapdef</span>()$dist_dir
 <span class="co">#&gt; [1] "/workspace/UA/mfleonawicz/data"</span></code></pre></div>
