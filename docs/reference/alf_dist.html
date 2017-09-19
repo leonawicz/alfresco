@@ -207,8 +207,7 @@
     <p>Compute and save to disk probability distributions of random variables from extracted ALFRESCO outputs.</p>
     
 
-    <pre class="usage"><span class='fu'>alf_dist</span>(<span class='no'>j</span>, <span class='no'>in_dir</span>, <span class='no'>out_dir</span>, <span class='no'>period</span>, <span class='no'>reps</span>, <span class='kw'>n_samples</span> <span class='kw'>=</span> <span class='fl'>10000</span>,
-  <span class='kw'>density.args</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>adjust</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>from</span> <span class='kw'>=</span> <span class='fl'>0</span>))</pre>
+    <pre class="usage"><span class='fu'>alf_dist</span>(<span class='no'>j</span>, <span class='no'>in_dir</span>, <span class='no'>out_dir</span>, <span class='no'>period</span>, <span class='no'>reps</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -233,22 +232,14 @@
       <th>reps</th>
       <td><p>integer vector, simulation replicates included in data extraction, e.g., <code>1:200</code>.</p></td>
     </tr>
-    <tr>
-      <th>n_samples</th>
-      <td><p>numeric, number of samples when distribution sampling is required.</p></td>
-    </tr>
-    <tr>
-      <th>density.args</th>
-      <td><p>arguments passed to <code>density</code> during estimation. Used by the <code>rvtable</code> package.</p></td>
-    </tr>
     </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This function estimates continuous probability distributions of random variables from extracted ALFRESCO
+    <p>This function estimates discrete probability distributions of random variables from extracted ALFRESCO
 model runs. The random variables available include fire size, burn area and fire frequency by vegetation class, as
 well as cover area and age for a vegetation class.</p>
-<p>This function estimates probability densities for outputs from <a href='run_alf_extraction.html'>run_alf_extraction</a>.</p>
+<p>This function estimates probability distributions for outputs from <a href='run_alf_extraction.html'>run_alf_extraction</a>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>

@@ -315,12 +315,12 @@ if (rmpi) {
 <span class="co">#SBATCH --job-name=alf_prep_alf_prep</span>
 <span class="co">#SBATCH --nodes=1</span>
 
-<span class="co"># Required arguments: project, variable, period, reps.</span>
+<span class="co"># Required arguments: project, period, reps.</span>
 <span class="co"># Optional arguments: in_dir, out_dir.</span>
-<span class="co"># Example useage: project='JFSP', variable='fsv', period='historical', reps=1:32.</span>
+<span class="co"># Example useage: project='JFSP', period='historical', reps=1:32.</span>
 <span class="co"># Defaults: in_dir and out_dir use alfresco package defaults from alfdef().</span>
 
-<span class="kw">Rscript</span> /atlas_scratch/mfleonawicz/alfresco/slurm_jobs/alf_prep.R project=<span class="dt">\'</span>JFSP<span class="dt">\'</span> reps=1:32 <span class="ot">$1</span> <span class="ot">$2</span> <span class="ot">$3</span> <span class="ot">$4</span></code></pre></div>
+<span class="kw">Rscript</span> /atlas_scratch/mfleonawicz/alfresco/slurm_jobs/alf_prep.R project=<span class="dt">\'</span>JFSP<span class="dt">\'</span> reps=1:32 <span class="ot">$1</span> <span class="ot">$2</span> <span class="ot">$3</span></code></pre></div>
 </div>
 <div id="alf_prep-r" class="section level4">
 <h4 class="hasAnchor">
@@ -349,7 +349,7 @@ mc.cores &lt;-<span class="st"> </span><span class="dv">32</span>
 <div id="curated-output" class="section level3">
 <h3 class="hasAnchor">
 <a href="#curated-output" class="anchor"></a>Curated output</h3>
-<p>Then for example, execute on the historical period extractions for each random variable set after exiting R. Remember that string arguments need to be escaped as shown below.</p>
+<p>Then for example, execute on the historical period extractions after exiting R. Remember that string arguments need to be escaped as shown below.</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">sbatch</span> alf_prep.slurm period=<span class="dt">\'</span>historical<span class="dt">\'</span></code></pre></div>
 <p>By default the .rds files containing the probability distributions data frames are saved to:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">snapprep::<span class="kw">snapdef</span>()$dist_dir
