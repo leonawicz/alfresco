@@ -34,6 +34,7 @@ reference:
 - title: General data extraction
   contents:
   - alf_dist
+  - alf_dist_inputs
   - run_alf_extraction
   - extract_alf
   - extract_fsv
