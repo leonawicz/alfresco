@@ -2,19 +2,17 @@
 #'
 #' Compute and save to disk probability distributions of random variables from extracted ALFRESCO outputs.
 #'
-#' This function estimates continuous probability distributions of random variables from extracted ALFRESCO
+#' This function estimates discrete probability distributions of random variables from extracted ALFRESCO
 #' model runs. The random variables available include fire size, burn area and fire frequency by vegetation class, as
 #' well as cover area and age for a vegetation class.
 #'
-#' This function estimates probability densities for outputs from \link{run_alf_extraction}.
+#' This function estimates probability distributions for outputs from \link{run_alf_extraction}.
 #'
 #' @param j integer, iterator, the sequence of unique geographic regions available among the extracted data.
 #' @param in_dir input directory where extracted data are located in .rds files.
 #' @param out_dir output directory where random variables distribution tables are saved as .rds files.
-#' @param n_samples numeric, number of samples when distribution sampling is required.
 #' @param period character, \code{"historical"} or \code{"projected"}.
 #' @param reps integer vector, simulation replicates included in data extraction, e.g., \code{1:200}.
-#' @param density.args arguments passed to \code{density} during estimation. Used by the \code{rvtable} package.
 #'
 #' @export
 #'
@@ -22,8 +20,7 @@
 #' \dontrun{
 #' mclapply(1:n.regions, alf_dist, in_dir, out_dir, mc.cores = n.cores, period = period, reps = reps)
 #' }
-alf_dist <- function(j, in_dir, out_dir, period, reps, n_samples = 10000,
-                     density.args = list(n = 1000, adjust = 0.1, from = 0)){
+alf_dist <- function(j, in_dir, out_dir, period, reps){
   id <- basename(in_dir)
   project <- basename(dirname(dirname(in_dir)))
   inputs <- alf_dist_inputs(project)

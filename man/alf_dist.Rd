@@ -4,8 +4,7 @@
 \alias{alf_dist}
 \title{Compute probability distribution tables}
 \usage{
-alf_dist(j, in_dir, out_dir, period, reps, n_samples = 10000,
-  density.args = list(n = 1000, adjust = 0.1, from = 0))
+alf_dist(j, in_dir, out_dir, period, reps)
 }
 \arguments{
 \item{j}{integer, iterator, the sequence of unique geographic regions available among the extracted data.}
@@ -17,20 +16,16 @@ alf_dist(j, in_dir, out_dir, period, reps, n_samples = 10000,
 \item{period}{character, \code{"historical"} or \code{"projected"}.}
 
 \item{reps}{integer vector, simulation replicates included in data extraction, e.g., \code{1:200}.}
-
-\item{n_samples}{numeric, number of samples when distribution sampling is required.}
-
-\item{density.args}{arguments passed to \code{density} during estimation. Used by the \code{rvtable} package.}
 }
 \description{
 Compute and save to disk probability distributions of random variables from extracted ALFRESCO outputs.
 }
 \details{
-This function estimates continuous probability distributions of random variables from extracted ALFRESCO
+This function estimates discrete probability distributions of random variables from extracted ALFRESCO
 model runs. The random variables available include fire size, burn area and fire frequency by vegetation class, as
 well as cover area and age for a vegetation class.
 
-This function estimates probability densities for outputs from \link{run_alf_extraction}.
+This function estimates probability distributions for outputs from \link{run_alf_extraction}.
 }
 \examples{
 \dontrun{
