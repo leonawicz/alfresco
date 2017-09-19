@@ -96,14 +96,18 @@ alf_dist <- function(j, in_dir, out_dir, period, reps){
   dir.create(dist_dir <- file.path(out_dir, "distributions", uloc[1], uloc[2]),
              recursive = TRUE, showWarnings = FALSE)
   prefix <- if(dat[[1]]$Scenario[1] == "Historical") "historical" else "projected"
+  print(prefix)
   dat <- dplyr::bind_rows(dat)
+  print(dat)
   if(id == "fsv"){
+    print("Preparing to save fsv .rds files...")
     d_alf_fs <- dplyr::filter(dat, .data[["Var"]] == "Fire Size") %>%
       rvtable::rvtable(discrete = TRUE)
     d_alf_ba <- dplyr::filter(dat, .data[["Var"]] == "Burn Area") %>%
       rvtable::rvtable(discrete = TRUE)
     d_alf_fc <- dplyr::filter(dat, .data[["Var"]] == "Fire Count") %>%
       rvtable::rvtable(discrete = TRUE)
+    print("Prepared and ready for saving...")
     out_ids <- c("fc", "ba", "fs")
     out <- paste0(prefix, "_", out_ids, ".rds")
     cat(paste("Location:", j, ". Saving file:", out[1], "\n"))
