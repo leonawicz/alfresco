@@ -91,7 +91,7 @@ alf_dist <- function(j, in_dir, out_dir, period, reps){
         rvtable::rvtable(d, discrete = TRUE)
     }
     dat[[i]] <- d
-    print(i)
+    print(paste("Location:", j, ". RV set:", id, ". File:", i))
   }
   dir.create(dist_dir <- file.path(out_dir, "distributions", uloc[1], uloc[2]),
              recursive = TRUE, showWarnings = FALSE)
