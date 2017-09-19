@@ -91,28 +91,33 @@ alf_dist <- function(j, in_dir, out_dir, period, reps){
         rvtable::rvtable(d, discrete = TRUE)
     }
     dat[[i]] <- d
-    print(paste("Location:", j, ". RV set:", id, ". File:", i))
+    cat(paste("Location:", j, ". RV set:", id, ". File:", i, "\n"))
   }
   dir.create(dist_dir <- file.path(out_dir, "distributions", uloc[1], uloc[2]),
              recursive = TRUE, showWarnings = FALSE)
   prefix <- if(dat[[1]]$Scenario[1] == "Historical") "historical" else "projected"
+  dat <- dplyr::bind_rows(dat)
   if(id == "fsv"){
-    dat <- dplyr::bind_rows(dat)
     d_alf_fs <- dplyr::filter(dat, .data[["Var"]] == "Fire Size") %>%
       rvtable::rvtable(discrete = TRUE)
     d_alf_ba <- dplyr::filter(dat, .data[["Var"]] == "Burn Area") %>%
       rvtable::rvtable(discrete = TRUE)
     d_alf_fc <- dplyr::filter(dat, .data[["Var"]] == "Fire Count") %>%
       rvtable::rvtable(discrete = TRUE)
-    saveRDS(d_alf_fs, file = file.path(dist_dir, paste0(prefix, "_fs.rds")))
-    saveRDS(d_alf_ba, file = file.path(dist_dir, paste0(prefix, "_ba.rds")))
-    saveRDS(d_alf_fc, file = file.path(dist_dir, paste0(prefix, "_fc.rds")))
+    out_ids <- c("fc", "ba", "fs")
+    out <- paste0(prefix, "_", out_ids, ".rds")
+    cat(paste("Location:", j, ". Saving file:", out[1], "\n"))
+    saveRDS(d_alf_fc, file = file.path(dist_dir, out[1]))
+    cat(paste("Location:", j, ". Saving file:", out[2], "\n"))
+    saveRDS(d_alf_ba, file = file.path(dist_dir, out[2]))
+    cat(paste("Location:", j, ". Saving file:", out[2], "\n"))
+    saveRDS(d_alf_fs, file = file.path(dist_dir, out[3]))
   } else {
-    dat <- dplyr::bind_rows(dat)
     if(id == "veg") dat <- rvtable::rvtable(dat, discrete = TRUE)
     if(id == "age") dat <- rvtable::rvtable(dat, Val = "Age", Prob = "Freq", discrete = TRUE)
-    file_dat <- paste0(prefix, "_", id, ".rds")
-    saveRDS(dat, file = file.path(dist_dir, file_dat))
+    file <- paste0(prefix, "_", id, ".rds")
+    cat(paste("Location:", j, ". Saving file:", file, "\n"))
+    saveRDS(dat, file = file.path(dist_dir, file))
   }
   invisible()
 }
