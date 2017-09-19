@@ -110,6 +110,7 @@ alf_dist <- function(j, in_dir, out_dir, period, reps){
     print("Prepared and ready for saving...")
     out_ids <- c("fc", "ba", "fs")
     out <- paste0(prefix, "_", out_ids, ".rds")
+    print(file.path(dist_dir, out[1]))
     cat(paste("Location:", j, ". Saving file:", out[1], "\n"))
     saveRDS(d_alf_fc, file = file.path(dist_dir, out[1]))
     cat(paste("Location:", j, ". Saving file:", out[2], "\n"))
