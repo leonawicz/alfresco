@@ -98,16 +98,18 @@ alf_dist <- function(j, in_dir, out_dir, period, reps){
   prefix <- if(dat[[1]]$Scenario[1] == "Historical") "historical" else "projected"
   dat <- dplyr::bind_rows(dat)
   if(id == "fsv"){
-    print("Preparing to save fsv .rds files...")
     d_alf_fs <- dplyr::filter(dat, .data[["Var"]] == "Fire Size") %>%
       rvtable::rvtable(discrete = TRUE)
     print("DONE 1")
-    d_alf_ba <- dplyr::filter(dat, .data[["Var"]] == "Burn Area") %>%
-      rvtable::rvtable(discrete = TRUE)
+    d_alf_ba <- dplyr::filter(dat, .data[["Var"]] == "Burn Area")
+    print(d_alf_ba)
     print("DONE 2")
+    d_alf_ba <- rvtable::rvtable(d_alf_ba, discrete = TRUE)
+    print(d_alf_ba)
+    print("DONE 3")
     d_alf_fc <- dplyr::filter(dat, .data[["Var"]] == "Fire Count") %>%
       rvtable::rvtable(discrete = TRUE)
-    print("DONE 3")
+    print("DONE 4")
     print("Prepared and ready for saving...")
     out_ids <- c("fc", "ba", "fs")
     out <- paste0(prefix, "_", out_ids, ".rds")
