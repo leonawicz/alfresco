@@ -1,15 +1,18 @@
 library(alfresco)
 library(parallel)
-
 cargs <- (commandArgs(TRUE))
 if(!length(cargs)) q("no") else for(z in 1:length(cargs)) eval(parse(text = cargs[[z]]))
 prep_alf_stops()
 if(!exists("in_dir")) in_dir <- file.path(alfdef()$alf_extract_dir, project, "extractions")
-in_dir <- file.path(in_dir, variable)
 if(!exists("out_dir")) out_dir <- file.path(snapprep::snapdef()$dist_dir, "alfresco", project)
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
-regions <- unique(sapply(strsplit(list.files(file.path(in_dir)), "__"), "[", 2))
-n <- length(regions)
-mc.cores <- min(n, 32)
-mclapply(1:n, alf_dist, in_dir = in_dir, out_dir = out_dir,
+inputs <- alf_dist_inputs(project)
+n <- length(unique(paste(inputs$LocGroup, inputs$Location)))
+mc.cores <- 32
+
+mclapply(1:n, alf_dist, in_dir = file.path(in_dir, "fsv"), out_dir = out_dir,
+         period = period, reps = reps, mc.cores = mc.cores)
+mclapply(1:n, alf_dist, in_dir = file.path(in_dir, "veg"), out_dir = out_dir,
+         period = period, reps = reps, mc.cores = mc.cores)
+mclapply(1:n, alf_dist, in_dir = file.path(in_dir, "age"), out_dir = out_dir,
          period = period, reps = reps, mc.cores = mc.cores)
