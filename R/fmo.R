@@ -100,3 +100,35 @@ save_fmo_panel <- function(out_dir = ".", width = 1200, height = 800){
   grDevices::dev.off()
   invisible()
 }
+
+#' FMO cumulative burn reduction table
+#'
+#' Generate a data frame of reductions in cumulative burn based on fire management options treatment levels.
+#'
+#' @param data a data frame resulting from \link{fsdf}.
+#'
+#' @return a data frame.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' x <- fsdf("historical_fsv.rds")
+#' fmo_cb_reduction(x)
+#' }
+fmo_cb_reduction <- function(data){
+  data <- dplyr::group_by(data, .data[["FMO"]], .data[["Replicate"]]) %>%
+    dplyr::summarise(BA = sum(.data[["FS"]]))
+  sq <- (dplyr::filter(data, .data[["FMO"]] == "fmo00s00i") %>%
+           dplyr::summarise(BA = mean(.data[["BA"]])))$BA
+  dplyr::summarise(data,
+                   Min = min(.data[["BA"]]),
+                   Mean = round(mean(.data[["BA"]])),
+                   Max = max(.data[["BA"]])) %>%
+    dplyr::mutate(
+      PctSQLB = round(100 * (.data[["Min"]] / sq - 1), 1),
+      PctSQMean = round(100 * (.data[["Mean"]] / sq - 1), 1),
+      PctSQUB = round(100 * (.data[["Max"]] / sq - 1), 1),
+      PctFsSupp = as.numeric(substr(.data[["FMO"]], 4, 5)),
+      PctIgSupp = as.numeric(substr(.data[["FMO"]], 7, 8))
+    ) %>% dplyr::select(c(8:9, 5:7, 2:4))
+}
