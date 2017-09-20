@@ -1,5 +1,5 @@
 ---
-title: "JFSP fire managment treatments"
+title: "JFSP fire management treatments"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -15,12 +15,12 @@ knitr::opts_chunk$set(
 library(alfresco)
 ```
 
-This short vignette provides a contextualized example of usage of fire size and FMO fucntions from the `alfresco` package,
-specifcally `fsdf` and `fmo_cb_reduction`. See the help documentation for these and other associated functions for details.
+This short vignette provides a contextualized example of usage of fire size and FMO functions from the `alfresco` package,
+specifically `fsdf` and `fmo_cb_reduction`. See the help documentation for these and other associated functions for details.
 
-Cumulative burn reduction results are compared for different fire managment scenarios applied to multiple historical JFSP ALFRESCO model runs.
+Cumulative burn reduction results are compared for different fire management scenarios applied to multiple historical JFSP ALFRESCO model runs.
 Results are based on a two-factor experimental design. Each factor has a control and three treatment levels covering
-zero, 25, 50 and 75 percent maximum suppression applied to ALFRESCO fire sensitivity and ignition factor input maps, repsectively.
+zero, 25, 50 and 75 percent maximum suppression applied to ALFRESCO fire sensitivity and ignition factor input maps, respectively.
 The status quo fire management scenario involves both controls: no suppression applied to either input map.
 
 ## Setup
@@ -52,12 +52,28 @@ dex <- select(d, 7:10) %>% filter(FMO %in% c("fmo00s00i", "fmo50s75i")) %>%
 ## Results
 
 Table 1. shows results from all treatments. Below, figure 1. shows a comparison of one selected treatment with the control.
+In table 1., The `% Sensitivity` and `% ignition` show the treatment factors. These refer to the maximum percentage suppression
+applied to the ALFRESCO fire sensitivity and ignition factor input maps. For example, 25% sensitivity means that regions of the 
+fire sensitivity map experienced no greater than 25% reduction in sensitivity for the model run.
+
+The following mean, lower and upper percent change columns describe the mean and associated lower and upper bounds for the percent change
+from the status quo control run for a given fire management treatment level. 
+These correspond to the last three columns of cumulative burn area means and minimum and maximum bounds across
+32 ALFRESCO simulations. The period for comparison of treatments is 1950 - 2013.
 
 ```{r results, fig.width = 10, fig.height = 7, fig.align = "center", fig.cap = "Figure 1. 1950 - 2013 cumulative burn vs. fire size.", echo = FALSE}
 library(kableExtra)
-knitr::kable(d2, digits = 1, 
-             caption = "Table 1. 1950 - 2013 cumulative burn reduction by FMO treatments.", 
-             format.args = list(big.mark = ",")) %>% kable_styling(position = "center")
+names(d2) <- c("% Sensitivity", "% Ignition",	
+               "Lower % Change", "Mean % Change", "Upper % Change", 
+               "Min Area", "Mean Area", "Max Area")
+knitr::kable(d2, "html", digits = 1, 
+             caption = "Table 1. 1950 - 2013 cumulative burn reduction by FMO treatment.", 
+             format.args = list(big.mark = ",")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), font_size = 12) %>% 
+  group_rows("No sensitivity suppression", 1, 4) %>%
+  group_rows("Max 25% sensitivity suppression", 5, 8) %>%
+  group_rows("Max 50% sensitivity suppression", 9, 12) %>%
+  group_rows("Max 75% sensitivity suppression", 13, 16)
 dex2 <- group_by(dex, FMO, Replicate) %>% summarise(CAB = max(CAB)) %>%
   summarise(CAB = mean(CAB))
 ggplot(dex, aes(FS, CAB, colour = FMO)) + geom_point(alpha = 0.75) + 

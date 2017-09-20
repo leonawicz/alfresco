@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ALFRESCO post-processing of fire events — prep_fire_events â€¢ alfresco</title>
+<title>Cumulative burn over time data frame — cbdf â€¢ alfresco</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -203,75 +203,45 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>ALFRESCO post-processing of fire events</h1>
+    <h1>Cumulative burn over time data frame</h1>
     </div>
 
     
-    <p>These functions are used for post-processing of ALFRESCO fire events from map outputs.</p>
+    <p>Generate a data frame of cumulative burn over time for the union of all vegetation classes in a region.</p>
     
 
-    <pre class="usage"><span class='fu'>prep_fire_events</span>(<span class='no'>k</span>, <span class='no'>pts</span>, <span class='no'>locs</span>, <span class='no'>replicates</span>, <span class='kw'>source</span> <span class='kw'>=</span> <span class='st'>"Modeled"</span>,
-  <span class='kw'>buffer_list</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>NULL</span>), <span class='kw'>buffer_labels</span> <span class='kw'>=</span> <span class='no'>LETTERS</span>[<span class='fl'>1</span>:<span class='fu'>length</span>(<span class='no'>buffer_list</span>)],
-  <span class='kw'>veg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>main_dir</span>)
-
-<span class='fu'>prep_fire_events_emp</span>(<span class='no'>b</span>, <span class='no'>pts</span>, <span class='no'>locs</span>, <span class='kw'>replicates</span> <span class='kw'>=</span> <span class='st'>"Observed"</span>,
-  <span class='kw'>source</span> <span class='kw'>=</span> <span class='st'>"Observed"</span>, <span class='kw'>buffer_list</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>NULL</span>),
-  <span class='kw'>buffer_labels</span> <span class='kw'>=</span> <span class='no'>LETTERS</span>[<span class='fl'>1</span>:<span class='fu'>length</span>(<span class='no'>buffer_list</span>)], <span class='kw'>veg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>yrs</span>)</pre>
+    <pre class="usage"><span class='fu'>cbdf</span>(<span class='no'>x</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>k</th>
-      <td><p>integer, an iterator.</p></td>
-    </tr>
-    <tr>
-      <th>pts</th>
-      <td><p>table of point locations.</p></td>
-    </tr>
-    <tr>
-      <th>locs</th>
-      <td><p>location names</p></td>
-    </tr>
-    <tr>
-      <th>replicates</th>
-      <td><p>character, simulation replicate labels.</p></td>
-    </tr>
-    <tr>
-      <th>source</th>
-      <td><p>character, <code>"Observed"</code> or <code>"Modeled"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>buffer_list</th>
-      <td><p>list of point location buffers in meters.</p></td>
-    </tr>
-    <tr>
-      <th>buffer_labels</th>
-      <td><p>labels for buffers in list.</p></td>
-    </tr>
-    <tr>
-      <th>veg</th>
-      <td><p>vegetation raster layer.</p></td>
-    </tr>
-    <tr>
-      <th>main_dir</th>
-      <td><p>directory path.</p></td>
-    </tr>
-    <tr>
-      <th>b</th>
-      <td><p>a raster brick.</p></td>
-    </tr>
-    <tr>
-      <th>yrs</th>
-      <td><p>vector of years.</p></td>
+      <th>x</th>
+      <td><p>character or data frame. The file name of the or the data frame object from that file. See details.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a list.</p>
+    <p>a data frame.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function takes an exact-type fire size by vegetation class .rds file or the data frame it contains if already loaded into the R session.
+The source file is one created by <a href='fsv.html'>fsv</a>.
+Vegetation-specific fire sizes are aggregated by unique fire IDs per simulation replicate, year and,
+if present, fire management options treatment levels. It then adds a column for cumulative burn area
+alongside ascending years.</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <p>fsv fsdf</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'>cbdf</span>(<span class='st'>"historical_fsv.rds"</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -279,7 +249,13 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+
+      <li><a href="#details">Details</a></li>
+
+      <li><a href="#see-also">See also</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
