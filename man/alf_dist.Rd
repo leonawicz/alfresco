@@ -15,7 +15,7 @@ alf_dist(j, in_dir, out_dir, period, reps)
 
 \item{period}{character, \code{"historical"} or \code{"projected"}.}
 
-\item{reps}{integer vector, simulation replicates included in data extraction, e.g., \code{1:200}.}
+\item{reps}{integer vector, simulation replicates included in data extraction, e.g., \code{1:200}. Uses all replicates if not provided.}
 }
 \description{
 Compute and save to disk probability distributions of random variables from extracted ALFRESCO outputs.
@@ -29,6 +29,6 @@ This function estimates probability distributions for outputs from \link{run_alf
 }
 \examples{
 \dontrun{
-mclapply(1:n.regions, alf_dist, in_dir, out_dir, mc.cores = n.cores, period = period, reps = reps)
+mclapply(1:n, alf_dist, in_dir, out_dir, period = period, mc.cores = mc.cores)
 }
 }

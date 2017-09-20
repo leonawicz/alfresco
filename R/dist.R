@@ -12,13 +12,13 @@
 #' @param in_dir input directory where extracted data are located in .rds files.
 #' @param out_dir output directory where random variables distribution tables are saved as .rds files.
 #' @param period character, \code{"historical"} or \code{"projected"}.
-#' @param reps integer vector, simulation replicates included in data extraction, e.g., \code{1:200}.
+#' @param reps integer vector, simulation replicates included in data extraction, e.g., \code{1:200}. Uses all replicates if not provided.
 #'
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' mclapply(1:n.regions, alf_dist, in_dir, out_dir, mc.cores = n.cores, period = period, reps = reps)
+#' mclapply(1:n, alf_dist, in_dir, out_dir, period = period, mc.cores = mc.cores)
 #' }
 alf_dist <- function(j, in_dir, out_dir, period, reps){
   id <- basename(in_dir)
@@ -30,7 +30,7 @@ alf_dist <- function(j, in_dir, out_dir, period, reps){
   uloc <- strsplit(uloc, "__")[[1]]
   inputs <- dplyr::filter(inputs, .data[["LocGroup"]] == uloc[1] & .data[["Location"]] == uloc[2])
   pat <- paste0("^", id, ".*.", uloc[1], "__",
-                gsub("\\(", "\\\\(", gsub("\\)", "\\\\)", uloc[2])), "__.*.")
+                gsub("\\(", "\\\\(", gsub("\\)", "\\\\)", uloc[2])), "__.*.") # nolint
   pat <- if(period == "historical") paste0(pat, "historical.*.rds$") else paste0(pat, "rcp.*.rds$")
   files <- list.files(in_dir, full.names = TRUE, pattern = pat)
   dat <- vector("list", length(files))
@@ -39,7 +39,7 @@ alf_dist <- function(j, in_dir, out_dir, period, reps){
       dplyr::mutate(Vegetation = as.character(.data[["Vegetation"]]))
     if(fmo) d <- dplyr::mutate(d, FMO = factor(.data[["FMO"]], levels = all_fmo))
     if(id != "age"){
-      reps.all <- if(is.null(reps)) sort(unique(d$Replicate)) else reps
+      reps.all <- if(missing(reps)) sort(unique(d$Replicate)) else reps
     }
     if(id == "fsv"){
       fire_vars <- c("Fire Count", "Burn Area", "Fire Size")
