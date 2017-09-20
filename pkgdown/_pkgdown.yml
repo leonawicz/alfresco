@@ -19,7 +19,7 @@ reference:
 - title: Default options
   contents:
   - alfdef
-- title: Fire events processing
+- title: Stock fire events processing
   contents:
   - pp_fire_events
   - pp_df_prep
@@ -33,8 +33,6 @@ reference:
   - frp_maps_no_buffer
 - title: General data extraction
   contents:
-  - alf_dist
-  - alf_dist_inputs
   - run_alf_extraction
   - extract_alf
   - extract_fsv
@@ -48,7 +46,12 @@ reference:
   - alf_prep_slurm
   - alf_prep_rscript
   - extract_alf_stops
+- title: Extracted data curation
+  contents:
+  - alf_dist
+  - alf_dist_inputs
   - prep_alf_stops
+  - fsv
 - title: Fire management options
   contents:
   - ba_ratios
