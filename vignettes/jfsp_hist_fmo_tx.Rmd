@@ -1,0 +1,71 @@
+---
+title: "JFSP fire managment treatments"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{JFSP fire management treatments}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", message = FALSE, warning = FALSE, error = FALSE, tidy = TRUE
+)
+library(alfresco)
+```
+
+This short vignette provides a contextualized example of usage of fire size and FMO fucntions from the `alfresco` package,
+specifcally `fsdf` and `fmo_cb_reduction`. See the help documentation for these and other associated functions for details.
+
+Cumulative burn reduction results are compared for different fire managment scenarios applied to multiple historical JFSP ALFRESCO model runs.
+Results are based on a two-factor experimental design. Each factor has a control and three treatment levels covering
+zero, 25, 50 and 75 percent maximum suppression applied to ALFRESCO fire sensitivity and ignition factor input maps, repsectively.
+The status quo fire management scenario involves both controls: no suppression applied to either input map.
+
+## Setup
+
+Load the required packages.
+
+```{r packages}
+library(alfresco)
+library(dplyr)
+library(ggplot2)
+```
+
+Then prepare the data from the `historical_fsv.rds` file. After using `fsdf` and `fmo_cb_reduction`, make some additional
+changes in a new data frame for better plotting.
+
+```{r data, cache = TRUE}
+file <- "C:/github/Flammability/data/fmo/MFC buffers/exact_fsv/historical_fsv.rds"
+d <- fsdf(file)
+d2 <- fmo_cb_reduction(d)
+
+lev <- c("Control", "Tx: 50s/75i")
+dex <- select(d, 7:10) %>% filter(FMO %in% c("fmo00s00i", "fmo50s75i")) %>%
+  mutate(
+    FMO = factor(ifelse(FMO == "fmo00s00i", lev[1], lev[2]), levels = lev),
+    FS = FS / 1000,
+    CAB = CAB / 1000)
+```
+
+## Results
+
+Table 1. shows results from all treatments. Below, figure 1. shows a comparison of one selected treatment with the control.
+
+```{r results, fig.width = 10, fig.height = 7, fig.align = "center", fig.cap = "Figure 1. 1950 - 2013 cumulative burn vs. fire size.", echo = FALSE}
+library(kableExtra)
+knitr::kable(d2, digits = 1, 
+             caption = "Table 1. 1950 - 2013 cumulative burn reduction by FMO treatments.", 
+             format.args = list(big.mark = ",")) %>% kable_styling(position = "center")
+dex2 <- group_by(dex, FMO, Replicate) %>% summarise(CAB = max(CAB)) %>%
+  summarise(CAB = mean(CAB))
+ggplot(dex, aes(FS, CAB, colour = FMO)) + geom_point(alpha = 0.75) + 
+  geom_hline(data = dex2, aes(yintercept = CAB, colour = FMO)) +
+  labs(title = "FMO treatment vs. control", 
+       subtitle = "50% sensitivity and 75% ignition suppression", 
+       x = expression("Fire size"~(thousand~km^2)~""), 
+       y = expression("Burn area"~(thousand~km^2)~"")) + theme_gray(base_size = 12) +
+  theme(legend.position = "bottom") + 
+  scale_x_continuous(breaks = seq(0, 25, by = 5))
+```
