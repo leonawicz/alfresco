@@ -36,7 +36,7 @@ fsv <- function(in_dir, out_dir, group, region, period){
   pat <- if(period == "historical") paste0(pat, "historical.*.rds$") else paste0(pat, "rcp.*.rds$")
   files <- list.files(in_dir, full.names = TRUE, pattern = pat)
   d <- purrr::map(files, ~readRDS(.x) %>% dplyr::ungroup()) %>% dplyr::bind_rows()
-  if(fmo) d <- dplyr::mutate(FMO = factor(.data[["FMO"]], levels = all_fmo))
+  if(fmo) d <- dplyr::mutate(d, FMO = factor(.data[["FMO"]], levels = all_fmo))
   dir.create(out_dir <- file.path(out_dir, "fsv", uloc[1], uloc[2]),
              recursive = TRUE, showWarnings = FALSE)
   prefix <- if(d$Scenario[1] == "Historical") "historical" else "projected"
