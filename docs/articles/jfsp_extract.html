@@ -336,14 +336,17 @@ if (!<span class="kw">exists</span>(<span class="st">"out_dir"</span>)) out_dir 
     project)
 <span class="kw">dir.create</span>(out_dir, <span class="dt">showWarnings =</span> <span class="ot">FALSE</span>, <span class="dt">recursive =</span> <span class="ot">TRUE</span>)
 inputs &lt;-<span class="st"> </span><span class="kw"><a href="../reference/alf_dist_inputs.html">alf_dist_inputs</a></span>(project)
-n &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(<span class="kw">paste</span>(inputs$LocGroup, inputs$Location)))
+n &lt;-<span class="st"> </span>purrr::<span class="kw">map_int</span>(<span class="kw">c</span>(<span class="st">"fsv"</span>, <span class="st">"veg"</span>, <span class="st">"age"</span>), ~{
+    x &lt;-<span class="st"> </span>dplyr::<span class="kw">filter</span>(inputs, Var ==<span class="st"> </span>.x)
+    <span class="kw">length</span>(<span class="kw">unique</span>(<span class="kw">paste</span>(x$LocGroup, x$Location)))
+})
 mc.cores &lt;-<span class="st"> </span><span class="dv">32</span>
 
-<span class="kw">mclapply</span>(<span class="dv">1</span>:n, alf_dist, <span class="dt">in_dir =</span> <span class="kw">file.path</span>(in_dir, <span class="st">"fsv"</span>), <span class="dt">out_dir =</span> out_dir, 
+<span class="kw">mclapply</span>(<span class="dv">1</span>:n[<span class="dv">1</span>], alf_dist, <span class="dt">in_dir =</span> <span class="kw">file.path</span>(in_dir, <span class="st">"fsv"</span>), <span class="dt">out_dir =</span> out_dir, 
     <span class="dt">period =</span> period, <span class="dt">reps =</span> reps, <span class="dt">mc.cores =</span> mc.cores)
-<span class="kw">mclapply</span>(<span class="dv">1</span>:n, alf_dist, <span class="dt">in_dir =</span> <span class="kw">file.path</span>(in_dir, <span class="st">"veg"</span>), <span class="dt">out_dir =</span> out_dir, 
+<span class="kw">mclapply</span>(<span class="dv">1</span>:n[<span class="dv">2</span>], alf_dist, <span class="dt">in_dir =</span> <span class="kw">file.path</span>(in_dir, <span class="st">"veg"</span>), <span class="dt">out_dir =</span> out_dir, 
     <span class="dt">period =</span> period, <span class="dt">reps =</span> reps, <span class="dt">mc.cores =</span> mc.cores)
-<span class="kw">mclapply</span>(<span class="dv">1</span>:n, alf_dist, <span class="dt">in_dir =</span> <span class="kw">file.path</span>(in_dir, <span class="st">"age"</span>), <span class="dt">out_dir =</span> out_dir, 
+<span class="kw">mclapply</span>(<span class="dv">1</span>:n[<span class="dv">3</span>], alf_dist, <span class="dt">in_dir =</span> <span class="kw">file.path</span>(in_dir, <span class="st">"age"</span>), <span class="dt">out_dir =</span> out_dir, 
     <span class="dt">period =</span> period, <span class="dt">reps =</span> reps, <span class="dt">mc.cores =</span> mc.cores)</code></pre></div>
 </div>
 <div id="curated-output" class="section level3">
