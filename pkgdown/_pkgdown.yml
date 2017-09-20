@@ -52,11 +52,14 @@ reference:
   - alf_dist_inputs
   - prep_alf_stops
   - fsv
+  - fsdf
+  - cbdf
 - title: Fire management options
   contents:
   - ba_ratios
   - save_fmo_ratios
   - save_fmo_panel
+  - fmo_cb_reduction
 - title: File system data organization
   contents:
   - outputs_as_inputs
