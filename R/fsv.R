@@ -43,3 +43,89 @@ fsv <- function(in_dir, out_dir, group, region, period){
   saveRDS(d, file = file.path(out_dir, paste0(prefix, "_fsv.rds")))
   invisible()
 }
+
+#' Fire size and cumulative burn data frame
+#'
+#' Generate a data frame of exact fire sizes and cumulative burn for the union of all vegetation classes in a region.
+#'
+#' This function takes an exact-type fire size by vegetation class .rds file or the data frame it contains if already loaded into the R session.
+#' The source file is one created by \link{fsv}.
+#' Vegetation-specific fire sizes are aggregated by unique fire IDs per simulation replicate, year and,
+#' if present, fire management options treatment levels. It also adds a column for cumulative burn area
+#' alongside ascending fire sizes.
+#'
+#' @param x character or data frame. The file name of the or the data frame object from that file. See details.
+#'
+#' @return a data frame.
+#' @export
+#' @seealso fsv cbdf
+#'
+#' @examples
+#' \dontrun{fsdf("historical_fsv.rds")}
+fsdf <- function(x){
+  x <- .avdf(x) %>% dplyr::select(-.data[["Year"]])
+  fmo <- "FMO" %in% names(x)
+  if(fmo){
+    x <- dplyr::arrange(x, .data[["Phase"]], .data[["Scenario"]], .data[["Model"]],
+                        .data[["LocGroup"]], .data[["Location"]], .data[["Var"]],
+                        .data[["FMO"]], .data[["Replicate"]], .data[["FS"]])
+  } else {
+    x <- dplyr::arrange(x, .data[["Phase"]], .data[["Scenario"]], .data[["Model"]],
+                        .data[["LocGroup"]], .data[["Location"]], .data[["Var"]],
+                        .data[["Replicate"]], .data[["FS"]])
+  }
+  x <- dplyr::group_by(x, .data[["Phase"]], .data[["Scenario"]], .data[["Model"]],
+                       .data[["LocGroup"]], .data[["Location"]], .data[["Var"]],
+                       .data[["Replicate"]])
+  if(fmo) x <- dplyr::group_by(x, .data[["FMO"]], add = TRUE)
+  dplyr::mutate(x, CAB = cumsum(.data[["FS"]])) %>% dplyr::ungroup()
+}
+
+#' Cumulative burn over time data frame
+#'
+#' Generate a data frame of cumulative burn over time for the union of all vegetation classes in a region.
+#'
+#' This function takes an exact-type fire size by vegetation class .rds file or the data frame it contains if already loaded into the R session.
+#' The source file is one created by \link{fsv}.
+#' Vegetation-specific fire sizes are aggregated by unique fire IDs per simulation replicate, year and,
+#' if present, fire management options treatment levels. It then adds a column for cumulative burn area
+#' alongside ascending years.
+#'
+#' @param x character or data frame. The file name of the or the data frame object from that file. See details.
+#'
+#' @return a data frame.
+#' @export
+#' @seealso fsv fsdf
+#'
+#' @examples
+#' \dontrun{cbdf("historical_fsv.rds")}
+cbdf <- function(x){
+  x <- .avdf(x, by_year = TRUE)
+  fmo <- "FMO" %in% names(x)
+  if(fmo){
+    x <- dplyr::arrange(x, .data[["Phase"]], .data[["Scenario"]], .data[["Model"]],
+                        .data[["LocGroup"]], .data[["Location"]], .data[["Var"]],
+                        .data[["FMO"]], .data[["Replicate"]], .data[["Year"]], .data[["FS"]])
+  } else {
+    x <- dplyr::arrange(x, .data[["Phase"]], .data[["Scenario"]], .data[["Model"]],
+                        .data[["LocGroup"]], .data[["Location"]], .data[["Var"]],
+                        .data[["Replicate"]], .data[["Year"]], .data[["FS"]])
+  }
+  x <- dplyr::group_by(x, .data[["Phase"]], .data[["Scenario"]], .data[["Model"]],
+                       .data[["LocGroup"]], .data[["Location"]], .data[["Var"]],
+                       .data[["Replicate"]], .data[["Year"]])
+  if(fmo) x <- dplyr::group_by(x, .data[["FMO"]], add = TRUE)
+  dplyr::mutate(x, CAB = cumsum(.data[["FS"]])) %>% dplyr::ungroup()
+}
+
+.avdf <- function(x, by_year = FALSE){
+  x <- if(inherits(x, "character")) readRDS(x) else x
+  fmo <- "FMO" %in% names(x)
+  x <- dplyr::group_by(x, .data[["Phase"]], .data[["Scenario"]], .data[["Model"]],
+                       .data[["LocGroup"]], .data[["Location"]], .data[["Var"]],
+                       .data[["Replicate"]], .data[["Year"]])
+  if(!by_year) x <- dplyr::group_by(x, .data[["FID"]], add = TRUE)
+  if(fmo) x <- dplyr::group_by(x, .data[["FMO"]], add = TRUE)
+  dplyr::summarise(x, FS = sum(.data[["Val"]])) %>% dplyr::ungroup() %>%
+    dplyr::select(-.data[["FID"]])
+}
