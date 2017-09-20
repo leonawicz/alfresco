@@ -23,14 +23,12 @@
 alf_dist <- function(j, in_dir, out_dir, period, reps){
   id <- basename(in_dir)
   project <- basename(dirname(dirname(in_dir)))
-  inputs <- alf_dist_inputs(project)
+  inputs <- alf_dist_inputs(project) %>% dplyr::filter(.data[["Var"]] == id)
   fmo <- "FMO" %in% names(inputs)
   if(fmo) all_fmo <- unique(inputs$FMO)
   uloc <- unique(paste(inputs$LocGroup, inputs$Location, sep = "__"))[j]
   uloc <- strsplit(uloc, "__")[[1]]
-  inputs <- dplyr::filter(
-    inputs,
-    .data[["Var"]] == id & .data[["LocGroup"]] == uloc[1] & .data[["Location"]] == uloc[2])
+  inputs <- dplyr::filter(inputs, .data[["LocGroup"]] == uloc[1] & .data[["Location"]] == uloc[2])
   pat <- paste0("^", id, ".*.", uloc[1], "__", uloc[2], "__.*.")
   pat <- if(period == "historical") paste0(pat, "historical.*.rds$") else paste0(pat, "rcp.*.rds$")
   files <- list.files(in_dir, full.names = TRUE, pattern = pat)
@@ -97,7 +95,7 @@ alf_dist <- function(j, in_dir, out_dir, period, reps){
     if(id == "age"){
       skip_veg <- c("Wetland Tundra", "Barren lichen-moss", "Temperate Rainforest")
       d <- dplyr::filter(d, !(.data[["Vegetation"]] %in% skip_veg)) %>%
-        rvtable::rvtable(discrete = TRUE)
+        rvtable::rvtable(Val = "Age", Prob = "Freq", discrete = TRUE)
     }
     if(id == "veg"){
       d <- dplyr::select(d, -.data[["Replicate"]]) %>%
@@ -108,8 +106,8 @@ alf_dist <- function(j, in_dir, out_dir, period, reps){
   }
   dir.create(dist_dir <- file.path(out_dir, "distributions", uloc[1], uloc[2]),
              recursive = TRUE, showWarnings = FALSE)
-  prefix <- if(dat[[1]]$Scenario[1] == "Historical") "historical" else "projected"
   dat <- dplyr::bind_rows(dat)
+  prefix <- if(dat$Scenario[1] == "Historical") "historical" else "projected"
   if(id == "fsv"){
     d_alf_fs <- dplyr::filter(dat, .data[["Var"]] == "Fire Size") %>%
       rvtable::rvtable(discrete = TRUE)
