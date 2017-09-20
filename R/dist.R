@@ -31,7 +31,7 @@ alf_dist <- function(j, in_dir, out_dir, period, reps){
   inputs <- dplyr::filter(
     inputs,
     .data[["Var"]] == id & .data[["LocGroup"]] == uloc[1] & .data[["Location"]] == uloc[2])
-  pat <- paste0("^", id, ".*.", uloc[1], ".*.", uloc[2], ".*.")
+  pat <- paste0("^", id, ".*.", uloc[1], "__", uloc[2], "__.*.")
   pat <- if(period == "historical") paste0(pat, "historical.*.rds$") else paste0(pat, "rcp.*.rds$")
   files <- list.files(in_dir, full.names = TRUE, pattern = pat)
   dat <- vector("list", length(files))
