@@ -4,10 +4,12 @@
 \alias{fmo_cb_reduction}
 \title{FMO cumulative burn reduction table}
 \usage{
-fmo_cb_reduction(data)
+fmo_cb_reduction(data, pretty_names = TRUE)
 }
 \arguments{
 \item{data}{a data frame resulting from \link{fsdf}.}
+
+\item{pretty_names}{logical, use more meaningful column names, better for printing. For programming, original names may be more convenient.}
 }
 \value{
 a data frame.
