@@ -37,7 +37,7 @@ Then prepare the data from the `historical_fsv.rds` file. After using `fsdf` and
 changes in a new data frame for better plotting.
 
 ```{r data, cache = TRUE}
-file <- "C:/github/Flammability/data/fmo/MFC buffers/exact_fsv/historical_fsv.rds"
+file <- "C:/github/jfsp/data-raw/historical_fsv.rds"
 d <- fsdf(file)
 d2 <- fmo_cb_reduction(d)
 
@@ -46,7 +46,7 @@ dex <- select(d, 7:10) %>% filter(FMO %in% c("fmo00s00i", "fmo50s75i")) %>%
   mutate(
     FMO = factor(ifelse(FMO == "fmo00s00i", lev[1], lev[2]), levels = lev),
     FS = FS / 1000,
-    CAB = CAB / 1000)
+    CBA = CBA / 1000)
 ```
 
 ## Results
@@ -63,9 +63,6 @@ These correspond to the last three columns of cumulative burn area means and min
 
 ```{r results, fig.width = 10, fig.height = 7, fig.align = "center", fig.cap = "Figure 1. 1950 - 2013 cumulative burn vs. fire size.", echo = FALSE}
 library(kableExtra)
-names(d2) <- c("% Sensitivity", "% Ignition",	
-               "Lower % Change", "Mean % Change", "Upper % Change", 
-               "Min Area", "Mean Area", "Max Area")
 knitr::kable(d2, "html", digits = 1, 
              caption = "Table 1. 1950 - 2013 cumulative burn reduction by FMO treatment.", 
              format.args = list(big.mark = ",")) %>%
@@ -74,10 +71,10 @@ knitr::kable(d2, "html", digits = 1,
   group_rows("Max 25% sensitivity suppression", 5, 8) %>%
   group_rows("Max 50% sensitivity suppression", 9, 12) %>%
   group_rows("Max 75% sensitivity suppression", 13, 16)
-dex2 <- group_by(dex, FMO, Replicate) %>% summarise(CAB = max(CAB)) %>%
-  summarise(CAB = mean(CAB))
-ggplot(dex, aes(FS, CAB, colour = FMO)) + geom_point(alpha = 0.75) + 
-  geom_hline(data = dex2, aes(yintercept = CAB, colour = FMO)) +
+dex2 <- group_by(dex, FMO, Replicate) %>% summarise(CBA = max(CBA)) %>%
+  summarise(CBA = mean(CBA))
+ggplot(dex, aes(FS, CBA, colour = FMO)) + geom_point(alpha = 0.75) + 
+  geom_hline(data = dex2, aes(yintercept = CBA, colour = FMO)) +
   labs(title = "FMO treatment vs. control", 
        subtitle = "50% sensitivity and 75% ignition suppression", 
        x = expression("Fire size"~(thousand~km^2)~""), 
