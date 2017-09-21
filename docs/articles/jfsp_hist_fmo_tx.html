@@ -180,7 +180,7 @@
     <div class="page-header toc-ignore">
       <h1>JFSP fire management treatments</h1>
             
-            <h4 class="date">2017-09-20</h4>
+            <h4 class="date">2017-09-21</h4>
           </div>
 
     
@@ -196,14 +196,14 @@
 <span class="kw">library</span>(dplyr)
 <span class="kw">library</span>(ggplot2)</code></pre></div>
 <p>Then prepare the data from the <code>historical_fsv.rds</code> file. After using <code>fsdf</code> and <code>fmo_cb_reduction</code>, make some additional changes in a new data frame for better plotting.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">file &lt;-<span class="st"> "C:/github/Flammability/data/fmo/MFC buffers/exact_fsv/historical_fsv.rds"</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">file &lt;-<span class="st"> "C:/github/jfsp/data-raw/historical_fsv.rds"</span>
 d &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fsdf.html">fsdf</a></span>(file)
 d2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fmo_cb_reduction.html">fmo_cb_reduction</a></span>(d)
 
 lev &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"Control"</span>, <span class="st">"Tx: 50s/75i"</span>)
 dex &lt;-<span class="st"> </span><span class="kw">select</span>(d, <span class="dv">7</span>:<span class="dv">10</span>) %&gt;%<span class="st"> </span><span class="kw">filter</span>(FMO %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">"fmo00s00i"</span>, <span class="st">"fmo50s75i"</span>)) %&gt;%<span class="st"> </span>
 <span class="st">    </span><span class="kw">mutate</span>(<span class="dt">FMO =</span> <span class="kw">factor</span>(<span class="kw">ifelse</span>(FMO ==<span class="st"> "fmo00s00i"</span>, lev[<span class="dv">1</span>], lev[<span class="dv">2</span>]), <span class="dt">levels =</span> lev), 
-        <span class="dt">FS =</span> FS/<span class="dv">1000</span>, <span class="dt">CAB =</span> CAB/<span class="dv">1000</span>)</code></pre></div>
+        <span class="dt">FS =</span> FS/<span class="dv">1000</span>, <span class="dt">CBA =</span> CBA/<span class="dv">1000</span>)</code></pre></div>
 </div>
 <div id="results" class="section level2">
 <h2 class="hasAnchor">

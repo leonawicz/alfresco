@@ -207,10 +207,10 @@
     </div>
 
     
-    <p>Generate a data frame of cumulative burn over time for the union of all vegetation classes in a region.</p>
+    <p>Generate a data frame of cumulative burn over time for each vegetation class in a region or their spatial union.</p>
     
 
-    <pre class="usage"><span class='fu'>cbdf</span>(<span class='no'>x</span>)</pre>
+    <pre class="usage"><span class='fu'>cbdf</span>(<span class='no'>x</span>, <span class='kw'>by_veg</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -218,6 +218,10 @@
     <tr>
       <th>x</th>
       <td><p>character or data frame. The file name of the or the data frame object from that file. See details.</p></td>
+    </tr>
+    <tr>
+      <th>by_veg</th>
+      <td><p>logical, if <code>TRUE</code>, do not aggregate vegetation classes for full regional totals.</p></td>
     </tr>
     </table>
     
@@ -229,8 +233,8 @@
 
     <p>This function takes an exact-type fire size by vegetation class .rds file or the data frame it contains if already loaded into the R session.
 The source file is one created by <a href='fsv.html'>fsv</a>.
-Vegetation-specific fire sizes are aggregated by unique fire IDs per simulation replicate, year and,
-if present, fire management options treatment levels. It then adds a column for cumulative burn area
+Vegetation-specific fire sizes are aggregated by unique fire IDs by default (<code>by_veg = FALSE</code>) per simulation replicate, year and,
+if present, fire management options treatment levels. In either case the function adds a column for cumulative burn area
 alongside ascending years.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
