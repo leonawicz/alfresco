@@ -124,9 +124,11 @@ fmo_cb_reduction <- function(data, pretty_names = TRUE){
   sq <- dplyr::filter(data, .data[["FMO"]] == "fmo00s00i") %>%
            dplyr::summarise(BA = mean(.data[["BA"]]))
   pct_form <- function(x, id, y){
-    v <- unique(x[["Vegetation"]])
+    veg <- "Vegetation" %in% names(x)
+    if(veg) v <- unique(x[["Vegetation"]])
     x <- x[[id]]
-    y <- dplyr::filter(y, .data[["Vegetation"]] == v)$BA
+    if(veg) y <- dplyr::filter(y, .data[["Vegetation"]] == v)$BA
+    if(!veg) y <- y$BA
     round(100 * (x / y - 1), 1)
   }
   data <- dplyr::summarise(data,
