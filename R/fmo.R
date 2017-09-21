@@ -106,6 +106,7 @@ save_fmo_panel <- function(out_dir = ".", width = 1200, height = 800){
 #' Generate a data frame of reductions in cumulative burn based on fire management options treatment levels.
 #'
 #' @param data a data frame resulting from \link{fsdf}.
+#' @param pretty_names logical, use more meaningful column names, better for printing. For programming, original names may be more convenient.
 #'
 #' @return a data frame.
 #' @export
@@ -115,20 +116,37 @@ save_fmo_panel <- function(out_dir = ".", width = 1200, height = 800){
 #' x <- fsdf("historical_fsv.rds")
 #' fmo_cb_reduction(x)
 #' }
-fmo_cb_reduction <- function(data){
-  data <- dplyr::group_by(data, .data[["FMO"]], .data[["Replicate"]]) %>%
-    dplyr::summarise(BA = sum(.data[["FS"]]))
-  sq <- (dplyr::filter(data, .data[["FMO"]] == "fmo00s00i") %>%
-           dplyr::summarise(BA = mean(.data[["BA"]])))$BA
-  dplyr::summarise(data,
-                   Min = min(.data[["BA"]]),
-                   Mean = round(mean(.data[["BA"]])),
-                   Max = max(.data[["BA"]])) %>%
+fmo_cb_reduction <- function(data, pretty_names = TRUE){
+  veg <- "Vegetation" %in% names(data)
+  if(veg) data <- dplyr::group_by(data, .data[["Vegetation"]])
+  data <- dplyr::group_by(data, .data[["FMO"]], .data[["Replicate"]], add = TRUE)
+  data <- dplyr::summarise(data, BA = sum(.data[["FS"]]))
+  sq <- dplyr::filter(data, .data[["FMO"]] == "fmo00s00i") %>%
+           dplyr::summarise(BA = mean(.data[["BA"]]))
+  pct_form <- function(x, id, y){
+    v <- unique(x[["Vegetation"]])
+    x <- x[[id]]
+    y <- dplyr::filter(y, .data[["Vegetation"]] == v)$BA
+    round(100 * (x / y - 1), 1)
+  }
+  data <- dplyr::summarise(data,
+                           Min = min(.data[["BA"]]),
+                           Mean = round(mean(.data[["BA"]])),
+                           Max = max(.data[["BA"]])) %>%
     dplyr::mutate(
-      PctSQLB = round(100 * (.data[["Min"]] / sq - 1), 1),
-      PctSQMean = round(100 * (.data[["Mean"]] / sq - 1), 1),
-      PctSQUB = round(100 * (.data[["Max"]] / sq - 1), 1),
+      PctSQLB = pct_form(.data, "Min", sq),
+      PctSQMean = pct_form(.data, "Mean", sq),
+      PctSQUB = pct_form(.data, "Max", sq),
       PctFsSupp = as.numeric(substr(.data[["FMO"]], 4, 5)),
       PctIgSupp = as.numeric(substr(.data[["FMO"]], 7, 8))
-    ) %>% dplyr::select(c(8:9, 5:7, 2:4))
+    ) %>% dplyr::ungroup()
+  idx <- if(veg) c(1, c(8:9, 5:7, 2:4) + 1) else c(8:9, 5:7, 2:4)
+  data <- dplyr::select(data, idx)
+  if(pretty_names){
+    pnames <- c("% Sensitivity", "% Ignition",
+                paste(c("Lower", "Mean", "Upper"), "% Change"),
+                paste(c("Min", "Mean", "Max"), "Area"))
+    names(data)[which(names(data) != "Vegetation")] <- pnames
+  }
+  data
 }
