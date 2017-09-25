@@ -18,7 +18,6 @@
 #' @param suffix appended to output directory, defaults to \code{"runs"}.
 #' @param mc.cores number of processors, defaults to 32.
 #'
-#' @return file copy side effect.
 #' @export
 #'
 #' @examples
@@ -38,6 +37,7 @@ outputs_as_inputs <- function(domain, run_name, year, owner = alfdef()$atlas_run
   r <- raster::raster(template_raster)
   parallel::mclapply(seq_along(files), .write_outputs_as_inputs, files = files,
                      template = r, out_dir = out_dir, mc.cores = mc.cores)
+  invisible()
 }
 
 .write_outputs_as_inputs <- function(i, files, template, out_dir){
@@ -47,5 +47,5 @@ outputs_as_inputs <- function(domain, run_name, year, owner = alfdef()$atlas_run
     raster::writeRaster(r, file.path(out_dir, basename(files[i])), datatype = "INT4S", overwrite = TRUE)
   if(substr(basename(files[i]), 1, 3) != "Age")
     raster::writeRaster(r, file.path(out_dir, basename(files[i])), datatype = "INT1U", overwrite = TRUE)
-  return()
+  invisible()
 }

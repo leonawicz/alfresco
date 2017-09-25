@@ -25,9 +25,6 @@ outputs_as_inputs(domain, run_name, year,
 
 \item{mc.cores}{number of processors, defaults to 32.}
 }
-\value{
-file copy side effect.
-}
 \description{
 Copy ALFRESCO output maps to new location for use as inputs to subsequent model runs.
 }
