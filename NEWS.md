@@ -1,8 +1,9 @@
-# alfresco 0.2.0 (Release date: 2017-09-19)
+# alfresco 0.2.0 (Release date: 2017-09-29)
 
 * Added function for generating ALFRESCO outputs data extraction SLURM scripts leveraging Rmpi on SNAP's Atlas cluster.
 * Added function for generating slurm and R scripts for performing distribution estimation on extractions.
 * Added functions for extraction and curation (discrete distribution estimation using `rvtable` package).
+* Refactored `fmo_cb_reduction` to handle projected data by RCP and GCM.
 
 # alfresco 0.1.1 (Release date: 2017-09-13)
 
