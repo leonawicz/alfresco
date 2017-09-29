@@ -118,18 +118,26 @@ save_fmo_panel <- function(out_dir = ".", width = 1200, height = 800){
 #' }
 fmo_cb_reduction <- function(data, pretty_names = TRUE){
   veg <- "Vegetation" %in% names(data)
+  rcp <- "Scenario" %in% names(data)
+  mod <- "Model" %in% names(data)
   if(veg) data <- dplyr::group_by(data, .data[["Vegetation"]])
-  data <- dplyr::group_by(data, .data[["FMO"]], .data[["Replicate"]], add = TRUE)
+  data <- dplyr::group_by(data, .data[["Scenario"]], .data[["Model"]],
+                          .data[["FMO"]], .data[["Replicate"]], add = TRUE)
   data <- dplyr::summarise(data, BA = sum(.data[["FS"]]))
   sq <- dplyr::filter(data, .data[["FMO"]] == "fmo00s00i") %>%
            dplyr::summarise(BA = mean(.data[["BA"]]))
   pct_form <- function(x, id, y){
     veg <- "Vegetation" %in% names(x)
+    rcp <- "Scenario" %in% names(x)
+    mod <- "Model" %in% names(x)
     if(veg) v <- unique(x[["Vegetation"]])
+    if(rcp) s <- unique(x[["Scenario"]])
+    if(mod) m <- unique(x[["Model"]])
     x <- x[[id]]
-    if(veg) y <- dplyr::filter(y, .data[["Vegetation"]] == v)$BA
-    if(!veg) y <- y$BA
-    round(100 * (x / y - 1), 1)
+    if(veg) y <- dplyr::filter(y, .data[["Vegetation"]] == v)
+    if(rcp) y <- dplyr::filter(y, .data[["Scenario"]] == s)
+    if(mod) y <- dplyr::filter(y, .data[["Model"]] == m)
+    round(100 * (x / y$BA - 1), 1)
   }
   data <- dplyr::summarise(data,
                            Min = min(.data[["BA"]]),
@@ -142,13 +150,16 @@ fmo_cb_reduction <- function(data, pretty_names = TRUE){
       PctFsSupp = as.numeric(substr(.data[["FMO"]], 4, 5)),
       PctIgSupp = as.numeric(substr(.data[["FMO"]], 7, 8))
     ) %>% dplyr::ungroup()
-  idx <- if(veg) c(1, c(8:9, 5:7, 2:4) + 1) else c(8:9, 5:7, 2:4)
+  idx <- c(8:9, 5:7, 2:4)
+  if(veg) idx <- c(1, idx + 1)
+  if(rcp) idx <- c(1, idx + 1)
+  if(mod) idx <- c(1, idx + 1)
   data <- dplyr::select(data, idx)
   if(pretty_names){
     pnames <- c("% Sensitivity", "% Ignition",
                 paste(c("Lower", "Mean", "Upper"), "% Change"),
                 paste(c("Min", "Mean", "Max"), "Area"))
-    names(data)[which(names(data) != "Vegetation")] <- pnames
+    names(data)[which(!names(data) %in% c("Vegetation", "Scenario", "Model"))] <- pnames
   }
   data
 }
