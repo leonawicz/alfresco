@@ -38,7 +38,7 @@ fire_weights <- function(file, xy, buffer = 20000, weight = "linear",
   names(x) <- c("burn", "distance")
   weight_fun <- function(x){
     x <- (max(x) - x) / max(x)
-    if(type = "quadratic") x <- x^2
+    if(type == "quadratic") x <- x^2
     x
   }
   x <- dplyr::mutate(x, burn = as.logical(.data[["burn"]])) %>%
