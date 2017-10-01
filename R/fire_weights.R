@@ -27,13 +27,13 @@
 fire_weights <- function(file, xy, buffer = 20000, weight = "linear",
                          lonlat_to_akalbers = TRUE){
   r <- raster::readAll(raster::raster(file, band = 2))
-  xy <- wgs2ak(coords)
-  cell <- raster::cellFromXY(r, fbks)
+  xy <- wgs2ak(xy)
+  cell <- raster::cellFromXY(r, xy)
   rd <- r
   rd[] <- NA
   rd[cell] <- 1
   rd <- raster::distance(rd)
-  x <- raster::extract(raster::stack(r, rd), fbks, buffer = buffer)[[1]] %>%
+  x <- raster::extract(raster::stack(r, rd), xy, buffer = buffer)[[1]] %>%
     dplyr::as_data_frame()
   names(x) <- c("burn", "distance")
   weight_fun <- function(x){
