@@ -36,7 +36,7 @@ fire_weights <- function(file, xy, buffer = 20000, weight = "linear",
   x <- raster::extract(raster::stack(r, rd), xy, buffer = buffer)[[1]] %>%
     dplyr::as_data_frame()
   names(x) <- c("burn", "distance")
-  weight_fun <- function(x){
+  weight_fun <- function(x, type){
     x <- (max(x) - x) / max(x)
     if(type == "quadratic") x <- x^2
     x
