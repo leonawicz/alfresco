@@ -11,6 +11,7 @@ addons:
 
 r_github_packages:
  - leonawicz/snapmeta
+ - leonawicz/snaplocs
  - leonawicz/snapprep
  - leonawicz/snapgrid
  - leonawicz/rvtable

@@ -22,6 +22,7 @@ environment:
 
 build_script:
   - travis-tool.sh install_github leonawicz/snapmeta
+  - travis-tool.sh install_github leonawicz/snaplocs
   - travis-tool.sh install_github leonawicz/snapprep
   - travis-tool.sh install_github leonawicz/snapgrid
   - travis-tool.sh install_github leonawicz/rvtable

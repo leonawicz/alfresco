@@ -36,9 +36,11 @@ Imports:
     grDevices,
     snapprep,
     snapgrid,
-    rvtable
+    rvtable,
+    snaplocs
 Remotes:
     leonawicz/snapmeta,
+    leonawicz/snaplocs,
     leonawicz/snapprep,
     leonawicz/snapgrid,
     leonawicz/rvtable
