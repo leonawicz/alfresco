@@ -91,7 +91,7 @@ p <- purrr::map(1:n, ~point_probs(r = sample_files$scar[.x], xy, id, veg = sampl
 
 After exploring the point probabilities based on inverse distance weighting, perform a guided exploratory model selection using other covariates to model the linkage with fire probability.
 
-```{r fire_prob_results, eval = FALSE}
+```{r fire_prob_gbm, eval = FALSE}
 library(gbm)
 gbm1 <- gbm(prob ~ ., data = select(p, c(3, 4, 6:8, 12, 14:16)))
 ```
