@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • alfresco</title>
+<title>Fire probability weights for point locations � fire_weights • alfresco</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -49,7 +49,7 @@
   </head>
 
   <body>
-    <div class="container template-vignette-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
@@ -203,22 +203,90 @@
       
       </header>
 
-      <div class="page-header">
-  <h1>Articles <small>version&nbsp;0.2.1</small></h1>
-</div>
-
-<div class="row">
-  <div class="col-md-9">
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <ul>
-        <li><a href="alfresco.html">Introduction to alfresco R package</a></li>
-        <li><a href="jfsp_extract.html">JFSP data extraction</a></li>
-        <li><a href="jfsp_hist_fmo_tx.html">JFSP fire management treatments</a></li>
-      </ul>
+      <div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header">
+    <h1>Fire probability weights for point locations</h1>
     </div>
+
+    
+    <p>Compute fire probability weights for point locations.</p>
+    
+
+    <pre class="usage"><span class='fu'>fire_weights</span>(<span class='no'>r</span>, <span class='no'>xy</span>, <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>20000</span>, <span class='kw'>weight</span> <span class='kw'>=</span> <span class='st'>"linear"</span>,
+  <span class='kw'>lonlat_to_akalbers</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>veg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>age</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>r</th>
+      <td><p>raster layer or path to file, an ALFRESCO fire scar output geotiff.</p></td>
+    </tr>
+    <tr>
+      <th>xy</th>
+      <td><p>a single location, in a 2-column data frame or matrix of longitude and latitude.</p></td>
+    </tr>
+    <tr>
+      <th>buffer</th>
+      <td><p>radius of buffer around <code>xy</code>.</p></td>
+    </tr>
+    <tr>
+      <th>weight</th>
+      <td><p>inverse distance weighting, <code>"linear"</code> or <code>"quadratic"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>lonlat_to_akalbers</th>
+      <td><p>if <code>xy</code> is unprojected (lon/lat), reproject to NAD83 Alaska Albers equal area conic projection.</p></td>
+    </tr>
+    <tr>
+      <th>veg</th>
+      <td><p>same as<code>r</code> but for accompanying vegetation class ALFRESCO output.</p></td>
+    </tr>
+    <tr>
+      <th>age</th>
+      <td><p>same as<code>r</code> but for accompanying vegetation age ALFRESCO output. See details.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>a data frame containing a logical column indicating burn or no burn,
+a column of distances from point location, and a column of weights.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function applies an inverse distance weighting to grid cells within a radial buffer of a center grid cell.
+The function is used for extracting values within a buffer around a given point from ALFRESCO fire scar output geotiffs.
+Points outside the boundary defined by <code>buffer</code> are excluded and have zero
+influence on estimated probability of fire at the center point.
+Fire scars that intersect the radial buffer zone contribute more to the estimated likelihood of fire
+for the point location the closer the fire is to the point.</p>
+<p>It is recommended to not use <code>age</code> because ALFRESCO has a longstanding bug involving geogrpahic areas of uninitialized ages,
+resulting in extreme negative age values that ruin analyses unless the user first implements their own fix to any age geotiffs before using them.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='no'>scar</span> <span class='kw'>&lt;-</span> <span class='st'>"FireScar_0_2004.tif"</span>
+<span class='no'>veg</span> <span class='kw'>&lt;-</span> <span class='st'>"Veg_0_2004.tif"</span>
+<span class='no'>age</span> <span class='kw'>&lt;-</span> <span class='st'>"Age_0_2004.tif"</span>
+<span class='no'>coords</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>lon</span> <span class='kw'>=</span> -<span class='fl'>147.7164</span>, <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fl'>64.8378</span>)
+<span class='fu'>fire_weights</span>(<span class='kw'>r</span> <span class='kw'>=</span> <span class='no'>scar</span>, <span class='kw'>xy</span> <span class='kw'>=</span> <span class='no'>coords</span>, <span class='kw'>veg</span> <span class='kw'>=</span> <span class='no'>veg</span>, <span class='kw'>age</span> <span class='kw'>=</span> <span class='no'>age</span>)
+<span class='co'># }</span></pre>
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
   </div>
 </div>
 

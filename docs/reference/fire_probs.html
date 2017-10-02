@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • alfresco</title>
+<title>Fire point probabilities � fire_probs • alfresco</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -49,7 +49,7 @@
   </head>
 
   <body>
-    <div class="container template-vignette-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
@@ -203,22 +203,73 @@
       
       </header>
 
-      <div class="page-header">
-  <h1>Articles <small>version&nbsp;0.2.1</small></h1>
-</div>
-
-<div class="row">
-  <div class="col-md-9">
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <ul>
-        <li><a href="alfresco.html">Introduction to alfresco R package</a></li>
-        <li><a href="jfsp_extract.html">JFSP data extraction</a></li>
-        <li><a href="jfsp_hist_fmo_tx.html">JFSP fire management treatments</a></li>
-      </ul>
+      <div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header">
+    <h1>Fire point probabilities</h1>
     </div>
+
+    
+    <p>Estimate fire point probability from fire weights for point locations.</p>
+    
+
+    <pre class="usage"><span class='fu'>fire_probs</span>(<span class='no'>data</span>, <span class='no'>veg_labels</span>, <span class='kw'>covariates</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>data</th>
+      <td><p>a data frame output by <code>fire_weights</code>.</p></td>
+    </tr>
+    <tr>
+      <th>veg_labels</th>
+      <td><p>character, vector of vegetation labels. If missing, they are assumed from <code><a href='get_veg_labels.html'>get_veg_labels("ak1km")</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>covariates</th>
+      <td><p>logical, if <code>TRUE</code> (default), then a wide data frame is returned that includes additional spatially aggregated covariates. See details.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>a data frame.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function estimates point probability of fire for spatial point locations from fire weights output by <a href='fire_weights.html'>fire_weights</a>.
+It generates a summary data frame that includes a column <code>prop</code> of a simple proportion of area burned and a column <code>prob</code>
+of estimated fire point probabilities based on the weights in <code>data</code>.
+    <code>covariates = TRUE</code> returns additional variables only if at least the <code>veg</code> column is present in <code>data</code>. If not, there will be
+nothing additonal to return.</p>
+<p>This function returns a one-column data frame. It is called on a single point location just like <code>fire_weights</code>.
+It is generally used in a context where it is invoked multiple times applied to several point locations.
+See <a href='point_probs.html'>point_probs</a> for the generic wrapper used to estimate fire point probability for multiple locations that returns a multi-row data frame.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='no'>scar</span> <span class='kw'>&lt;-</span> <span class='st'>"FireScar_0_2004.tif"</span>
+<span class='no'>veg</span> <span class='kw'>&lt;-</span> <span class='st'>"Veg_0_2004.tif"</span>
+<span class='no'>age</span> <span class='kw'>&lt;-</span> <span class='st'>"Age_0_2004.tif"</span>
+<span class='no'>coords</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>lon</span> <span class='kw'>=</span> -<span class='fl'>147.7164</span>, <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fl'>64.8378</span>)
+<span class='fu'><a href='fire_weights.html'>fire_weights</a></span>(<span class='kw'>r</span> <span class='kw'>=</span> <span class='no'>scar</span>, <span class='kw'>xy</span> <span class='kw'>=</span> <span class='no'>coords</span>, <span class='kw'>veg</span> <span class='kw'>=</span> <span class='no'>veg</span>, <span class='kw'>age</span> <span class='kw'>=</span> <span class='no'>age</span>)
+<span class='fu'>fire_probs</span>(<span class='no'>x</span>)
+<span class='co'># }</span></pre>
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
   </div>
 </div>
 
