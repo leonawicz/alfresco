@@ -3,6 +3,7 @@
 * Added `fire_weights` function for fire probability point estimates based on inverse distance weighting.
 * Added `fire_probs` function for fire probability point estimates using `fire_weights` output.
 * Added `point_probs` for parallelized application of `fire_weights` and `fire_probs` to multiple point locations.
+* Added initial vignette for point probability estimation.
 
 # alfresco 0.2.0 (Release date: 2017-09-29)
 
