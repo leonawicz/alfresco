@@ -3,6 +3,7 @@ urls:
   article: https://leonawicz.github.io//articles
 articles:
   alfresco: alfresco.html
+  fire_prob: fire_prob.html
   jfsp_extract: jfsp_extract.html
   jfsp_hist_fmo_tx: jfsp_hist_fmo_tx.html
 
