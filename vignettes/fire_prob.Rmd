@@ -87,3 +87,10 @@ id <- places$loc
 p <- purrr::map(1:n, ~point_probs(r = sample_files$scar[.x], xy, id, veg = sample_files$veg[.x])) %>% 
   bind_rows()
 ```
+
+## Statistical model
+
+```{r fire_prob_results, eval = FALSE}
+library(gbm)
+gbm1 <- gbm(prob ~ ., data = select(p, c(3, 4, 6:8, 12, 14:16)))
+```
