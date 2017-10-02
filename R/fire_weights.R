@@ -112,7 +112,7 @@ fire_probs <- function(data, veg_labels, covariates = TRUE){
 }
 
 .prep_agg <- function(data, veg_labels, veg, age){
-  vegid = seq_along(veg_labels) - 1
+  vegid <- seq_along(veg_labels) - 1
   v <- as.numeric(NA)
   if(veg & age){
     y <- tibble::data_frame(veg = vegid, distance = v, age = v, area = v)
