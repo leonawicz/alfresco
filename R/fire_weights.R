@@ -103,7 +103,9 @@ fire_probs <- function(data, veg_labels, covariates = TRUE){
   if(missing(veg_labels)) veg_labels <- get_veg_labels("ak1km")
   veg <- if("veg" %in% names(data) & covariates) TRUE else FALSE
   age <- if("age" %in% names(data)) TRUE else FALSE
-  if(veg) x <- .prep_agg(data, veg_labels, veg, age) %>% .agg_wide(veg_labels)
+  if(veg){
+    x <- .prep_agg(data, veg_labels, veg, age) %>% .agg_wide(veg_labels)
+  }
   data <- dplyr::summarise(data,
                            prop = mean(.data[["burn"]]),
                            prob = mean(.data[["burn"]] * .data[["weight"]]))
@@ -111,7 +113,7 @@ fire_probs <- function(data, veg_labels, covariates = TRUE){
   data
 }
 
-.prep_agg <- function(data, veg_labels, veg, age){
+.prep_agg <- function(data, veg_labels, veg = TRUE, age = FALSE){
   vegid <- seq_along(veg_labels) - 1
   v <- as.numeric(NA)
   if(veg & age){
@@ -138,19 +140,32 @@ fire_probs <- function(data, veg_labels, covariates = TRUE){
 }
 
 .agg_wide <- function(x, veg_labels){
-  distance <- tidyr::spread(dplyr::select(x, -.data[["age"]], -.data[["area"]]),
-                            .data[["vegid"]], .data[["distance"]]) %>%
-    dplyr::select(-1)
-  names(distance) <- paste(veg_labels, "distance")
-  area <- tidyr::spread(dplyr::select(x, -.data[["distance"]], -.data[["age"]]),
-                        .data[["vegid"]], .data[["area"]]) %>%
-    dplyr::select(-1)
-  names(area) <- paste(veg_labels, "area")
-  age <- tidyr::spread(dplyr::select(x, -.data[["distance"]], -.data[["area"]]),
-                       .data[["vegid"]], .data[["age"]]) %>%
-    dplyr::select(-1)
-  names(age) <- paste(veg_labels, "age")
-  dplyr::bind_cols(distance, area, age)
+  if("age" %in% names(x)){
+    distance <- tidyr::spread(dplyr::select(x, -.data[["age"]], -.data[["area"]]),
+                              .data[["vegid"]], .data[["distance"]]) %>%
+      dplyr::select(-1)
+    names(distance) <- paste(veg_labels, "distance")
+    area <- tidyr::spread(dplyr::select(x, -.data[["distance"]], -.data[["age"]]),
+                          .data[["vegid"]], .data[["area"]]) %>%
+      dplyr::select(-1)
+    names(area) <- paste(veg_labels, "area")
+    age <- tidyr::spread(dplyr::select(x, -.data[["distance"]], -.data[["area"]]),
+                         .data[["vegid"]], .data[["age"]]) %>%
+      dplyr::select(-1)
+    names(age) <- paste(veg_labels, "age")
+    x <- dplyr::bind_cols(distance, area, age)
+  } else {
+    distance <- tidyr::spread(dplyr::select(x, -.data[["area"]]),
+                              .data[["vegid"]], .data[["distance"]]) %>%
+      dplyr::select(-1)
+    names(distance) <- paste(veg_labels, "distance")
+    area <- tidyr::spread(dplyr::select(x, -.data[["distance"]]),
+                          .data[["vegid"]], .data[["area"]]) %>%
+      dplyr::select(-1)
+    names(area) <- paste(veg_labels, "area")
+    x <- dplyr::bind_cols(distance, area)
+  }
+  x
 }
 
 #' Fire probabilities for point locations
