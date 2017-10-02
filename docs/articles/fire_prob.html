@@ -206,11 +206,53 @@
 <div id="jfsp-outputs" class="section level3">
 <h3 class="hasAnchor">
 <a href="#jfsp-outputs" class="anchor"></a>JFSP outputs</h3>
-<p>Using the JFSP project simulation outputs and Alaskan communities from the <code>snaplocs</code> package, select a few points of interest and estimate fire probabilities. The code below uses a random sample (<code>n = 100</code>) among all climate models, emissions scenarios, projected years 2014 - 2099, simulation replicates, and fire management treatment levels. This yields 5,000 observations.</p>
+<p>Using the JFSP project simulation outputs, take a random sample of 30 points and estimate fire probabilities. The code below uses a random sample (<code>n = 100</code>) among all climate models, emissions scenarios, projected years 2014 - 2099, simulation replicates, and fire management treatment levels. This yields 5,000 observations.</p>
 <div id="sample-communities" class="section level4">
 <h4 class="hasAnchor">
 <a href="#sample-communities" class="anchor"></a>Sample communities</h4>
-<p>First sample 50 community point locations.</p>
+<p>First sample 50 point locations from within the JFSP flammability domain using the <code>snapgrid</code> package.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(snapgrid)
+<span class="kw">library</span>(raster)
+<span class="kw">set.seed</span>(<span class="dv">976</span>)
+places &lt;-<span class="st"> </span><span class="kw">sample</span>((<span class="dv">1</span>:<span class="kw">ncell</span>(swflam))[!<span class="kw">is.na</span>(swflam[])], <span class="dv">30</span>)</code></pre></div>
+</div>
+<div id="sample-fire-scar-data" class="section level4">
+<h4 class="hasAnchor">
+<a href="#sample-fire-scar-data" class="anchor"></a>Sample fire scar data</h4>
+<p>Next sample 100 simulated fire scar perimeters maps from JFSP ALFRESCO projected outputs.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(alfresco)
+base_path &lt;-<span class="st"> "/big_scratch/shiny/Runs_Statewide/mfleonawicz@alaska.edu"</span>
+paths &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">list.files</span>(base_path, <span class="dt">pattern =</span> <span class="st">"^fmo.*.rcp"</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>), 
+    <span class="st">"Maps"</span>)
+n &lt;-<span class="st"> </span><span class="dv">100</span>
+years &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">2014</span>:<span class="dv">2099</span>, n, <span class="dt">replace =</span> <span class="ot">TRUE</span>)
+reps &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">0</span>:<span class="dv">31</span>, n, <span class="dt">replace =</span> <span class="ot">TRUE</span>)
+runs &lt;-<span class="st"> </span><span class="kw">sample</span>(paths, n, <span class="dt">replace =</span> <span class="ot">TRUE</span>)  <span class="co"># random run (rcp, model, fmo)</span>
+sample_files &lt;-<span class="st"> </span>purrr::<span class="kw">map</span>(<span class="kw">c</span>(<span class="dt">scar =</span> <span class="st">"/FireScar"</span>, <span class="dt">veg =</span> <span class="st">"/Veg"</span>), ~<span class="kw">paste0</span>(runs, 
+    .x, <span class="st">"_"</span>, reps, <span class="st">"_"</span>, years, <span class="st">".tif"</span>))</code></pre></div>
+</div>
+</div>
+<div id="fire-probability-results" class="section level3">
+<h3 class="hasAnchor">
+<a href="#fire-probability-results" class="anchor"></a>Fire probability results</h3>
+<p>Here are results of the probability estimation…</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">xy &lt;-<span class="st"> </span><span class="kw">select</span>(places, lon, lat)
+id &lt;-<span class="st"> </span>places$loc
+p &lt;-<span class="st"> </span>purrr::<span class="kw">map</span>(<span class="dv">1</span>:n, ~<span class="kw"><a href="../reference/point_probs.html">point_probs</a></span>(<span class="dt">r =</span> sample_files$scar[.x], xy, id, <span class="dt">veg =</span> sample_files$veg[.x])) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">bind_rows</span>()</code></pre></div>
+</div>
+</div>
+<div id="statistical-model" class="section level2">
+<h2 class="hasAnchor">
+<a href="#statistical-model" class="anchor"></a>Statistical model</h2>
+<p>After exploring the point probabilities based on inverse distance weighting, perform a guided exploratory model selection using other covariates to model the linkage with fire probability.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(gbm)
+gbm1 &lt;-<span class="st"> </span><span class="kw">gbm</span>(prob ~<span class="st"> </span>., <span class="dt">data =</span> <span class="kw">select</span>(p, <span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">6</span>:<span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">14</span>:<span class="dv">16</span>)))</code></pre></div>
+</div>
+<div id="points-of-interest" class="section level2">
+<h2 class="hasAnchor">
+<a href="#points-of-interest" class="anchor"></a>Points of interest</h2>
+<p>Given the findings of the statistical models, perform a sensitivity analysis based on a simple 2-factor experimental design setup. Then build a final statistical model, calibrate the probability estimation, and apply it to some points of interest.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
 <span class="kw">library</span>(snaplocs)
 places &lt;-<span class="st"> </span><span class="kw">get_coords</span>(<span class="kw">c</span>(<span class="st">"Fairbanks"</span>, <span class="st">"Galena"</span>, <span class="st">"Fort Yukon"</span>), <span class="dt">keep_cols =</span> <span class="ot">TRUE</span>) %&gt;%<span class="st"> </span>
@@ -222,32 +264,7 @@ places
 <span class="co">#&gt; 1  Fairbanks Alaska -147.716 64.8378</span>
 <span class="co">#&gt; 2 Fort Yukon Alaska -145.274 66.5647</span>
 <span class="co">#&gt; 3     Galena Alaska -156.927 64.7333</span></code></pre></div>
-</div>
-<div id="sample-fire-scar-data" class="section level4">
-<h4 class="hasAnchor">
-<a href="#sample-fire-scar-data" class="anchor"></a>Sample fire scar data</h4>
-<p>Next sample 100 simulated fire scar perimeters maps from JFSP ALFRESCO projected outputs.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(alfresco)
-base_path &lt;-<span class="st"> "/big_scratch/shiny/Runs_Statewide/mfleonawicz@alaska.edu"</span>
-paths &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">list.files</span>(base_path, <span class="dt">pattern =</span> <span class="st">"^fmo.*.rcp"</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>), 
-    <span class="st">"Maps"</span>)
-n &lt;-<span class="st"> </span><span class="dv">100</span>
-<span class="kw">set.seed</span>(<span class="dv">976</span>)
-years &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">2014</span>:<span class="dv">2099</span>, n, <span class="dt">replace =</span> <span class="ot">TRUE</span>)
-reps &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">0</span>:<span class="dv">31</span>, n, <span class="dt">replace =</span> <span class="ot">TRUE</span>)
-runs &lt;-<span class="st"> </span><span class="kw">sample</span>(paths, n, <span class="dt">replace =</span> <span class="ot">TRUE</span>)  <span class="co"># random run (rcp, model, fmo)</span>
-sample_files &lt;-<span class="st"> </span>purrr::<span class="kw">map</span>(<span class="kw">c</span>(<span class="dt">scar =</span> <span class="st">"/FireScar"</span>, <span class="dt">veg =</span> <span class="st">"/Veg"</span>), ~<span class="kw">paste0</span>(runs, 
-    .x, <span class="st">"_"</span>, reps, <span class="st">"_"</span>, years, <span class="st">".tif"</span>))</code></pre></div>
-</div>
-</div>
-<div id="fire-probability-results" class="section level3">
-<h3 class="hasAnchor">
-<a href="#fire-probability-results" class="anchor"></a>Fire probability results</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">xy &lt;-<span class="st"> </span><span class="kw">select</span>(places, lon, lat)
-id &lt;-<span class="st"> </span>places$loc
-p &lt;-<span class="st"> </span>purrr::<span class="kw">map</span>(<span class="dv">1</span>:n, ~<span class="kw"><a href="../reference/point_probs.html">point_probs</a></span>(<span class="dt">r =</span> sample_files$scar[.x], xy, id, <span class="dt">veg =</span> sample_files$veg[.x])) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">bind_rows</span>()</code></pre></div>
-</div>
+<p>Document under development…</p>
 </div>
 </div>
   </div>
@@ -258,6 +275,8 @@ p &lt;-<span class="st"> </span>purrr::<span class="kw">map</span>(<span class="
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#estimating-point-probabilities">Estimating point probabilities</a></li>
+      <li><a href="#statistical-model">Statistical model</a></li>
+      <li><a href="#points-of-interest">Points of interest</a></li>
       </ul>
 </div>
       </div>
