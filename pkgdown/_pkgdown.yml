@@ -54,6 +54,11 @@ reference:
   - fsv
   - fsdf
   - cbdf
+- title: Fire point probability
+  contents:
+  - point_probs
+  - fire_probs
+  - fire_weights
 - title: Fire management options
   contents:
   - ba_ratios
