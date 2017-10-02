@@ -66,9 +66,9 @@ places
 
 Next sample 100 simulated fire scar perimeters maps from JFSP ALFRESCO projected outputs.
 
-```{r sample_files}
+```{r sample_files, eval = FALSE}
 library(alfresco)
-base_path <- "/big_scratch/shiny/Runs_Statewide/paul.duffy@neptuneinc.org"
+base_path <- "/big_scratch/shiny/Runs_Statewide/mfleonawicz@alaska.edu"
 paths <- file.path(list.files(base_path, pattern = "^fmo.*.rcp", full.names = TRUE), "Maps")
 n <- 100
 set.seed(976)
@@ -81,8 +81,9 @@ sample_files <- purrr::map(c(scar = "/FireScar", veg = "/Veg"),
 
 ### Fire probability results
 
-```{r sample_files}
+```{r fire_prob_results, eval = FALSE}
 xy <- select(places, lon, lat)
 id <- places$loc
-system.time( p <- purrr::map(1:n, ~point_probs(r = sample_files$scar[.x], xy, id, veg = sample_files$veg[.x])) %>% bind_rows() )
+p <- purrr::map(1:n, ~point_probs(r = sample_files$scar[.x], xy, id, veg = sample_files$veg[.x])) %>% 
+  bind_rows()
 ```
