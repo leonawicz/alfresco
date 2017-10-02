@@ -1,0 +1,88 @@
+---
+title: "Fire point probability"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fire point probability}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", message = FALSE, warning = FALSE, error = FALSE, tidy = TRUE
+)
+library(alfresco)
+```
+
+This vignette provides example code for estimating fire probability from ALFRESCO outputs at point locations as well as an assessment of the estimates.
+It is broken down into three main sections:
+
+* Estimating fire point probabilities.
+* A statistical modeling framework for point probabilities.
+* Estimate calibration and model validation.
+
+## Estimating point probabilities
+
+There is an inherent challenge in estimating various fire statistics and spatial point locations with ALFRESCO.
+While it generates spatially explicit wildfire simulations, it is not meaningful to talk about, say, the likelihood of fire
+over some future projected time period at a single point in space. Statements based on such spatial precision are generally
+not robust or defensible.
+
+However, there are ways to approximate point-specific fire projections that are relatively robust and stable.
+A simple approach is to place a buffer of some radius `r` around a point location and make statements about projected fire in
+this area. There is a trade off involved. The goal is to make the area around a point large enough that nearby fire events
+intersect it and estimates are not highly volatile, while also making sure it area is still small enough to justifiably represent
+point data. This is a challenging needle to thread, with no clear, single answer regarding area size.
+A more rigorous approach involves selecting a larger area around a point location, but applying some function or model using
+inverse distance weighting so that fire at greater distances from the point is given less weight.
+
+The latter approach is used here. While ALFRESCO provides spatially explicit maps of simulated fire scar perimeters,
+this in and of itself does not directly translate into any estimate of the likelihood of fire at a specific point.
+The closest one can get with this raw simulation output is to make a binary statement that says a location will or will not burn.
+This does not take into account, for example, the difference in likelihood of fire at one point where a large fire is nearby (even 
+if not intersecting the point itself) vs. at another point where there is no fire within some large distance of the point.
+The approach used here allows for a smoother estimation of fire probability at a point by accounting for how close and how large
+nearby fires are. When ALFRESCO simulates a burn in some area on a map, it is meaningful and informative to account for proximity 
+rather than to treat projected burns as having some kind of realistic exactness in space.
+
+### JFSP outputs
+
+Using the JFSP project simulation outputs and Alaskan communities from the `snaplocs` package, select a few points of interest and estimate 
+fire probabilities. The code below uses a random sample (`n = 100`) among all climate models, emissions scenarios, projected years 2014 - 2099,
+simulation replicates, and fire management treatment levels. This yields 5,000 observations.
+
+#### Sample communities
+
+First sample 50 community point locations.
+
+```{r sample_locs}
+library(dplyr)
+library(snaplocs)
+places <- get_coords(c("Fairbanks", "Galena", "Fort Yukon"), keep_cols = TRUE) %>% slice(1:3)
+places
+```
+
+#### Sample fire scar data
+
+Next sample 100 simulated fire scar perimeters maps from JFSP ALFRESCO projected outputs.
+
+```{r sample_files}
+library(alfresco)
+base_path <- "/big_scratch/shiny/Runs_Statewide/paul.duffy@neptuneinc.org"
+paths <- file.path(list.files(base_path, pattern = "^fmo.*.rcp", full.names = TRUE), "Maps")
+n <- 100
+set.seed(976)
+years <- sample(2014:2099, n, replace = TRUE)
+reps <- sample(0:31, n, replace = TRUE)
+runs <- sample(paths, n , replace = TRUE) # random run (rcp, model, fmo)
+sample_files <- purrr::map(c(scar = "/FireScar", veg = "/Veg"), 
+                           ~paste0(runs, .x, "_", reps, "_", years, ".tif"))
+```
+
+### Fire probability results
+
+```{r sample_files}
+xy <- select(places, lon, lat)
+id <- places$loc
+system.time( p <- purrr::map(1:n, ~point_probs(r = sample_files$scar[.x], xy, id, veg = sample_files$veg[.x])) %>% bind_rows() )
+```
