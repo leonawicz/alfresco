@@ -36,7 +36,7 @@ a data frame containing a logical column indicating burn or no burn,
 a column of distances from point location, and a column of weights.
 }
 \description{
-Compute fire probability weights for point locations.
+Estimate fire probability for mulitple point locations.
 }
 \details{
 This function is a wrapper around \link{fire_weights} and \link{fire_probs}.

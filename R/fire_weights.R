@@ -155,7 +155,7 @@ fire_probs <- function(data, veg_labels, covariates = TRUE){
 
 #' Fire probabilities for point locations
 #'
-#' Compute fire probability weights for point locations.
+#' Estimate fire probability for mulitple point locations.
 #'
 #' This function is a wrapper around \link{fire_weights} and \link{fire_probs}.
 #' It uses parallel processing via \code{parallel::mclapply} to apply these functions to multiple point locations.
