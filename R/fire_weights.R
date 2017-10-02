@@ -101,6 +101,7 @@ fire_weights <- function(r, xy, buffer = 20000, weight = "linear",
 #' }
 fire_probs <- function(data, veg_labels, covariates = TRUE){
   if(missing(veg_labels)) veg_labels <- get_veg_labels("ak1km")
+  if(!"No vegetation" %in% veg_labels) veg_labels <- c("No vegetation", veg_labels)
   veg <- if("veg" %in% names(data) & covariates) TRUE else FALSE
   age <- if("age" %in% names(data)) TRUE else FALSE
   if(veg){
@@ -206,6 +207,7 @@ fire_probs <- function(data, veg_labels, covariates = TRUE){
 point_probs <- function(r, xy, id, buffer = 20000, weight = "linear", lonlat_to_akalbers = TRUE,
                         veg_labels, covariates = TRUE, veg = NULL, age = NULL, max.cores = 32){
   if(missing(veg_labels)) veg_labels <- get_veg_labels("ak1km")
+  if(!"No vegetation" %in% veg_labels) veg_labels <- c("No vegetation", veg_labels)
   mc.cores <- min(nrow(xy), max.cores)
   if(inherits(r, "character")) r <- raster::readAll(raster::raster(r))
   if(inherits(veg, "character")) veg <- raster::readAll(raster::raster(veg))
