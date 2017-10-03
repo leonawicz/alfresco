@@ -80,9 +80,9 @@ sample_files <- purrr::map(c(scar = "/FireScar", veg = "/Veg"),
                            ~paste0(runs, .x, "_", reps, "_", years, ".tif"))
 ```
 
-### Fire probability results
+Below are results of the probability estimation. The table `p` contains 1,000 observations at each of 30 locations. Each observation includes the estimated fire point probability, the unweighted simple area proportion burned for comparison, and an average distance to and total local area covered by each vegetation type. This includes ALFRESCO output grid cells classed as "no vegetation" (mountains, lakes, ocean, etc.).
 
-Here are results of the probability estimation...
+*Note: This processing should be done on one of SNAP's Atlas compute nodes.*
 
 ```{r fire_prob_results, eval = FALSE}
 p <- purrr::map(1:n, ~point_probs(
@@ -92,7 +92,13 @@ p <- purrr::map(1:n, ~point_probs(
 
 ## Statistical model
 
-After exploring the point probabilities based on inverse distance weighting, perform a guided exploratory model selection using other covariates to model the linkage with fire probability.
+The above table of sampled observations can be used to construct an initial exploratory statistical model of the relationship between fire probability and other variables. This is why vegetation maps were included along with fire scar maps in the call to `point_probs`. While it is useful to estimate point probabilities based on proximity and size of nearby fires, distance to fire should nevertheless be viewed as a consequence of other drivers.
+
+Below, gradient boosting (generalized boosted regression models, or GBM) is used to fit models of fire probability as a function of distance to and relative area covered by distinct vegetation types. The ALFRESCO simulations account for differing vegetation flammability,
+which are actually based originally on vegetation-specific GBMs that model the linkage between climate and fire.
+Here, GBM is used to explore the functional space associated with the linkage between the distance-weighted derived fire probability metric at point locations and the surrounding nearby vegetation composition.
+
+A guided exploratory model selection using other covariates than distance to fire is performed to model the fire probability and determine the most influential exploratory variables.
 
 ```{r fire_prob_gbm, eval = FALSE}
 library(gbm)
