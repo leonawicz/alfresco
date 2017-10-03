@@ -76,11 +76,11 @@ n <- 1000
 years <- sample(2014:2099, n, replace = TRUE)
 reps <- sample(0:31, n, replace = TRUE)
 runs <- sample(paths, n , replace = TRUE) # random run (rcp, model, fmo)
-sample_files <- purrr::map(c(scar = "/FireScar", veg = "/Veg"), 
+sample_files <- purrr::map(c(scar = "/FireScar", veg = "/Veg", age = "/Age"), 
                            ~paste0(runs, .x, "_", reps, "_", years, ".tif"))
 ```
 
-Below are results of the probability estimation. The table `p` contains 1,000 observations at each of 30 locations. Each observation includes the estimated fire point probability, the unweighted simple area proportion burned for comparison, and an average distance to and total local area covered by each vegetation type. This includes ALFRESCO output grid cells classed as "no vegetation" (mountains, lakes, ocean, etc.).
+Below are results of the probability estimation. The table `p` contains 1,000 observations at each of 30 locations. Each observation includes the estimated fire point probability, the unweighted simple area proportion burned for comparison, and an average age, distance to, and total local area covered by each vegetation type. This includes ALFRESCO output grid cells classed as "no vegetation" (mountains, lakes, ocean, etc.).
 
 *Note: This processing should be done on one of SNAP's Atlas compute nodes.*
 
@@ -92,17 +92,39 @@ p <- purrr::map(1:n, ~point_probs(
 
 ## Statistical model
 
-The above table of sampled observations can be used to construct an initial exploratory statistical model of the relationship between fire probability and other variables. This is why vegetation maps were included along with fire scar maps in the call to `point_probs`. While it is useful to estimate point probabilities based on proximity and size of nearby fires, distance to fire should nevertheless be viewed as a consequence of other drivers.
+The above table of sampled observations can be used to construct an initial exploratory statistical model of the relationship between fire probability and other variables. This is why vegetation type and age maps were included along with fire scar maps in the call to `point_probs`. While it is useful to estimate point probabilities based on proximity and size of nearby fires, distance to fire should nevertheless be viewed as a consequence of other drivers.
 
 Below, gradient boosting (generalized boosted regression models, or GBM) is used to fit models of fire probability as a function of distance to and relative area covered by distinct vegetation types. The ALFRESCO simulations account for differing vegetation flammability,
 which are actually based originally on vegetation-specific GBMs that model the linkage between climate and fire.
 Here, GBM is used to explore the functional space associated with the linkage between the distance-weighted derived fire probability metric at point locations and the surrounding nearby vegetation composition.
 
-A guided exploratory model selection using other covariates than distance to fire is performed to model the fire probability and determine the most influential exploratory variables.
+A guided exploratory model selection using other covariates than distance to fire is performed to model the fire probability and determine the most influential exploratory variables. Note that the observations in p are randomized before passing to `gbm`. A 50% test set is also withheld from the model. This is in addition to the fact the `gbm` will use it's own 50/50 bagging, 50/50 train/test set split, and 5-fold cross-validation.
+This separate 50% test set is treated as new data used for making new predictions.
 
-```{r fire_prob_gbm, eval = FALSE}
+```{r quiet_data, echo = FALSE}
+p <- readRDS("../../data-raw/fire_prob_sample.rds")
+```
+
+```{r fire_prob_gbm}
 library(gbm)
-gbm1 <- gbm(prob ~ ., data = select(p, c(3, 4, 6:8, 12, 14:16)))
+p <- sample_n(p, nrow(p))
+n <- floor(nrow(p)/2)
+p1 <- slice(p, 1:n)
+p2 <- slice(p, seq(n + 1, length.out = n))
+
+gbm1 <- gbm(prob ~ ., data = select(p1, -c(1:2)), 
+            distribution = "gaussian", n.trees = 5000, shrinkage = 0.01, 
+            bag.fraction = 0.5, train.fraction = 0.5, n.minobsinnode = 10, cv.folds = 5, interaction.depth = 3)
+
+best <- purrr::map_int(c("test", "cv"), ~gbm.perf(gbm1, method = .x, plot.it = FALSE))
+summary(gbm1, n.trees = best[2], plotit = FALSE)
+pred <- predict.gbm(gbm1, p2, best[2])
+rng <- range(c(p2$prob, pred))
+plot(pred, p2$prob, xlim = rng, ylim = rng)
+lm1 <- lm(p2$prob ~ pred)
+lm1
+abline(lm1)
+sqrt(mean((p2$prob - pred)^2))
 ```
 
 ## Points of interest
