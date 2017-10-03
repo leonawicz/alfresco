@@ -36,7 +36,7 @@ fire_weights <- function(r, xy, buffer = 20000, weight = "linear",
                          lonlat_to_akalbers = TRUE, veg = NULL, age = NULL){
   if(inherits(r, "character"))
     r <- raster::readAll(raster::raster(r, band = 2))
-  if(lonlat_to_akalbers) xy <- wgs2ak(xy)
+  if(lonlat_to_akalbers) xy <- wgs2ak(xy) else xy <- as.matrix(xy)
   nam <- c("burn", "distance")
   cell <- raster::cellFromXY(r, xy)
   rd <- r
