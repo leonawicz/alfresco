@@ -47,28 +47,32 @@ rather than to treat projected burns as having some kind of realistic exactness 
 
 ### JFSP outputs
 
-Using the JFSP project simulation outputs, take a random sample of 30 points and estimate fire probabilities. The code below uses a random sample (`n = 100`) among all climate models, emissions scenarios, projected years 2014 - 2099, simulation replicates, and fire management treatment levels. This yields 5,000 observations.
+Using the JFSP project simulation outputs, take a random sample of points and estimate fire probabilities at each. The code below uses a random sample (`n = 100`) among all climate models, emissions scenarios, projected years 2014 - 2099, simulation replicates, and fire management treatment levels. This yields 5,000 observations.
 
 #### Sample communities
 
-First sample 50 point locations from within the JFSP flammability domain using the `snapgrid` package.
+This analysis uses outputs from the JFSP project so sampling must be done on the applicable spatial domain. Sample 30 point locations from within the JFSP flammability domain using the `snapgrid` package.
+
 
 ```{r sample_points}
 library(snapgrid)
 library(raster)
+library(dplyr)
 set.seed(976)
-places <- sample((1:ncell(swflam))[!is.na(swflam[])], 30)
+cells <- sample((1:ncell(swflam))[!is.na(swflam[])], 30)
+places <- xyFromCell(swflam, cells) %>% as_data_frame()
 ```
 
 #### Sample fire scar data
 
-Next sample 100 simulated fire scar perimeters maps from JFSP ALFRESCO projected outputs.
+Next sample 1000 simulated fire scar perimeters maps from JFSP ALFRESCO projected outputs.
+The code below takes a random sample of simulated projected fire scar maps with replacement from among three RCPs, five GCMs, two fire management treatments, 32 simulation replicates, and a series of 94 years.
 
 ```{r sample_files, eval = FALSE}
 library(alfresco)
 base_path <- "/big_scratch/shiny/Runs_Statewide/mfleonawicz@alaska.edu"
 paths <- file.path(list.files(base_path, pattern = "^fmo.*.rcp", full.names = TRUE), "Maps")
-n <- 100
+n <- 1000
 years <- sample(2014:2099, n, replace = TRUE)
 reps <- sample(0:31, n, replace = TRUE)
 runs <- sample(paths, n , replace = TRUE) # random run (rcp, model, fmo)
@@ -81,10 +85,9 @@ sample_files <- purrr::map(c(scar = "/FireScar", veg = "/Veg"),
 Here are results of the probability estimation...
 
 ```{r fire_prob_results, eval = FALSE}
-xy <- select(places, lon, lat)
-id <- places$loc
-p <- purrr::map(1:n, ~point_probs(r = sample_files$scar[.x], xy, id, veg = sample_files$veg[.x])) %>% 
-  bind_rows()
+p <- purrr::map(1:n, ~point_probs(
+  r = sample_files$scar[.x], places, 1:30, veg = sample_files$veg[.x], 
+  lonlat_to_akalbers = FALSE)) %>% bind_rows()
 ```
 
 ## Statistical model
@@ -102,7 +105,6 @@ Given the findings of the statistical models, perform a sensitivity analysis bas
 Then build a final statistical model, calibrate the probability estimation, and apply it to some points of interest.
 
 ```{r sample_locs}
-library(dplyr)
 library(snaplocs)
 places <- get_coords(c("Fairbanks", "Galena", "Fort Yukon"), keep_cols = TRUE) %>% slice(1:3)
 places
