@@ -21,10 +21,10 @@ fsv(in_dir, out_dir, group, region, period)
 Compute and save to disk exact fire size by vegetation class from extracted ALFRESCO outputs.
 }
 \details{
-This function computes exact annual fire sizes by vegetation from extracted ALFRESCO
-model runs. If discrete probability distributions of annual fire by vegetation class are required, see \link{alf_dist}.
+This function computes exact annual fire sizes by vegetation class from extracted ALFRESCO
+model run outputs. If discrete probability distributions of annual fire by vegetation class are required, see \link{alf_dist}.
 This function uses the same inputs, the extraction .rds files created by \link{run_alf_extraction}.
-It essentially does nothing more than row bind the data frames from the extraction files without computing anything other statistics.
+It essentially does nothing more than row bind the data frames from the extraction files without computing any other statistics.
 This yields one file in a project directory that covers all extracted fire size by vegetation class data for a unique geographic region.
 }
 \examples{
