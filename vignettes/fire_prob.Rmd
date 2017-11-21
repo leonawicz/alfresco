@@ -11,7 +11,6 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE, comment = "#>", message = FALSE, warning = FALSE, error = FALSE, tidy = TRUE
 )
-library(alfresco)
 ```
 
 This vignette provides example code for estimating fire probability from ALFRESCO outputs at point locations as well as an assessment of the estimates.
@@ -87,7 +86,7 @@ Below are results of the probability estimation. The table `p` contains 1,000 ob
 ```{r fire_prob_results, eval = FALSE}
 p <- purrr::map(1:n, ~point_probs(
   r = sample_files$scar[.x], places, 1:30, veg = sample_files$veg[.x], 
-  lonlat_to_akalbers = FALSE)) %>% bind_rows()
+  age = sample_files$age[.x], lonlat_to_akalbers = FALSE)) %>% bind_rows()
 ```
 
 ## Statistical model
@@ -112,19 +111,19 @@ n <- floor(nrow(p)/2)
 p1 <- slice(p, 1:n)
 p2 <- slice(p, seq(n + 1, length.out = n))
 
-gbm1 <- gbm(prob ~ ., data = select(p1, -c(1:2)), 
+gbm1 <- gbm(prop ~ ., data = select(p1, -c(1, 3, 20)), 
             distribution = "gaussian", n.trees = 5000, shrinkage = 0.01, 
             bag.fraction = 0.5, train.fraction = 0.5, n.minobsinnode = 10, cv.folds = 5, interaction.depth = 3)
 
 best <- purrr::map_int(c("test", "cv"), ~gbm.perf(gbm1, method = .x, plot.it = FALSE))
 summary(gbm1, n.trees = best[2], plotit = FALSE)
 pred <- predict.gbm(gbm1, p2, best[2])
-rng <- range(c(p2$prob, pred))
-plot(pred, p2$prob, xlim = rng, ylim = rng)
-lm1 <- lm(p2$prob ~ pred)
+rng <- range(c(p2$prop, pred))
+plot(pred, p2$prop, xlim = rng, ylim = rng)
+lm1 <- lm(p2$prop ~ pred)
 lm1
 abline(lm1)
-sqrt(mean((p2$prob - pred)^2))
+sqrt(mean((p2$prop - pred)^2))
 ```
 
 ## Points of interest
