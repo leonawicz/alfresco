@@ -14,3 +14,4 @@
 ^\.travis\.yml$
 ^codecov\.yml$
 ^vignettes/jfsp_hist_fmo_tx\.Rmd$
+^vignettes/fire_prob\.Rmd$
