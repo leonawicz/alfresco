@@ -215,8 +215,8 @@
 <span class="kw">library</span>(raster)
 <span class="kw">library</span>(dplyr)
 <span class="kw">set.seed</span>(<span class="dv">976</span>)
-cells &lt;-<span class="st"> </span><span class="kw">sample</span>((<span class="dv">1</span>:<span class="kw">ncell</span>(swflam))[!<span class="kw">is.na</span>(swflam[])], <span class="dv">30</span>)
-places &lt;-<span class="st"> </span><span class="kw">xyFromCell</span>(swflam, cells) %&gt;%<span class="st"> </span><span class="kw">as_data_frame</span>()</code></pre></div>
+cells &lt;-<span class="st"> </span><span class="kw">sample</span>((<span class="dv">1</span><span class="op">:</span><span class="kw">ncell</span>(swflam))[<span class="op">!</span><span class="kw">is.na</span>(swflam[])], <span class="dv">30</span>)
+places &lt;-<span class="st"> </span><span class="kw">xyFromCell</span>(swflam, cells) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_data_frame</span>()</code></pre></div>
 </div>
 <div id="sample-fire-scar-data" class="section level4">
 <h4 class="hasAnchor">
@@ -227,46 +227,84 @@ base_path &lt;-<span class="st"> "/big_scratch/shiny/Runs_Statewide/mfleonawicz@
 paths &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">list.files</span>(base_path, <span class="dt">pattern =</span> <span class="st">"^fmo.*.rcp"</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>), 
     <span class="st">"Maps"</span>)
 n &lt;-<span class="st"> </span><span class="dv">1000</span>
-years &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">2014</span>:<span class="dv">2099</span>, n, <span class="dt">replace =</span> <span class="ot">TRUE</span>)
-reps &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">0</span>:<span class="dv">31</span>, n, <span class="dt">replace =</span> <span class="ot">TRUE</span>)
+years &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">2014</span><span class="op">:</span><span class="dv">2099</span>, n, <span class="dt">replace =</span> <span class="ot">TRUE</span>)
+reps &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">31</span>, n, <span class="dt">replace =</span> <span class="ot">TRUE</span>)
 runs &lt;-<span class="st"> </span><span class="kw">sample</span>(paths, n, <span class="dt">replace =</span> <span class="ot">TRUE</span>)  <span class="co"># random run (rcp, model, fmo)</span>
-sample_files &lt;-<span class="st"> </span>purrr::<span class="kw">map</span>(<span class="kw">c</span>(<span class="dt">scar =</span> <span class="st">"/FireScar"</span>, <span class="dt">veg =</span> <span class="st">"/Veg"</span>), ~<span class="kw">paste0</span>(runs, 
-    .x, <span class="st">"_"</span>, reps, <span class="st">"_"</span>, years, <span class="st">".tif"</span>))</code></pre></div>
-<p>Below are results of the probability estimation. The table <code>p</code> contains 1,000 observations at each of 30 locations. Each observation includes the estimated fire point probability, the unweighted simple area proportion burned for comparison, and an average distance to and total local area covered by each vegetation type. This includes ALFRESCO output grid cells classed as “no vegetation” (mountains, lakes, ocean, etc.).</p>
+sample_files &lt;-<span class="st"> </span>purrr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/purrr/topics/map">map</a></span>(<span class="kw">c</span>(<span class="dt">scar =</span> <span class="st">"/FireScar"</span>, <span class="dt">veg =</span> <span class="st">"/Veg"</span>, <span class="dt">age =</span> <span class="st">"/Age"</span>), 
+    <span class="op">~</span><span class="kw">paste0</span>(runs, .x, <span class="st">"_"</span>, reps, <span class="st">"_"</span>, years, <span class="st">".tif"</span>))</code></pre></div>
+<p>Below are results of the probability estimation. The table <code>p</code> contains 1,000 observations at each of 30 locations. Each observation includes the estimated fire point probability, the unweighted simple area proportion burned for comparison, and an average age, distance to, and total local area covered by each vegetation type. This includes ALFRESCO output grid cells classed as “no vegetation” (mountains, lakes, ocean, etc.).</p>
 <p><em>Note: This processing should be done on one of SNAP’s Atlas compute nodes.</em></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span>purrr::<span class="kw">map</span>(<span class="dv">1</span>:n, ~<span class="kw"><a href="../reference/point_probs.html">point_probs</a></span>(<span class="dt">r =</span> sample_files$scar[.x], places, <span class="dv">1</span>:<span class="dv">30</span>, <span class="dt">veg =</span> sample_files$veg[.x], 
-    <span class="dt">lonlat_to_akalbers =</span> <span class="ot">FALSE</span>)) %&gt;%<span class="st"> </span><span class="kw">bind_rows</span>()</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span>purrr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/purrr/topics/map">map</a></span>(<span class="dv">1</span><span class="op">:</span>n, <span class="op">~</span><span class="kw"><a href="../reference/point_probs.html">point_probs</a></span>(<span class="dt">r =</span> sample_files<span class="op">$</span>scar[.x], places, <span class="dv">1</span><span class="op">:</span><span class="dv">30</span>, <span class="dt">veg =</span> sample_files<span class="op">$</span>veg[.x], 
+    <span class="dt">age =</span> sample_files<span class="op">$</span>age[.x], <span class="dt">lonlat_to_akalbers =</span> <span class="ot">FALSE</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">bind_rows</span>()</code></pre></div>
 </div>
 </div>
 </div>
 <div id="statistical-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#statistical-model" class="anchor"></a>Statistical model</h2>
-<p>The above table of sampled observations can be used to construct an initial exploratory statistical model of the relationship between fire probability and other variables. This is why vegetation maps were included along with fire scar maps in the call to <code>point_probs</code>. While it is useful to estimate point probabilities based on proximity and size of nearby fires, distance to fire should nevertheless be viewed as a consequence of other drivers.</p>
+<p>The above table of sampled observations can be used to construct an initial exploratory statistical model of the relationship between fire probability and other variables. This is why vegetation type and age maps were included along with fire scar maps in the call to <code>point_probs</code>. While it is useful to estimate point probabilities based on proximity and size of nearby fires, distance to fire should nevertheless be viewed as a consequence of other drivers.</p>
 <p>Below, gradient boosting (generalized boosted regression models, or GBM) is used to fit models of fire probability as a function of distance to and relative area covered by distinct vegetation types. The ALFRESCO simulations account for differing vegetation flammability, which are actually based originally on vegetation-specific GBMs that model the linkage between climate and fire. Here, GBM is used to explore the functional space associated with the linkage between the distance-weighted derived fire probability metric at point locations and the surrounding nearby vegetation composition.</p>
-<p>A guided exploratory model selection using other covariates than distance to fire is performed to model the fire probability and determine the most influential exploratory variables.</p>
+<p>A guided exploratory model selection using other covariates than distance to fire is performed to model the fire probability and determine the most influential exploratory variables. Note that the observations in p are randomized before passing to <code>gbm</code>. A 50% test set is also withheld from the model. This is in addition to the fact the <code>gbm</code> will use it’s own 50/50 bagging, 50/50 train/test set split, and 5-fold cross-validation. This separate 50% test set is treated as new data used for making new predictions.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(gbm)
-gbm1 &lt;-<span class="st"> </span><span class="kw">gbm</span>(prob ~<span class="st"> </span>., <span class="dt">data =</span> <span class="kw">select</span>(p, <span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">6</span>:<span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">14</span>:<span class="dv">16</span>)))
-<span class="co">#&gt; Distribution not specified, assuming gaussian ...</span>
-<span class="kw">summary</span>(gbm1)</code></pre></div>
+p &lt;-<span class="st"> </span><span class="kw">sample_n</span>(p, <span class="kw">nrow</span>(p))
+n &lt;-<span class="st"> </span><span class="kw">floor</span>(<span class="kw">nrow</span>(p)<span class="op">/</span><span class="dv">2</span>)
+p1 &lt;-<span class="st"> </span><span class="kw">slice</span>(p, <span class="dv">1</span><span class="op">:</span>n)
+p2 &lt;-<span class="st"> </span><span class="kw">slice</span>(p, <span class="kw">seq</span>(n <span class="op">+</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">length.out =</span> n))
+
+gbm1 &lt;-<span class="st"> </span><span class="kw">gbm</span>(prop <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> <span class="kw">select</span>(p1, <span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">20</span>)), <span class="dt">distribution =</span> <span class="st">"gaussian"</span>, 
+    <span class="dt">n.trees =</span> <span class="dv">5000</span>, <span class="dt">shrinkage =</span> <span class="fl">0.01</span>, <span class="dt">bag.fraction =</span> <span class="fl">0.5</span>, <span class="dt">train.fraction =</span> <span class="fl">0.5</span>, 
+    <span class="dt">n.minobsinnode =</span> <span class="dv">10</span>, <span class="dt">cv.folds =</span> <span class="dv">5</span>, <span class="dt">interaction.depth =</span> <span class="dv">3</span>)
+
+best &lt;-<span class="st"> </span>purrr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/purrr/topics/map">map_int</a></span>(<span class="kw">c</span>(<span class="st">"test"</span>, <span class="st">"cv"</span>), <span class="op">~</span><span class="kw">gbm.perf</span>(gbm1, <span class="dt">method =</span> .x, <span class="dt">plot.it =</span> <span class="ot">FALSE</span>))
+<span class="kw">summary</span>(gbm1, <span class="dt">n.trees =</span> best[<span class="dv">2</span>], <span class="dt">plotit =</span> <span class="ot">FALSE</span>)
+<span class="co">#&gt;                                                     var    rel.inf</span>
+<span class="co">#&gt; `Black Spruce area`                 `Black Spruce area` 27.6005617</span>
+<span class="co">#&gt; `White Spruce age`                   `White Spruce age` 19.0275074</span>
+<span class="co">#&gt; `White Spruce area`                 `White Spruce area`  8.9183341</span>
+<span class="co">#&gt; `Alpine Tundra distance`       `Alpine Tundra distance`  8.2628652</span>
+<span class="co">#&gt; `No vegetation distance`       `No vegetation distance`  7.4032512</span>
+<span class="co">#&gt; `Alpine Tundra age`                 `Alpine Tundra age`  7.2889531</span>
+<span class="co">#&gt; `White Spruce distance`         `White Spruce distance`  6.5076124</span>
+<span class="co">#&gt; `Black Spruce age`                   `Black Spruce age`  3.7194904</span>
+<span class="co">#&gt; `Deciduous area`                       `Deciduous area`  2.7911202</span>
+<span class="co">#&gt; `Deciduous age`                         `Deciduous age`  1.9389782</span>
+<span class="co">#&gt; `Black Spruce distance`         `Black Spruce distance`  1.9207409</span>
+<span class="co">#&gt; `Deciduous distance`               `Deciduous distance`  1.5706903</span>
+<span class="co">#&gt; `Alpine Tundra area`               `Alpine Tundra area`  1.5454410</span>
+<span class="co">#&gt; `No vegetation area`               `No vegetation area`  1.4440036</span>
+<span class="co">#&gt; `Shrub Tundra age`                   `Shrub Tundra age`  0.0604501</span>
+<span class="co">#&gt; `Shrub Tundra distance`         `Shrub Tundra distance`  0.0000000</span>
+<span class="co">#&gt; `Graminoid Tundra distance` `Graminoid Tundra distance`  0.0000000</span>
+<span class="co">#&gt; `Wetland Tundra distance`     `Wetland Tundra distance`  0.0000000</span>
+<span class="co">#&gt; `Shrub Tundra area`                 `Shrub Tundra area`  0.0000000</span>
+<span class="co">#&gt; `Graminoid Tundra area`         `Graminoid Tundra area`  0.0000000</span>
+<span class="co">#&gt; `Wetland Tundra area`             `Wetland Tundra area`  0.0000000</span>
+<span class="co">#&gt; `Graminoid Tundra age`           `Graminoid Tundra age`  0.0000000</span>
+<span class="co">#&gt; `Wetland Tundra age`               `Wetland Tundra age`  0.0000000</span>
+pred &lt;-<span class="st"> </span><span class="kw">predict.gbm</span>(gbm1, p2, best[<span class="dv">2</span>])
+rng &lt;-<span class="st"> </span><span class="kw">range</span>(<span class="kw">c</span>(p2<span class="op">$</span>prop, pred))
+<span class="kw">plot</span>(pred, p2<span class="op">$</span>prop, <span class="dt">xlim =</span> rng, <span class="dt">ylim =</span> rng)
+lm1 &lt;-<span class="st"> </span><span class="kw">lm</span>(p2<span class="op">$</span>prop <span class="op">~</span><span class="st"> </span>pred)
+lm1
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Call:</span>
+<span class="co">#&gt; lm(formula = p2$prop ~ pred)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Coefficients:</span>
+<span class="co">#&gt; (Intercept)         pred  </span>
+<span class="co">#&gt;   -0.001201     1.161677</span>
+<span class="kw">abline</span>(lm1)</code></pre></div>
 <p><img src="fire_prob_files/figure-html/fire_prob_gbm-1.png" width="672"></p>
-<pre><code>#&gt;                                               var rel.inf
-#&gt; `Black Spruce area`           `Black Spruce area`     100
-#&gt; `No vegetation distance` `No vegetation distance`       0
-#&gt; `Black Spruce distance`   `Black Spruce distance`       0
-#&gt; `White Spruce distance`   `White Spruce distance`       0
-#&gt; `Deciduous distance`         `Deciduous distance`       0
-#&gt; `No vegetation area`         `No vegetation area`       0
-#&gt; `White Spruce area`           `White Spruce area`       0
-#&gt; `Deciduous area`                 `Deciduous area`       0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sqrt</span>(<span class="kw">mean</span>((p2<span class="op">$</span>prop <span class="op">-</span><span class="st"> </span>pred)<span class="op">^</span><span class="dv">2</span>))
+<span class="co">#&gt; [1] 0.02392537</span></code></pre></div>
 </div>
 <div id="points-of-interest" class="section level2">
 <h2 class="hasAnchor">
 <a href="#points-of-interest" class="anchor"></a>Points of interest</h2>
 <p>Given the findings of the statistical models, perform a sensitivity analysis based on a simple 2-factor experimental design setup. Then build a final statistical model, calibrate the probability estimation, and apply it to some points of interest.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(snaplocs)
-places &lt;-<span class="st"> </span><span class="kw">get_coords</span>(<span class="kw">c</span>(<span class="st">"Fairbanks"</span>, <span class="st">"Galena"</span>, <span class="st">"Fort Yukon"</span>), <span class="dt">keep_cols =</span> <span class="ot">TRUE</span>) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">slice</span>(<span class="dv">1</span>:<span class="dv">3</span>)
+places &lt;-<span class="st"> </span><span class="kw">get_coords</span>(<span class="kw">c</span>(<span class="st">"Fairbanks"</span>, <span class="st">"Galena"</span>, <span class="st">"Fort Yukon"</span>), <span class="dt">keep_cols =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)
 places
 <span class="co">#&gt; # A tibble: 3 x 4</span>
 <span class="co">#&gt;          loc region      lon     lat</span>

@@ -201,21 +201,21 @@
 <span class="kw"><a href="../reference/copy_alf_outputs.html">copy_alf_outputs</a></span>(<span class="st">"JFSP"</span>, <span class="st">"/big_scratch/shiny/Runs_Statewide/paul.duffy</span><span class="ch">\\</span><span class="st">@neptuneinc.org"</span>, 
     <span class="dt">domain =</span> <span class="st">"ak1km"</span>)</code></pre></div>
 <p>Then exit R. From the command line, run the bash script for each model run, e.g.:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">bash</span> copy_alf_outputs.sh historical CRU32 historical fmo00s00i</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">bash</span> copy_alf_outputs.sh historical CRU32 historical fmo00s00i</code></pre></div>
 <p>See the documentation for <code>copy_alf_outputs</code> for details on command line arguments.</p>
 </div>
 <div id="data-extraction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-extraction" class="anchor"></a>Data extraction</h2>
 <p>To perform efficient data extraction on ALFRESCO output maps for the JFSP project, the first step is to create a slurm script to be executed by the SLURM job manager on SNAP’s Atlas cluster. This script will run an accompanying R script that performs the extraction on the geotiffs output by ALFRESCO. To generate these two files, do the following:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/alf_extract_slurm.html">alf_extract_slurm</a></span>(<span class="dt">domain =</span> <span class="st">"ak1km"</span>, <span class="dt">project =</span> <span class="st">"JFSP"</span>, <span class="dt">years =</span> <span class="dv">1950</span>:<span class="dv">2013</span>, <span class="dt">reps =</span> <span class="dv">1</span>:<span class="dv">32</span>, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/alf_extract_slurm.html">alf_extract_slurm</a></span>(<span class="dt">domain =</span> <span class="st">"ak1km"</span>, <span class="dt">project =</span> <span class="st">"JFSP"</span>, <span class="dt">years =</span> <span class="dv">1950</span><span class="op">:</span><span class="dv">2013</span>, <span class="dt">reps =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">32</span>, 
     <span class="dt">cru =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <div id="alf_extract-slurm" class="section level4">
 <h4 class="hasAnchor">
 <a href="#alf_extract-slurm" class="anchor"></a>alf_extract.slurm</h4>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="co">#!/bin/bash</span>
 <span class="co">#SBATCH --exclusive</span>
-<span class="co">#SBATCH --mail-type=END</span>
+<span class="co">#SBATCH --mail-type=</span><span class="re">END</span>
 <span class="co">#SBATCH --mail-user=mfleonawicz@alaska.edu</span>
 <span class="co">#SBATCH --account=snap</span>
 <span class="co">#SBATCH -p main</span>
@@ -224,7 +224,7 @@
 <span class="co">#SBATCH --nodes=2</span>
 <span class="co">#SBATCH --ntasks-per-node=32</span>
 
-<span class="kw">mpirun</span> --oversubscribe -np 1 Rscript /atlas_scratch/mfleonawicz/alfresco/slurm_jobs/alf_extract.R domain=<span class="dt">\'</span>ak1km<span class="dt">\'</span> rmpi=TRUE project=<span class="dt">\'</span>JFSP<span class="dt">\'</span> years=1950:2013 reps=1:32 cru=TRUE <span class="ot">$1</span> <span class="ot">$2</span> <span class="ot">$3</span></code></pre></div>
+<span class="ex">mpirun</span> --oversubscribe -np 1 Rscript /atlas_scratch/mfleonawicz/alfresco/slurm_jobs/alf_extract.R domain=<span class="dt">\'</span>ak1km<span class="dt">\'</span> rmpi=TRUE project=<span class="dt">\'</span>JFSP<span class="dt">\'</span> years=1950:2013 reps=1:32 cru=TRUE <span class="va">$1</span> <span class="va">$2</span> <span class="va">$3</span></code></pre></div>
 <p>This creates a slurm script with some hardcoded arguments that are passed on to the R script. This is convenient because the slurm script will be run several times for each combination of climate models and emissions scenarios (GCMs and RCPs) and it is nice to not have to repeatedly specify several other command line arguments that do not change from one set of ALFRESCO outputs to the next. Note how <code>domain</code> and <code>project</code> were coded into the script above. When passing string arguments at the command line to this and other slurm scripts, to be subsequently passed on to R, remember to escape them.</p>
 <p>The data extraction procedure makes use of the <code>Rmpi</code> package with a master R process running on the Atlas head node and 64 slave processes (one for each year) running on 32 CPUs across two different compute nodes.</p>
 </div>
@@ -236,27 +236,27 @@
 <span class="kw">library</span>(raster)
 <span class="kw">library</span>(alfresco)
 cargs &lt;-<span class="st"> </span>(<span class="kw">commandArgs</span>(<span class="ot">TRUE</span>))
-if (!<span class="kw">length</span>(cargs)) <span class="kw">q</span>(<span class="st">"no"</span>) else for (i in <span class="dv">1</span>:<span class="kw">length</span>(cargs)) <span class="kw">eval</span>(<span class="kw">parse</span>(<span class="dt">text =</span> cargs[[i]]))
+<span class="cf">if</span> (<span class="op">!</span><span class="kw">length</span>(cargs)) <span class="kw">q</span>(<span class="st">"no"</span>) <span class="cf">else</span> <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(cargs)) <span class="kw">eval</span>(<span class="kw">parse</span>(<span class="dt">text =</span> cargs[[i]]))
 <span class="kw"><a href="../reference/extract_alf_stops.html">extract_alf_stops</a></span>()
 
-if (!<span class="kw">exists</span>(<span class="st">"rmpi"</span>)) rmpi &lt;-<span class="st"> </span><span class="ot">TRUE</span>
-if (<span class="kw">exists</span>(<span class="st">"repSample"</span>) &amp;&amp;<span class="st"> </span><span class="kw">is.numeric</span>(repSample)) {
+<span class="cf">if</span> (<span class="op">!</span><span class="kw">exists</span>(<span class="st">"rmpi"</span>)) rmpi &lt;-<span class="st"> </span><span class="ot">TRUE</span>
+<span class="cf">if</span> (<span class="kw">exists</span>(<span class="st">"repSample"</span>) <span class="op">&amp;&amp;</span><span class="st"> </span><span class="kw">is.numeric</span>(repSample)) {
     <span class="kw">set.seed</span>(<span class="dv">47</span>)
     reps &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">sample</span>(reps, <span class="kw">min</span>(repSample, <span class="kw">length</span>(reps))))
     <span class="kw">cat</span>(<span class="st">"Sampled replicates:</span><span class="ch">\n</span><span class="st">"</span>, reps, <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)
 }
-if (!<span class="kw">exists</span>(<span class="st">"cru"</span>)) cru &lt;-<span class="st"> </span><span class="ot">FALSE</span>
+<span class="cf">if</span> (<span class="op">!</span><span class="kw">exists</span>(<span class="st">"cru"</span>)) cru &lt;-<span class="st"> </span><span class="ot">FALSE</span>
 
-if (rmpi) {
+<span class="cf">if</span> (rmpi) {
     <span class="kw">library</span>(Rmpi)
     <span class="kw">mpi.spawn.Rslaves</span>(<span class="dt">needlog =</span> <span class="ot">TRUE</span>)  <span class="co"># remainder of setup performed by run_alf_extraction</span>
     <span class="kw">mpi.bcast.cmd</span>(<span class="kw">library</span>(rgdal))
     <span class="kw">mpi.bcast.cmd</span>(<span class="kw">library</span>(raster))
     <span class="kw">mpi.bcast.cmd</span>(<span class="kw">library</span>(alfresco))
-} else {
+} <span class="cf">else</span> {
     <span class="kw">library</span>(parallel)
     n.cores &lt;-<span class="st"> </span><span class="dv">32</span>
-    tmp_dir &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw"><a href="../reference/alfdef.html">alfdef</a></span>()$raster_tmp_dir, <span class="st">"procX"</span>)
+    tmp_dir &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw"><a href="../reference/alfdef.html">alfdef</a></span>()<span class="op">$</span>raster_tmp_dir, <span class="st">"procX"</span>)
     <span class="kw">rasterOptions</span>(<span class="dt">chunksize =</span> <span class="fl">1e+11</span>, <span class="dt">maxmemory =</span> <span class="fl">1e+12</span>, <span class="dt">tmpdir =</span> tmp_dir)
 }
 cells &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_domain_cells.html">get_domain_cells</a></span>(domain)
@@ -272,7 +272,7 @@ main_dir &lt;-<span class="st"> </span>main_dirs[<span class="dv">1</span>]  <sp
     <span class="dt">reps =</span> reps, <span class="dt">years =</span> years, <span class="dt">cells =</span> cells, <span class="dt">veg_labels =</span> veg_labels, <span class="dt">cru =</span> cru, 
     <span class="dt">rmpi =</span> rmpi)
 
-if (rmpi) {
+<span class="cf">if</span> (rmpi) {
     <span class="kw">mpi.close.Rslaves</span>(<span class="dt">dellog =</span> <span class="ot">TRUE</span>)
     <span class="kw">mpi.exit</span>()
 }</code></pre></div>
@@ -282,10 +282,10 @@ if (rmpi) {
 <h3 class="hasAnchor">
 <a href="#extract-data-from-geotiffs" class="anchor"></a>Extract data from geotiffs</h3>
 <p>The next step is to begin the data extraction from the raster layer data output by ALFRESCO in geotiff files. To do this, execute the slurm script at the Atlas command line, making sure to supply any required arguments that were not written directly into the slurm script when it was previously generated. Assuming you are in the directory where the slurm and R script live and created them as shown above,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/alfdef.html">alfdef</a></span>()$alf_slurm_dir
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/alfdef.html">alfdef</a></span>()<span class="op">$</span>alf_slurm_dir
 <span class="co">#&gt; [1] "/atlas_scratch/mfleonawicz/alfresco/slurm_jobs"</span></code></pre></div>
 <p>simply call <code>sbatch</code> as follows:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">sbatch</span> alf_extract.slurm modelIndex=1</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">sbatch</span> alf_extract.slurm modelIndex=1</code></pre></div>
 <p>The <code>modelIndex</code> refers to the position in the list of climate model (or climate model/RCP group) directories pertaining to the given ALFRESCO project. For example, if an ALFRESCO project uses five GCMs and 3 RCPs, there are 15 directories of ALFRESCO outputs under the project directory. Each of these contains GCM/RCP-specific run outputs in a <code>Maps</code> subdirectory. The <code>sbatch</code> call is made for each of these 15 sets of GCM/RCP outputs.</p>
 <p>This example deals only with historical run output over 16 combinations of fire management options as part of an experimental design. You have conveniently built into the slurm script all the arguments that are constant across these 16 treatments, such as the project name, the spatial domain of the ALFRESCO runs, the fact that the runs are based on CRU historical climate data rather than projected GCM outputs, the set of years and the set of simulation replicates. This makes the <code>sbatch</code> call short, having only to iterate over <code>modelIndex</code> for all 16 ALFRESCO runs without specifying the rest. For a different ALFRESCO project, you would generate a different slurm script. The template R script run by the slurm script is the same in every case. What is variable is how general or specific the slurm script is, which depends on what is explicitly specified in <code>alf_extract_slurm</code>.</p>
 </div>
@@ -310,13 +310,13 @@ if (rmpi) {
 </ul>
 <p>Each of these random variables has a unique estimated probability distribution associated with each geographic region the data extractions and density estimations were applied to. For areas and counts, these refer to spatially aggregated random variables. Therefore, the distributions of these random variables are across ALFRESCO simulation replicates only. By comparison, when similar distributions are estimated for downscaled climate data, those variables vary in space only and do not have an analog to the set of repeated ALFRESCO simulations. Vegetation age is unique in that the distribution of stand ages is across both simulation replicates and space.</p>
 <p>As with data extraction, generate a slurm and R script pair:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/alf_prep_slurm.html">alf_prep_slurm</a></span>(<span class="dt">project =</span> <span class="st">"JFSP"</span>, <span class="dt">reps =</span> <span class="dv">1</span>:<span class="dv">32</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/alf_prep_slurm.html">alf_prep_slurm</a></span>(<span class="dt">project =</span> <span class="st">"JFSP"</span>, <span class="dt">reps =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">32</span>)</code></pre></div>
 <div id="alf_prep-slurm" class="section level4">
 <h4 class="hasAnchor">
 <a href="#alf_prep-slurm" class="anchor"></a>alf_prep.slurm</h4>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="co">#!/bin/bash</span>
 <span class="co">#SBATCH --exclusive</span>
-<span class="co">#SBATCH --mail-type=END</span>
+<span class="co">#SBATCH --mail-type=</span><span class="re">END</span>
 <span class="co">#SBATCH --mail-user=mfleonawicz@alaska.edu</span>
 <span class="co">#SBATCH --account=snap</span>
 <span class="co">#SBATCH -p main</span>
@@ -329,7 +329,7 @@ if (rmpi) {
 <span class="co"># Example useage: project='JFSP', period='historical', reps=1:32.</span>
 <span class="co"># Defaults: in_dir and out_dir use alfresco package defaults from alfdef().</span>
 
-<span class="kw">Rscript</span> /atlas_scratch/mfleonawicz/alfresco/slurm_jobs/alf_prep.R project=<span class="dt">\'</span>JFSP<span class="dt">\'</span> reps=1:32 <span class="ot">$1</span> <span class="ot">$2</span> <span class="ot">$3</span></code></pre></div>
+<span class="ex">Rscript</span> /atlas_scratch/mfleonawicz/alfresco/slurm_jobs/alf_prep.R project=<span class="dt">\'</span>JFSP<span class="dt">\'</span> reps=1:32 <span class="va">$1</span> <span class="va">$2</span> <span class="va">$3</span></code></pre></div>
 </div>
 <div id="alf_prep-r" class="section level4">
 <h4 class="hasAnchor">
@@ -337,34 +337,34 @@ if (rmpi) {
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(alfresco)
 <span class="kw">library</span>(parallel)
 cargs &lt;-<span class="st"> </span>(<span class="kw">commandArgs</span>(<span class="ot">TRUE</span>))
-if (!<span class="kw">length</span>(cargs)) <span class="kw">q</span>(<span class="st">"no"</span>) else for (z in <span class="dv">1</span>:<span class="kw">length</span>(cargs)) <span class="kw">eval</span>(<span class="kw">parse</span>(<span class="dt">text =</span> cargs[[z]]))
+<span class="cf">if</span> (<span class="op">!</span><span class="kw">length</span>(cargs)) <span class="kw">q</span>(<span class="st">"no"</span>) <span class="cf">else</span> <span class="cf">for</span> (z <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(cargs)) <span class="kw">eval</span>(<span class="kw">parse</span>(<span class="dt">text =</span> cargs[[z]]))
 <span class="kw"><a href="../reference/extract_alf_stops.html">prep_alf_stops</a></span>()
-if (!<span class="kw">exists</span>(<span class="st">"in_dir"</span>)) in_dir &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw"><a href="../reference/alfdef.html">alfdef</a></span>()$alf_extract_dir, project, 
+<span class="cf">if</span> (<span class="op">!</span><span class="kw">exists</span>(<span class="st">"in_dir"</span>)) in_dir &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw"><a href="../reference/alfdef.html">alfdef</a></span>()<span class="op">$</span>alf_extract_dir, project, 
     <span class="st">"extractions"</span>)
-if (!<span class="kw">exists</span>(<span class="st">"out_dir"</span>)) out_dir &lt;-<span class="st"> </span><span class="kw">file.path</span>(snapprep::<span class="kw">snapdef</span>()$dist_dir, <span class="st">"alfresco"</span>, 
+<span class="cf">if</span> (<span class="op">!</span><span class="kw">exists</span>(<span class="st">"out_dir"</span>)) out_dir &lt;-<span class="st"> </span><span class="kw">file.path</span>(snapprep<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/snapprep/topics/snapdef">snapdef</a></span>()<span class="op">$</span>dist_dir, <span class="st">"alfresco"</span>, 
     project)
 <span class="kw">dir.create</span>(out_dir, <span class="dt">showWarnings =</span> <span class="ot">FALSE</span>, <span class="dt">recursive =</span> <span class="ot">TRUE</span>)
 inputs &lt;-<span class="st"> </span><span class="kw"><a href="../reference/alf_dist_inputs.html">alf_dist_inputs</a></span>(project)
-n &lt;-<span class="st"> </span>purrr::<span class="kw">map_int</span>(<span class="kw">c</span>(<span class="st">"fsv"</span>, <span class="st">"veg"</span>, <span class="st">"age"</span>), ~{
-    x &lt;-<span class="st"> </span>dplyr::<span class="kw">filter</span>(inputs, Var ==<span class="st"> </span>.x)
-    <span class="kw">length</span>(<span class="kw">unique</span>(<span class="kw">paste</span>(x$LocGroup, x$Location)))
+n &lt;-<span class="st"> </span>purrr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/purrr/topics/map">map_int</a></span>(<span class="kw">c</span>(<span class="st">"fsv"</span>, <span class="st">"veg"</span>, <span class="st">"age"</span>), <span class="op">~</span>{
+    x &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(inputs, Var <span class="op">==</span><span class="st"> </span>.x)
+    <span class="kw">length</span>(<span class="kw">unique</span>(<span class="kw">paste</span>(x<span class="op">$</span>LocGroup, x<span class="op">$</span>Location)))
 })
 mc.cores &lt;-<span class="st"> </span><span class="dv">32</span>
 
-<span class="kw">mclapply</span>(<span class="dv">1</span>:n[<span class="dv">1</span>], alf_dist, <span class="dt">in_dir =</span> <span class="kw">file.path</span>(in_dir, <span class="st">"fsv"</span>), <span class="dt">out_dir =</span> out_dir, 
+<span class="kw">mclapply</span>(<span class="dv">1</span><span class="op">:</span>n[<span class="dv">1</span>], alf_dist, <span class="dt">in_dir =</span> <span class="kw">file.path</span>(in_dir, <span class="st">"fsv"</span>), <span class="dt">out_dir =</span> out_dir, 
     <span class="dt">period =</span> period, <span class="dt">reps =</span> reps, <span class="dt">mc.cores =</span> mc.cores)
-<span class="kw">mclapply</span>(<span class="dv">1</span>:n[<span class="dv">2</span>], alf_dist, <span class="dt">in_dir =</span> <span class="kw">file.path</span>(in_dir, <span class="st">"veg"</span>), <span class="dt">out_dir =</span> out_dir, 
+<span class="kw">mclapply</span>(<span class="dv">1</span><span class="op">:</span>n[<span class="dv">2</span>], alf_dist, <span class="dt">in_dir =</span> <span class="kw">file.path</span>(in_dir, <span class="st">"veg"</span>), <span class="dt">out_dir =</span> out_dir, 
     <span class="dt">period =</span> period, <span class="dt">reps =</span> reps, <span class="dt">mc.cores =</span> mc.cores)
-<span class="kw">mclapply</span>(<span class="dv">1</span>:n[<span class="dv">3</span>], alf_dist, <span class="dt">in_dir =</span> <span class="kw">file.path</span>(in_dir, <span class="st">"age"</span>), <span class="dt">out_dir =</span> out_dir, 
+<span class="kw">mclapply</span>(<span class="dv">1</span><span class="op">:</span>n[<span class="dv">3</span>], alf_dist, <span class="dt">in_dir =</span> <span class="kw">file.path</span>(in_dir, <span class="st">"age"</span>), <span class="dt">out_dir =</span> out_dir, 
     <span class="dt">period =</span> period, <span class="dt">reps =</span> reps, <span class="dt">mc.cores =</span> mc.cores)</code></pre></div>
 </div>
 <div id="curated-output" class="section level3">
 <h3 class="hasAnchor">
 <a href="#curated-output" class="anchor"></a>Curated output</h3>
 <p>Then for example, execute on the historical period extractions after exiting R. Remember that string arguments need to be escaped as shown below.</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">sbatch</span> alf_prep.slurm period=<span class="dt">\'</span>historical<span class="dt">\'</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">sbatch</span> alf_prep.slurm period=<span class="dt">\'</span>historical<span class="dt">\'</span></code></pre></div>
 <p>By default the .rds files containing the probability distributions data frames are saved to:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">snapprep::<span class="kw">snapdef</span>()$dist_dir
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">snapprep<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/snapprep/topics/snapdef">snapdef</a></span>()<span class="op">$</span>dist_dir
 <span class="co">#&gt; [1] "/workspace/UA/mfleonawicz/data"</span></code></pre></div>
 <p>Note that you won’t have access to this or some other directories on the Atlas file system or the SNAP network, so make sure to specify alternate <code>in_dir</code> and <code>out_dir</code> paths as necessary.</p>
 <p>These files represent the final output of the ALFRESCO outputs data processing pipeline. The .rds files containing the data frames of random variable empirical estimated probability densities for a range of geographic regions, climate models, emissions scenarios and time periods are utilized extensively in a number of downstream SNAP projects. Some of these data sets are also incorporated into a variety of SNAPverse data packages for use by a broader audience.</p>

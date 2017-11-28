@@ -186,7 +186,7 @@
     <div class="page-header toc-ignore">
       <h1>JFSP fire management treatments</h1>
             
-            <h4 class="date">2017-10-03</h4>
+            <h4 class="date">2017-11-28</h4>
           </div>
 
     
@@ -207,9 +207,9 @@ d &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fsdf.html
 d2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fmo_cb_reduction.html">fmo_cb_reduction</a></span>(d)
 
 lev &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"Control"</span>, <span class="st">"Tx: 50s/75i"</span>)
-dex &lt;-<span class="st"> </span><span class="kw">select</span>(d, <span class="dv">7</span>:<span class="dv">10</span>) %&gt;%<span class="st"> </span><span class="kw">filter</span>(FMO %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">"fmo00s00i"</span>, <span class="st">"fmo50s75i"</span>)) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">FMO =</span> <span class="kw">factor</span>(<span class="kw">ifelse</span>(FMO ==<span class="st"> "fmo00s00i"</span>, lev[<span class="dv">1</span>], lev[<span class="dv">2</span>]), <span class="dt">levels =</span> lev), 
-        <span class="dt">FS =</span> FS/<span class="dv">1000</span>, <span class="dt">CBA =</span> CBA/<span class="dv">1000</span>)</code></pre></div>
+dex &lt;-<span class="st"> </span><span class="kw">select</span>(d, <span class="dv">7</span><span class="op">:</span><span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(FMO <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">"fmo00s00i"</span>, <span class="st">"fmo50s75i"</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">FMO =</span> <span class="kw">factor</span>(<span class="kw">ifelse</span>(FMO <span class="op">==</span><span class="st"> "fmo00s00i"</span>, lev[<span class="dv">1</span>], lev[<span class="dv">2</span>]), <span class="dt">levels =</span> lev), 
+        <span class="dt">FS =</span> FS<span class="op">/</span><span class="dv">1000</span>, <span class="dt">CBA =</span> CBA<span class="op">/</span><span class="dv">1000</span>)</code></pre></div>
 </div>
 <div id="results" class="section level2">
 <h2 class="hasAnchor">
