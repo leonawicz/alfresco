@@ -52,7 +52,8 @@ The extracted data depends on \code{type}, which is \code{"fsv"} for fire size b
 A project refers to a collection of output directories pertaining to the set of climate models and emissions scenarios/RCPs
 that were used in project simulations. This function returns the full file path to each pertinent directory, given a valid \code{domain}
 and \code{project}.
-Valid projects for Alaska/western Canada include \code{"IEM"} and \code{"FMO_Calibrated"}. For Alaska "statewide", it is \code{"CMIP5_SW"}.
+Valid projects for Alaska/western Canada include \code{"IEM"} and \code{"FMO_Calibrated"}.
+For Alaska "statewide", it is \code{"JFSP"} and \code{"CMIP5_SW"}.
 \code{mc.cores} is used explicitly when \code{rmpi = FALSE} for \code{parallel::mclapply} instead of multi-node processing.
 
 Extracted data are subsequently curated into estimated probability distribution tables by \link{run_alf_extraction}.
