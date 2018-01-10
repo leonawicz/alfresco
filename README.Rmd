@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 R is used to manipulate and analyze data that both feed into and come out of the ALFRESCO wildfire model. 
 The `alfresco` R package contains functions for working with ALFRESCO input and output data. 
-It is a core functional package in the SNAPverse collection of R packages.
+It is a core functional package in the [SNAPverse](https://leonawicz.github.io/snapverse/) collection of R packages.
 
 ## Features
 
@@ -48,6 +48,6 @@ devtools::install_github("leonawicz/alfresco")
 is_md <- knitr::opts_knit$get("rmarkdown.pandoc.to") == "markdown_github-ascii_identifiers"
 ```
 
-```{r md_doc3, echo = FALSE, results = "asis", eval = is_md}
-cat('## Reference\n\n[Package reference and function documentation](https://leonawicz.github.io/alfresco/)')
+```{r md_pkg_ref, echo = FALSE, results = "asis", eval = is_md}
+cat('## Reference\n\n[Complete package reference and function documentation](https://leonawicz.github.io/alfresco/)')
 ```
