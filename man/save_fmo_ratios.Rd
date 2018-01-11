@@ -6,7 +6,7 @@
 \usage{
 save_fmo_ratios(type = "both", out_dir = ".", unmanaged = 1,
   limited = 1, modified = 1.25, full = 1.5, critical = 1.75,
-  width = 1000, height = 1000)
+  other = 1, width = 1000, height = 1000)
 }
 \arguments{
 \item{type}{character, \code{"sensitivity"}, \code{"ignition"} or \code{"both"}.}
@@ -22,6 +22,8 @@ save_fmo_ratios(type = "both", out_dir = ".", unmanaged = 1,
 \item{full}{numeric, ratio value to set for full fire management grid cells.}
 
 \item{critical}{numeric, ratio value to set for critical fire management grid cells.}
+
+\item{other}{numeric, ratio value to set for any other grid cells.}
 
 \item{width}{numeric, png width.}
 
