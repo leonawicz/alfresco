@@ -43,7 +43,7 @@ save_fmo_ratios <- function(type = "both", out_dir = ".", unmanaged = 1, limited
     raster::writeRaster(r, file, overwrite = TRUE, datatype = "FLT4S")
   }
   r <- raster::ratify(r)
-  lev <- levels(r)[[1]]
+  lev <- raster::levels(r)[[1]]
   clrs <- c("#eeeeee", rev(RColorBrewer::brewer.pal(9, "Spectral")[1:(length(lev$ID) - 1)]))
   suffix <- if(type != "sensitivity") "ignition" else "sensitivity"
   suffix2 <- if(type != "sensitivity") "ignition factor" else "fire sensitivity"
