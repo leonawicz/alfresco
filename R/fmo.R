@@ -23,7 +23,7 @@
 #' @examples
 #' \dontrun{save_fmo_ratios()}
 save_fmo_ratios <- function(type = "both", out_dir = ".", unmanaged = 1, limited = 1,
-                            modified = 1.25, full = 1.5, critical = 1.75, width = 1000, height = 1000){
+                            modified = 1.25, full = 1.5, critical = 1.75, other = 1, width = 1000, height = 1000){
   if(!isNamespaceLoaded("raster")) attachNamespace("raster")
   if(!type %in% c("both", "sensitivity", "ignition"))
     stop("`type` must be 'sensitivity', 'ignition' or 'both'.")
@@ -34,6 +34,7 @@ save_fmo_ratios <- function(type = "both", out_dir = ".", unmanaged = 1, limited
   r[r0 == 2] <- modified
   r[r0 == 3] <- critical
   r[r0 == 4] <- full
+  r[r0 > 4] <- other
   if(type == "both"){
     file <- paste0(out_dir, "/fmo_2017_buffered_", c("ig", "fs"), ".tif") # nolint
     purrr::walk(file, ~raster::writeRaster(r, .x[1], overwrite = TRUE, datatype = "FLT4S"))
