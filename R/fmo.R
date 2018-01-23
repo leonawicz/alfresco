@@ -164,3 +164,35 @@ fmo_cb_reduction <- function(data, pretty_names = TRUE){
   }
   data
 }
+
+#' Burn area by FMO zone
+#'
+#' Generate a data frame of mean (across replicates) annual burn area by fire management options zones.
+#'
+#' @param in_dir input directory, a \code{Maps} directory for ALFRESCO run output.
+#' @param years integer.
+#' @param id integer, 0 through 5 available, pertaining to ID codes for FMO zones.
+#' @param labels character, labels for \code{id} values.
+#'
+#' @return a data frame.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' ba_fmo(".", 1950:2013, 0:5)
+#' }
+ba_fmo <- function(in_dir, years, id = 0:5,
+                      labels = c("Unmanaged", "Limited", "Modified", "Critical", "Full", "Other")){
+  r <- snapgrid::swfmo
+  idx <- purrr::map(id, ~which(r[] == .x))
+  f <- function(year, id){
+    files <- list.files(file.path(in_dir, year), pattern = "^FireScar", full.names = TRUE)
+    s <- raster::readAll(raster::stack(files, quick = TRUE))
+    x <- purrr::map_dbl(idx, ~length(which(!is.na(as.numeric(raster::extract(s, .x))))) / raster::nlayers(s))
+    x <- do.call(tibble::data_frame, as.list(c(year, x)))
+    names(x) <- c("Year", labels[id + 1])
+    x
+  }
+  purrr::map(years, ~f(.x, id)) %>% dplyr::bind_rows()
+}
+
