@@ -1,6 +1,8 @@
-# alfresco 0.2.2 (Release date: 2017-01-23)
+# alfresco 0.2.2 (Release date: 2018-01-23)
 
 * Updated FMO map generation functions based on new map versions in `snapgrid` package.
+* Updated R function for generating slurm scripts for Atlas jobs. Added a `partition` argument.
+* Updated documentation.
 
 # alfresco 0.2.1 (Release date: 2017-10-02)
 
