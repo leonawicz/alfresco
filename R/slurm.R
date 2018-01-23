@@ -8,7 +8,7 @@
 #' The scripts are typically used in this fashion, but they can also be generating with \code{rmpi = FALSE}, in which case \code{nodes}
 #' need only be 1.
 #'
-#' Formal SLURM job arguments are passed by \code{ntasks}, \code{nodes}, \code{ntasks_per_node}, \code{exclusive} and \code{email}.
+#' Formal SLURM job arguments are passed by \code{ntasks}, \code{nodes}, \code{ntasks_per_node}, \code{exclusive}, \code{email} and \code{partition}.
 #' General script setup arguments include \code{out_dir}, \code{file}, \code{copy_rscript} and \code{max_cores}.
 #' All other arguments refer to those passed to the \code{Rscript} call within the slurm script.
 #' Any of these that are \code{NULL} are ignored and it is assumed they will be passed explicitly as name-value pairs (in any order)
@@ -51,6 +51,7 @@
 #' @param repSample optional numeric vector of reps for subsampling, e.g., \code{1:30}.
 #' @param locgroup optional character string naming a specific Location Group to process extraction for instead of all Location Groups.
 #' @param email defaults to the author/maintainer/user.
+#' @param partition defaults to \code{"main"}.
 #' @param copy_rscript logical, also copy template R script from \code{alfresco} package along with the generated slurm script. Defaults to \code{TRUE}.
 #' @param max_cores maximum number of processors to use on a single Atlas node, defaults to 32.
 #'
@@ -67,7 +68,7 @@ alf_extract_slurm <- function( # nolint start
   out_dir = alfdef()$alf_slurm_dir, file = "alf_extract.R",
   ntasks, nodes, ntasks_per_node, exclusive = TRUE,
   domain = "akcan1km", rmpi = TRUE, modelIndex = NULL, project = NULL, years = NULL, reps = NULL,
-  cru = NULL, repSample = NULL, locgroup = NULL, email = "mfleonawicz@alaska.edu",
+  cru = NULL, repSample = NULL, locgroup = NULL, email = "mfleonawicz@alaska.edu", partition = "main",
   copy_rscript = TRUE, max_cores = 32){
 
   if(!is.null(domain) && !domain %in% c("akcan1km", "ak1km"))
@@ -87,7 +88,7 @@ alf_extract_slurm <- function( # nolint start
   x <- "#!/bin/bash\nexport LD_LIBRARY_PATH=/usr/lib64/openmpi/lib:$LD_LIBRARY_PATH\n"
   if(exclusive) x <- paste0(x, "#SBATCH --exclusive\n")
   x <- paste0(
-    x, "#SBATCH --mail-type=END\n#SBATCH --mail-user=", email, "\n#SBATCH --account=snap\n#SBATCH -p main\n",
+    x, "#SBATCH --mail-type=END\n#SBATCH --mail-user=", email, "\n#SBATCH --account=snap\n#SBATCH -p ", partition, "\n",
     "#SBATCH --ntasks=", ntasks, " # one for each year\n", "#SBATCH --job-name=", job_name, "\n",
     "#SBATCH --nodes=", nodes, "\n#SBATCH --ntasks-per-node=", ntasks_per_node, "\n\n")
   x <- paste0(

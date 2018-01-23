@@ -17,7 +17,7 @@ save_fmo_panel(out_dir = ".", width = 1200, height = 800)
 Save fire management options panel plot showing each FMO layer.
 }
 \details{
-This functions save a png graphic of the 15-km buffered FMO management IDs raster layer from the \code{snapgrid} package.
+This functions save a png graphic of the standard FMO management IDs raster layer from the \code{snapgrid} package.
 }
 \examples{
 \dontrun{save_fmo_panel()}

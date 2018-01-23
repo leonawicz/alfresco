@@ -5,7 +5,7 @@
 #' This functions save a geotiff of the FMO ratios raster layer and an accompanying png graphic.
 #' If \code{type = "both"}, the same pair of files is saved for ALFRESCO ignition factor input geotiff suppression and
 #' ALFRESCO fire sensitivity input geotiff suppression.
-#' It uses \code{swfmoBuffer} from the \code{snapgrid} package. The \code{snapgrid} package also includes \code{swfmoRatios},
+#' It uses \code{swfmo} from the \code{snapgrid} package. The \code{snapgrid} package also includes \code{swratios},
 #' the same FMO ratios map that this function creates using default arguments.
 #'
 #' @param type character, \code{"sensitivity"}, \code{"ignition"} or \code{"both"}.
@@ -71,7 +71,7 @@ save_fmo_ratios <- function(type = "both", out_dir = ".", unmanaged = 1, limited
 #'
 #' Save fire management options panel plot showing each FMO layer.
 #'
-#' This functions save a png graphic of the 15-km buffered FMO management IDs raster layer from the \code{snapgrid} package.
+#' This functions save a png graphic of the standard FMO management IDs raster layer from the \code{snapgrid} package.
 #'
 #' @param out_dir output directory.
 #' @param width numeric, png width.
