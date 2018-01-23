@@ -65,6 +65,7 @@ reference:
   - save_fmo_ratios
   - save_fmo_panel
   - fmo_cb_reduction
+  - ba_fmo
 - title: File system data organization
   contents:
   - outputs_as_inputs
