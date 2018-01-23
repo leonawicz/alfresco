@@ -220,7 +220,7 @@
     
 
     <pre class="usage"><span class='fu'>save_fmo_ratios</span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"both"</span>, <span class='kw'>out_dir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>unmanaged</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>limited</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>modified</span> <span class='kw'>=</span> <span class='fl'>1.25</span>, <span class='kw'>full</span> <span class='kw'>=</span> <span class='fl'>1.5</span>, <span class='kw'>critical</span> <span class='kw'>=</span> <span class='fl'>1.75</span>,
+  <span class='kw'>limited</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>modified</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>full</span> <span class='kw'>=</span> <span class='fl'>1.5</span>, <span class='kw'>critical</span> <span class='kw'>=</span> <span class='fl'>1.75</span>, <span class='kw'>other</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>1000</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
@@ -255,6 +255,10 @@
       <td><p>numeric, ratio value to set for critical fire management grid cells.</p></td>
     </tr>
     <tr>
+      <th>other</th>
+      <td><p>numeric, ratio value to set for any other grid cells.</p></td>
+    </tr>
+    <tr>
       <th>width</th>
       <td><p>numeric, png width.</p></td>
     </tr>
@@ -269,7 +273,7 @@
     <p>This functions save a geotiff of the FMO ratios raster layer and an accompanying png graphic.
 If <code>type = "both"</code>, the same pair of files is saved for ALFRESCO ignition factor input geotiff suppression and
 ALFRESCO fire sensitivity input geotiff suppression.
-It uses <code>swfmoBuffer</code> from the <code>snapgrid</code> package. The <code>snapgrid</code> package also includes <code>swfmoRatios</code>,
+It uses <code>swfmo</code> from the <code>snapgrid</code> package. The <code>snapgrid</code> package also includes <code>swratios</code>,
 the same FMO ratios map that this function creates using default arguments.</p>
     
 
