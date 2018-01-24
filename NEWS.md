@@ -3,6 +3,7 @@
 * Updated FMO map generation functions based on new map versions in `snapgrid` package.
 * Updated R function for generating slurm scripts for Atlas jobs. Added a `partition` argument.
 * Added `ba_fmo` for computing burn area by FMO zone for each year, averaged across replicates.
+* Package now depends on raster.
 * Updated documentation.
 
 # alfresco 0.2.1 (Release date: 2017-10-02)

@@ -13,6 +13,8 @@ LazyData: true
 ByteCompile: true
 Url: https://github.com/leonawicz/alfresco
 BugReports: https://github.com/leonawicz/alfresco/issues
+Depends:
+    raster
 Suggests:
     testthat,
     covr,
@@ -23,7 +25,6 @@ Imports:
     RColorBrewer,
     Cairo,
     rgdal,
-    raster,
     rasterVis,
     dplyr,
     purrr,
