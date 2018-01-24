@@ -187,11 +187,11 @@ ba_fmo <- function(in_dir, years, id = 0:5,
   idx <- purrr::map(id, ~which(r[] == .x))
   f <- function(year, id){
     files <- list.files(file.path(in_dir, year), pattern = "^FireScar", full.names = TRUE)
-    s <- raster::readAll(raster::stack(files, quick = TRUE))
+    s <- raster::readAll(raster::stack(files, bands = 2))
     x <- purrr::map_dbl(idx, ~length(which(!is.na(as.numeric(raster::extract(s, .x))))) / raster::nlayers(s))
-    x <- do.call(tibble::data_frame, as.list(c(year, x)))
+    x <- c(year, x)
     names(x) <- c("Year", labels[id + 1])
-    x
+    do.call(tibble::data_frame, as.list(x))
   }
   purrr::map(years, ~f(.x, id)) %>% dplyr::bind_rows()
 }
