@@ -24,7 +24,7 @@
 #' @examples
 #' \dontrun{save_fmo_ratios()}
 save_fmo_ratios <- function(type = "both", out_dir = ".", unmanaged = 1, limited = 1,
-                            modified = 1, full = 1.5, critical = 1.75, other = 1, width = 1000, height = 1000){
+                            modified = 1, full = 1.25, critical = 1.75, other = 1, width = 1000, height = 1000){
   if(!type %in% c("both", "sensitivity", "ignition"))
     stop("`type` must be 'sensitivity', 'ignition' or 'both'.")
   r0 <- snapgrid::swfmo
