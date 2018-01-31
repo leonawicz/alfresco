@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fire probabilities for point locations — point_probs â€¢ alfresco</title>
+<title>Historical Alaska annual burn area by fire management options zones (FMOs). — obs_fmo_ba â€¢ alfresco</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -212,100 +212,29 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fire probabilities for point locations</h1>
+    <h1>Historical Alaska annual burn area by fire management options zones (FMOs).</h1>
     </div>
 
     
-    <p>Estimate fire probability for multiple point locations.</p>
+    <p>A data frame of annual empirical, observed historical burn areas in Alaska assembled from 1950 - 2013 fire perimeter data.
+The total burn area is segmented into that falling into each of six exhaustive and mutually exclusive regional zones based on existing fire management options.</p>
     
 
-    <pre class="usage"><span class='fu'>point_probs</span>(<span class='no'>r</span>, <span class='no'>xy</span>, <span class='no'>id</span>, <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>20000</span>, <span class='kw'>weight</span> <span class='kw'>=</span> <span class='st'>"linear"</span>,
-  <span class='kw'>lonlat_to_akalbers</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>veg_labels</span>, <span class='kw'>covariates</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>veg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>age</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max.cores</span> <span class='kw'>=</span> <span class='fl'>32</span>)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>r</th>
-      <td><p>raster layer or path to file, an ALFRESCO fire scar output geotiff.</p></td>
-    </tr>
-    <tr>
-      <th>xy</th>
-      <td><p>a 2-column data frame or matrix of longitude and latitude.</p></td>
-    </tr>
-    <tr>
-      <th>id</th>
-      <td><p>a vector of IDs or names associated with the locations in the rows of <code>xy</code>.</p></td>
-    </tr>
-    <tr>
-      <th>buffer</th>
-      <td><p>radius of buffer around <code>xy</code>.</p></td>
-    </tr>
-    <tr>
-      <th>weight</th>
-      <td><p>inverse distance weighting, <code>"linear"</code> or <code>"quadratic"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>lonlat_to_akalbers</th>
-      <td><p>if <code>xy</code> is unprojected (lon/lat), reproject to NAD83 Alaska Albers equal area conic projection.</p></td>
-    </tr>
-    <tr>
-      <th>veg_labels</th>
-      <td><p>character, vector of vegetation labels. If missing, they are assumed from <code><a href='get_veg_labels.html'>get_veg_labels("ak1km")</a></code>.</p></td>
-    </tr>
-    <tr>
-      <th>covariates</th>
-      <td><p>logical, if <code>TRUE</code> (default), then a wide data frame is returned that includes additional spatially aggregated covariates. See details.</p></td>
-    </tr>
-    <tr>
-      <th>veg</th>
-      <td><p>same as<code>r</code> but for accompanying vegetation class ALFRESCO output.</p></td>
-    </tr>
-    <tr>
-      <th>age</th>
-      <td><p>same as<code>r</code> but for accompanying vegetation age ALFRESCO output. See details.</p></td>
-    </tr>
-    <tr>
-      <th>max.cores</th>
-      <td><p>integer, maximum number of processors, defaults to 32 for Atlas compute node.</p></td>
-    </tr>
-    </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <pre class="usage"><span class='no'>obs_fmo_ba</span></pre>
+        
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>a data frame containing a logical column indicating burn or no burn,
-a column of distances from point location, and a column of weights.</p>
-    
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>This function is a wrapper around <a href='fire_weights.html'>fire_weights</a> and <a href='fire_probs.html'>fire_probs</a>.
-It uses parallel processing via <code><a href='http://www.rdocumentation.org/packages/parallel/topics/mcdummies'>parallel::mclapply</a></code> to apply these functions to multiple point locations.
-See these functions for further details.</p>
-<p>It is recommended to not use <code>age</code> because ALFRESCO has a longstanding bug involving geographic areas of uninitialized ages,
-resulting in extreme negative age values that ruin analyses unless the user first implements their own fix to any age geotiffs before using them.</p>
+    <p>A data frame with 64 rows and 8 columns: Set (Observed), Year, and six columns providing the total burn area within each of six FMOs: Unmanaged, Limited, Modified, Full, Critical and Other.
+There is one row for each year.</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>scar</span> <span class='kw'>&lt;-</span> <span class='st'>"FireScar_0_2004.tif"</span>
-<span class='no'>veg</span> <span class='kw'>&lt;-</span> <span class='st'>"Veg_0_2004.tif"</span>
-<span class='no'>age</span> <span class='kw'>&lt;-</span> <span class='st'>"Age_0_2004.tif"</span>
-<span class='no'>coords</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>lon</span> <span class='kw'>=</span> <span class='fu'>c</span>(-<span class='fl'>146</span>, -<span class='fl'>150</span>), <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>64</span>, <span class='fl'>67</span>))
-<span class='fu'>point_probs</span>(<span class='kw'>r</span> <span class='kw'>=</span> <span class='no'>scar</span>, <span class='kw'>xy</span> <span class='kw'>=</span> <span class='no'>coords</span>, <span class='kw'>id</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"point1"</span>, <span class='st'>"point2"</span>), <span class='kw'>veg</span> <span class='kw'>=</span> <span class='no'>veg</span>, <span class='kw'>age</span> <span class='kw'>=</span> <span class='no'>age</span>)
-<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+      <li><a href="#format">Format</a></li>
+          </ul>
 
   </div>
 </div>

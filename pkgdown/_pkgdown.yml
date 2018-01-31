@@ -78,6 +78,7 @@ reference:
   - prep_comArgs
   - prep_alf_frp
 - title: Data
+  contents:
   - obs_fmo_ba
 
 navbar:
