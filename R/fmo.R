@@ -183,11 +183,10 @@ fmo_cb_reduction <- function(data, pretty_names = TRUE){
 #' }
 ba_fmo <- function(in_dir, years, id = 0:5,
                       labels = c("Unmanaged", "Limited", "Modified", "Critical", "Full", "Other")){
-  r <- snapgrid::swfmo
-  idx <- purrr::map(id, ~which(r[] == .x))
+  idx <- purrr::map(id, ~which(snapgrid::swfmo[] == .x))
   f <- function(year, id){
     files <- list.files(file.path(in_dir, year), pattern = "^FireScar", full.names = TRUE)
-    s <- raster::readAll(raster::stack(files, bands = 2))
+    s <- raster::readAll(raster::stack(files, bands = 2)) # nolint
     x <- purrr::map_dbl(idx, ~length(which(!is.na(as.numeric(raster::extract(s, .x))))) / raster::nlayers(s))
     x <- c(year, x)
     names(x) <- c("Year", labels[id + 1])
@@ -195,4 +194,3 @@ ba_fmo <- function(in_dir, years, id = 0:5,
   }
   purrr::map(years, ~f(.x, id)) %>% dplyr::bind_rows()
 }
-
