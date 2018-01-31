@@ -36,14 +36,14 @@ a data frame containing a logical column indicating burn or no burn,
 a column of distances from point location, and a column of weights.
 }
 \description{
-Estimate fire probability for mulitple point locations.
+Estimate fire probability for multiple point locations.
 }
 \details{
 This function is a wrapper around \link{fire_weights} and \link{fire_probs}.
 It uses parallel processing via \code{parallel::mclapply} to apply these functions to multiple point locations.
 See these functions for further details.
 
-It is recommended to not use \code{age} because ALFRESCO has a longstanding bug involving geogrpahic areas of uninitialized ages,
+It is recommended to not use \code{age} because ALFRESCO has a longstanding bug involving geographic areas of uninitialized ages,
 resulting in extreme negative age values that ruin analyses unless the user first implements their own fix to any age geotiffs before using them.
 }
 \examples{

@@ -6,7 +6,7 @@
 #' the corresponding percent change vs. both the empirically observed CBA and the baseline/status quo (no fire management options)
 #' model run over the same historical period.
 #'
-#' @param files vector of workspace files from ALFRESCO outputs Shiny app; basenames expected to begin with \code{fmo} formate, e.g., \code{fmo00s00i}.
+#' @param files vector of workspace files from ALFRESCO outputs Shiny app; run directory basename format expected to begin with \code{fmo}, e.g., \code{fmo00s00i}.
 #' @param years numeric, defaults to \code{1950:2013}.
 #' @param domain character, \code{"Full"} or \code{"Masked"}, the full ALFRESCO run domain or the subregion masked to the extent of observed historical fire.
 #'

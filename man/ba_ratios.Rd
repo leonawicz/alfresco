@@ -7,7 +7,7 @@
 ba_ratios(files, years = 1950:2013, domain = "Full")
 }
 \arguments{
-\item{files}{vector of workspace files from ALFRESCO outputs Shiny app; basenames expected to begin with \code{fmo} formate, e.g., \code{fmo00s00i}.}
+\item{files}{vector of workspace files from ALFRESCO outputs Shiny app; run directory basename format expected to begin with \code{fmo}, e.g., \code{fmo00s00i}.}
 
 \item{years}{numeric, defaults to \code{1950:2013}.}
 

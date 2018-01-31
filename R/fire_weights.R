@@ -9,7 +9,7 @@
 #' Fire scars that intersect the radial buffer zone contribute more to the estimated likelihood of fire
 #' for the point location the closer the fire is to the point.
 #'
-#' It is recommended to not use \code{age} because ALFRESCO has a longstanding bug involving geogrpahic areas of uninitialized ages,
+#' It is recommended to not use \code{age} because ALFRESCO has a longstanding bug involving geographic areas of uninitialized ages,
 #' resulting in extreme negative age values that ruin analyses unless the user first implements their own fix to any age geotiffs before using them.
 #'
 #' @param r raster layer or path to file, an ALFRESCO fire scar output geotiff.
@@ -77,7 +77,7 @@ fire_weights <- function(r, xy, buffer = 20000, weight = "linear",
 #' of estimated fire point probabilities based on the weights in \code{data}.
 #'
 #' \code{covariates = TRUE} returns additional variables only if at least the \code{veg} column is present in \code{data}. If not, there will be
-#' nothing additonal to return.
+#' nothing additional to return.
 #'
 #' This function returns a one-column data frame. It is called on a single point location just like \code{fire_weights}.
 #' It is generally used in a context where it is invoked multiple times applied to several point locations.
@@ -171,13 +171,13 @@ fire_probs <- function(data, veg_labels, covariates = TRUE){
 
 #' Fire probabilities for point locations
 #'
-#' Estimate fire probability for mulitple point locations.
+#' Estimate fire probability for multiple point locations.
 #'
 #' This function is a wrapper around \link{fire_weights} and \link{fire_probs}.
 #' It uses parallel processing via \code{parallel::mclapply} to apply these functions to multiple point locations.
 #' See these functions for further details.
 #'
-#' It is recommended to not use \code{age} because ALFRESCO has a longstanding bug involving geogrpahic areas of uninitialized ages,
+#' It is recommended to not use \code{age} because ALFRESCO has a longstanding bug involving geographic areas of uninitialized ages,
 #' resulting in extreme negative age values that ruin analyses unless the user first implements their own fix to any age geotiffs before using them.
 #'
 #' @param r raster layer or path to file, an ALFRESCO fire scar output geotiff.

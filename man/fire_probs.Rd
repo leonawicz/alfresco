@@ -25,7 +25,7 @@ It generates a summary data frame that includes a column \code{prop} of a simple
 of estimated fire point probabilities based on the weights in \code{data}.
 
 \code{covariates = TRUE} returns additional variables only if at least the \code{veg} column is present in \code{data}. If not, there will be
-nothing additonal to return.
+nothing additional to return.
 
 This function returns a one-column data frame. It is called on a single point location just like \code{fire_weights}.
 It is generally used in a context where it is invoked multiple times applied to several point locations.
