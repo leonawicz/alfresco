@@ -5,7 +5,7 @@
 \title{Save FMO ratios maps}
 \usage{
 save_fmo_ratios(type = "both", out_dir = ".", unmanaged = 1,
-  limited = 1, modified = 1, full = 1.25, critical = 1.75, other = 1,
+  limited = 1, modified = 1, full = 1.25, critical = 2, other = 1,
   width = 1000, height = 1000)
 }
 \arguments{

@@ -24,7 +24,7 @@
 #' @examples
 #' \dontrun{save_fmo_ratios()}
 save_fmo_ratios <- function(type = "both", out_dir = ".", unmanaged = 1, limited = 1,
-                            modified = 1, full = 1.25, critical = 1.75, other = 1, width = 1000, height = 1000){
+                            modified = 1, full = 1.25, critical = 2, other = 1, width = 1000, height = 1000){
   if(!type %in% c("both", "sensitivity", "ignition"))
     stop("`type` must be 'sensitivity', 'ignition' or 'both'.")
   r0 <- snapgrid::swfmo
@@ -95,7 +95,7 @@ save_fmo_panel <- function(out_dir = ".", width = 1200, height = 800){
   Cairo::CairoPNG(file.path(out_dir, "fmo.png"), width = width, height = height)
   print(rasterVis::levelplot(
     r, att = "class", col.regions = c("black", "#eeeeee", "dodgerblue", "orange", "firebrick"),
-    maxpixels = 1e6, main = "Standard FMO: individual and stacked overlapping layers",
+    maxpixels = 1e6, main = "FMO zones: Standard",
     xlab = NULL, ylab = NULL, scales = list(draw = FALSE),
     colorkey = list(space = "bottom", height = 1, labels = list(cex = 1.5))))
   grDevices::dev.off()
@@ -193,4 +193,43 @@ ba_fmo <- function(in_dir, years, id = 0:5,
     do.call(tibble::data_frame, as.list(x))
   }
   purrr::map(years, ~f(.x, id)) %>% dplyr::bind_rows()
+}
+
+#' Add buffer to FMO zone base map
+#'
+#' Add a buffer around any FMO zone in the FMO zone raster base map.
+#'
+#' Thius function allows for adding a buffer of different radii (in meters) around any of the unique FMO zones.
+#'
+#' @param out_dir output directory.
+#' @param file output filename.
+#' @param unmanaged numeric.
+#' @param limited numeric.
+#' @param modified numeric.
+#' @param full numeric.
+#' @param critical numeric.
+#' @param other numeric.
+#'
+#' @return nothing is returned but a file is written to disk.
+#' @export
+#'
+#' @examples
+#' \dontrun{fmo_add_buff(full = 5000)}
+fmo_add_buffer <- function(out_dir = ".", file = "fmo_buffer.tif", unmanaged = NULL, limited = NULL,
+                           modified = NULL, full = NULL, critical = NULL, other = NULL){
+  x <- as.list(raster::layerize(snapgrid::swfmo, falseNA = TRUE))
+  y <- list(unmanaged, limited, modified, critical, full, other) # nolint
+  x <- purrr::map2(x, seq_along(x), ~({
+    .x[.x == 1] <- .y - 1
+    .x
+  }))
+  x <- purrr::map(seq_along(x), ~({
+    if(is.null(y[[.x]])) return(x[[.x]])
+    r <- raster::buffer(x[[.x]], width = y[[.x]], doEdge = TRUE)
+    r[r == 1] <- .x - 1
+    r
+  }))
+  x <- do.call(raster::merge, x[c(4, 5, 3, 2, 1, 6)])
+  raster::writeRaster(x, file.path(out_dir, file), overwrite = TRUE, datatype = "FLT4S")
+  invisible()
 }
