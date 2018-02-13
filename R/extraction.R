@@ -144,9 +144,9 @@ get_out_dirs <- function(domain, project, cru, cru_id = "CRU 3.2"){
 .alf_project_dirs <- function(project, cru, cru_id){
   subproj <- dirname(project) != "."
   if(subproj){
-    project_name <- project
-  } else {
     project_name <- dirname(project)
+  } else {
+    project_name <- project
   }
   if(project_name == "JFSP"){
     project_path <- file.path("/atlas_scratch/mfleonawicz/alfresco", project_name, "outputs") # nolint
