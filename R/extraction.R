@@ -129,8 +129,9 @@ get_veg_labels <- function(domain = "akcan1km"){
 #' \dontrun{domain = "ak1km", project = "CMIP5_SW", cru = TRUE}
 get_out_dirs <- function(domain, project, cru, cru_id = "CRU 3.2"){
   if(!domain %in% c("akcan1km", "ak1km")) stop("`domain` must be 'akcan1km' or 'ak1km'.")
-  if(!project %in% .valid_alf_projects(domain))
-    stop(paste(project, "is not a valid project in the", domain, "domain"))
+  project_name <- ifelse(dirname(project) == ".", project, dirname(project))
+  if(!project_name %in% .valid_alf_projects(domain))
+    stop(paste(project_name, "is not a valid project in the", domain, "domain"))
   .alf_project_dirs(project, cru, cru_id)
 }
 
@@ -141,13 +142,23 @@ get_out_dirs <- function(domain, project, cru, cru_id = "CRU 3.2"){
 }
 
 .alf_project_dirs <- function(project, cru, cru_id){
+  subproj <- dirname(project) != "."
+  if(subproj){
+    project_name <- project
+  } else {
+    project_name <- dirname(project)
+  }
+  if(project_name == "JFSP"){
+    project_path <- file.path("/atlas_scratch/mfleonawicz/alfresco", project_name, "outputs") # nolint
+    if(subproj) project_path <- file.path(project_path, basename(project))
+  }
   if(cru){
     pat <- gsub("\\.| ", "", cru_id)
   } else {
-    pat <- switch(project, "IEM" = ".*.sres.*.", "FMO_Calibrated" = ".*.rcp.*.",
+    pat <- switch(project_name, "IEM" = ".*.sres.*.", "FMO_Calibrated" = ".*.rcp.*.",
                   "CMIP5_SW" = "^rcp.*.", "JFSP" = "^fmo.*.")
   }
-  switch(project,
+  switch(project_name,
          "IEM" = list.files(
            "/atlas_scratch/mfleonawicz/alfresco/IEM/outputs/FinalCalib", # nolint
            pattern = pat, full.names = TRUE),
@@ -157,9 +168,8 @@ get_out_dirs <- function(domain, project, cru, cru_id = "CRU 3.2"){
          "CMIP5_SW" = list.files(
            "/atlas_scratch/mfleonawicz/alfresco/CMIP5_Statewide/outputs/5m", # nolint
            pattern = pat, full.names = TRUE),
-         "JFSP" = list.files(
-           "/atlas_scratch/mfleonawicz/alfresco/JFSP/outputs", # nolint
-           pattern = pat, full.names = TRUE))
+         "JFSP" = list.files(project_path, pattern = pat, full.names = TRUE)
+  )
 }
 
 swapModelName <- function(x){
@@ -195,7 +205,7 @@ getPhase <- function(x){
 #' that were used in project simulations. This function returns the full file path to each pertinent directory, given a valid \code{domain}
 #' and \code{project}.
 #' Valid projects for Alaska/western Canada include \code{"IEM"} and \code{"FMO_Calibrated"}.
-#' For Alaska "statewide", it is \code{"JFSP"} and \code{"CMIP5_SW"}.
+#' For Alaska "statewide", it is \code{"JFSP"} and \code{"CMIP5_SW"}. JFSP project names allow subproject/treatment run directories, e.g. \code{"JFSP/tx1"}.
 #' \code{mc.cores} is used explicitly when \code{rmpi = FALSE} for \code{parallel::mclapply} instead of multi-node processing.
 #'
 #' Extracted data are subsequently curated into estimated probability distribution tables by \link{run_alf_extraction}.
@@ -358,8 +368,13 @@ run_alf_extraction <- function(domain = "akcan1km", type, loop_by = "rep", main_
   mod.scen <- paste0(mod.scen, collapse = "__")
   locs <- unique(paste0(d$LocGroup, "__", d$Location))
   unique_name <- paste0(locs, "__", mod.scen)
-  dir.create(var_dir <- file.path(out_dir, project, "extractions", var_id),
-             recursive = TRUE, showWarnings = FALSE)
+  if(dirname(project) != "."){
+    project <- strsplit(project, "/")[[1]]
+    project <- file.path(project[1], "extractions", project[2])
+  } else {
+    project <- file.path(project, "extractions")
+  }
+  dir.create(var_dir <- file.path(out_dir, project, var_id), recursive = TRUE, showWarnings = FALSE)
   for(j in seq_along(unique_name)){
     filename_tmp <- paste0(var_id, "__", unique_name[j], ".rds")
     d2 <- dplyr::filter(

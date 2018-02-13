@@ -3,7 +3,14 @@ library(parallel)
 cargs <- (commandArgs(TRUE))
 if(!length(cargs)) q("no") else for(z in 1:length(cargs)) eval(parse(text = cargs[[z]]))
 prep_alf_stops()
-if(!exists("in_dir")) in_dir <- file.path(alfdef()$alf_extract_dir, project, "extractions")
+
+if(dirname(project) != "."){
+  in_project <- strsplit(project, "/")[[1]]
+  in_project <- file.path(in_project[1], "extractions", in_project[2])
+} else {
+  in_project <- file.path(project, "extractions")
+}
+if(!exists("in_dir")) in_dir <- file.path(alfdef()$alf_extract_dir, in_project)
 if(!exists("out_dir")) out_dir <- file.path(snapprep::snapdef()$dist_dir, "alfresco", project)
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 inputs <- alf_dist_inputs(project)

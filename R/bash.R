@@ -53,16 +53,22 @@ copy_alf_outputs <- function(project, in_dir, out_dir = alfdef()$alf_extract_dir
     " modelOut=$model # leaving destination directory same as source\n",
     " yr1=", proj_year_limits[1], "\n yr2=", proj_year_limits[2], "\nfi\n\n")
 
+  if(dirname(project) != "."){
+    project <- strsplit(project, "/")[[1]]
+    project <- file.path(project[1], "outputs", project[2])
+  } else {
+    project <- file.path(project, "outputs")
+  }
   if(ak){
     x <- paste0(
       x,
       "inDir=", in_dir, "/$fmo*$rcp*$model/Maps # source Maps directory\n",
-      "outDir=", out_dir, "/", project, "/outputs/$fmo.$rcp.$modelOut/Maps # destination Maps directory\n")
+      "outDir=", out_dir, "/", project, "/$fmo.$rcp.$modelOut/Maps # destination Maps directory\n")
   } else {
     x <- paste0(
       x,
       "inDir=", in_dir, "/$model/Maps # source Maps directory\n",
-      "outDir=", out_dir, "/", project, "/outputs/runs/$modelOut/Maps # destination Maps directory\n")
+      "outDir=", out_dir, "/", project, "/runs/$modelOut/Maps # destination Maps directory\n")
   }
   x <- paste0(
     x, "mkdir -p $outDir\n\n",
