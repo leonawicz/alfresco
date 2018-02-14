@@ -162,8 +162,15 @@ alf_dist_inputs <- function(project, in_dir){
     stop("`project` and `in_dir` cannot both be missing.")
   vars <- c("fsv", "veg", "age")
   ids <- c("Var", "LocGroup", "Location", "Model", "RCP", "FMO")
-  if(missing(in_dir))
-    in_dir <- file.path(alfdef()$alf_extract_dir, project, "extractions")
+  if(missing(in_dir)){
+    if(dirname(project) != "."){
+      project <- strsplit(project, "/")[[1]]
+      project <- file.path(project[1], "extractions", in_project[2])
+    } else {
+      project <- file.path(project, "extractions")
+    }
+    in_dir <- file.path(alfdef()$alf_extract_dir, project)
+  }
   in_dir <- file.path(in_dir, vars)
   x <- purrr::map(in_dir, ~do.call(rbind, strsplit(list.files(file.path(.x)), "__")) %>%
                     tibble::as_data_frame()) %>% dplyr::bind_rows()
