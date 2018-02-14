@@ -13,6 +13,7 @@
 #' @param out_dir output directory where random variables distribution tables are saved as .rds files.
 #' @param period character, \code{"historical"} or \code{"projected"}.
 #' @param reps integer vector, simulation replicates included in data extraction, e.g., \code{1:200}. Uses all replicates if not provided.
+#' @param project character, inferred from \code{in_dir} if \code{project = NULL}. Use this for project with subprojects/treatment group Alfresco runs.
 #'
 #' @export
 #'
@@ -20,9 +21,10 @@
 #' \dontrun{
 #' mclapply(1:n, alf_dist, in_dir, out_dir, period = period, mc.cores = mc.cores)
 #' }
-alf_dist <- function(j, in_dir, out_dir, period, reps){
+alf_dist <- function(j, in_dir, out_dir, period, reps, project = NULL){
   id <- basename(in_dir)
-  project <- basename(dirname(dirname(in_dir)))
+  p <- list(...)$project
+  if(is.null(project)) project <- basename(dirname(dirname(in_dir)))
   inputs <- alf_dist_inputs(project) %>% dplyr::filter(.data[["Var"]] == id)
   fmo <- "FMO" %in% names(inputs)
   if(fmo) all_fmo <- unique(inputs$FMO)

@@ -21,8 +21,8 @@ n <- purrr::map_int(c("fsv", "veg", "age"), ~{
 mc.cores <- 32
 
 mclapply(1:n[1], alf_dist, in_dir = file.path(in_dir, "fsv"), out_dir = out_dir,
-         period = period, reps = reps, mc.cores = mc.cores)
+         period = period, reps = reps, project = project, mc.cores = mc.cores)
 mclapply(1:n[2], alf_dist, in_dir = file.path(in_dir, "veg"), out_dir = out_dir,
-         period = period, reps = reps, mc.cores = mc.cores)
+         period = period, reps = reps, project = project, mc.cores = mc.cores)
 mclapply(1:n[3], alf_dist, in_dir = file.path(in_dir, "age"), out_dir = out_dir,
-         period = period, reps = reps, mc.cores = mc.cores)
+         period = period, reps = reps, project = project, mc.cores = mc.cores)
