@@ -23,7 +23,6 @@
 #' }
 alf_dist <- function(j, in_dir, out_dir, period, reps, project = NULL){
   id <- basename(in_dir)
-  p <- list(...)$project
   if(is.null(project)) project <- basename(dirname(dirname(in_dir)))
   inputs <- alf_dist_inputs(project) %>% dplyr::filter(.data[["Var"]] == id)
   fmo <- "FMO" %in% names(inputs)
