@@ -165,7 +165,7 @@ alf_dist_inputs <- function(project, in_dir){
   if(missing(in_dir)){
     if(dirname(project) != "."){
       project <- strsplit(project, "/")[[1]]
-      project <- file.path(project[1], "extractions", in_project[2])
+      project <- file.path(project[1], "extractions", project[2])
     } else {
       project <- file.path(project, "extractions")
     }
