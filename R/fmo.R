@@ -173,6 +173,7 @@ fmo_cb_reduction <- function(data, pretty_names = TRUE){
 #' @param years integer.
 #' @param id integer, 0 through 5 available, pertaining to ID codes for FMO zones.
 #' @param labels character, labels for \code{id} values.
+#' @param fmo_layer raster layer, optional. If \code{NULL}, the standard FMO base map from the snapgrid package is used.
 #'
 #' @return a data frame.
 #' @export
@@ -182,8 +183,10 @@ fmo_cb_reduction <- function(data, pretty_names = TRUE){
 #' ba_fmo(".", 1950:2013, 0:5)
 #' }
 ba_fmo <- function(in_dir, years, id = 0:5,
-                      labels = c("Unmanaged", "Limited", "Modified", "Critical", "Full", "Other")){
-  idx <- purrr::map(id, ~which(snapgrid::swfmo[] == .x))
+                   labels = c("Unmanaged", "Limited", "Modified", "Critical", "Full", "Other"),
+                   fmo_layer = NULL){
+  if(is.null(fmo_layer)) fmo_layer <- snapgrid::swfmo
+  idx <- purrr::map(id, ~which(fmo_layer[] == .x))
   f <- function(year, id){
     files <- list.files(file.path(in_dir, year), pattern = "^FireScar", full.names = TRUE)
     s <- raster::readAll(raster::stack(files, bands = 2)) # nolint
@@ -199,7 +202,7 @@ ba_fmo <- function(in_dir, years, id = 0:5,
 #'
 #' Add a buffer around any FMO zone in the FMO zone raster base map.
 #'
-#' Thius function allows for adding a buffer of different radii (in meters) around any of the unique FMO zones.
+#' This function allows for adding a buffer of different radii (in meters) around any of the unique FMO zones.
 #'
 #' @param out_dir output directory.
 #' @param file output filename.

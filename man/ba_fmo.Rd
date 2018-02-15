@@ -5,7 +5,7 @@
 \title{Burn area by FMO zone}
 \usage{
 ba_fmo(in_dir, years, id = 0:5, labels = c("Unmanaged", "Limited",
-  "Modified", "Critical", "Full", "Other"))
+  "Modified", "Critical", "Full", "Other"), fmo_layer = NULL)
 }
 \arguments{
 \item{in_dir}{input directory, a \code{Maps} directory for ALFRESCO run output.}
@@ -15,6 +15,8 @@ ba_fmo(in_dir, years, id = 0:5, labels = c("Unmanaged", "Limited",
 \item{id}{integer, 0 through 5 available, pertaining to ID codes for FMO zones.}
 
 \item{labels}{character, labels for \code{id} values.}
+
+\item{fmo_layer}{raster layer, optional. If \code{NULL}, the standard FMO base map from the snapgrid package is used.}
 }
 \value{
 a data frame.

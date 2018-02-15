@@ -4,7 +4,7 @@
 \alias{alf_dist}
 \title{Compute probability distribution tables}
 \usage{
-alf_dist(j, in_dir, out_dir, period, reps)
+alf_dist(j, in_dir, out_dir, period, reps, project = NULL)
 }
 \arguments{
 \item{j}{integer, iterator, the sequence of unique geographic regions available among the extracted data.}
@@ -16,6 +16,8 @@ alf_dist(j, in_dir, out_dir, period, reps)
 \item{period}{character, \code{"historical"} or \code{"projected"}.}
 
 \item{reps}{integer vector, simulation replicates included in data extraction, e.g., \code{1:200}. Uses all replicates if not provided.}
+
+\item{project}{character, inferred from \code{in_dir} if \code{project = NULL}. Use this for project with subprojects/treatment group Alfresco runs.}
 }
 \description{
 Compute and save to disk probability distributions of random variables from extracted ALFRESCO outputs.
