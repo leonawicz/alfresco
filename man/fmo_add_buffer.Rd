@@ -32,7 +32,7 @@ nothing is returned but a file is written to disk.
 Add a buffer around any FMO zone in the FMO zone raster base map.
 }
 \details{
-Thius function allows for adding a buffer of different radii (in meters) around any of the unique FMO zones.
+This function allows for adding a buffer of different radii (in meters) around any of the unique FMO zones.
 }
 \examples{
 \dontrun{fmo_add_buff(full = 5000)}

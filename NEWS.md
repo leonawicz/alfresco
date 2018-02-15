@@ -1,3 +1,9 @@
+# alfresco 0.2.4
+
+* Added additional handling of treatment runs, multiple FMO base map layers.
+* Added point fire probability function.
+* Updated documentation.
+
 # alfresco 0.2.3
 
 * Updated scripts and functions to allow for treatment subdirectories for JFSP project Alfresco run raw outputs, data extractions and curated data sets.
