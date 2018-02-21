@@ -34,7 +34,7 @@
 point_fire <- function(rep, base_path = ".", label, center, sample_size = 100,
                      sample_buffer = 25000, extraction_buffers = seq(1000, 30000, length.out = 100), years){
   pat <- if(missing(rep)) "^FireScar" else paste0("^FireScar_", rep - 1)
-  f <- function(files) raster::calc(raster::stack(files, bands = 3), sum, na.rm = TRUE)
+  f <- function(files) raster::calc(raster::stack(files, bands = 3), mean, na.rm = TRUE)
   files <- list.files(base_path, pattern = pat, recursive = TRUE, full.names = TRUE)
   yrs <- basename(dirname(files))
   files <- files[yrs %in% years]
@@ -42,7 +42,7 @@ point_fire <- function(rep, base_path = ".", label, center, sample_size = 100,
     x <- f(files)
   } else {
     files <- split(files, yrs)
-    x <- raster::calc(raster::stack(parallel::mclapply(files, f, mc.cores = 32), quick = TRUE), sum, na.rm = TRUE)
+    x <- raster::calc(raster::stack(parallel::mclapply(files, f, mc.cores = 32), quick = TRUE), mean, na.rm = TRUE)
   }
   names(x) <- label
   x <- mask(x, snapgrid::swflam)
