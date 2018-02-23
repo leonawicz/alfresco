@@ -220,7 +220,7 @@
     
 
     <pre class="usage"><span class='fu'>ba_fmo</span>(<span class='no'>in_dir</span>, <span class='no'>years</span>, <span class='kw'>id</span> <span class='kw'>=</span> <span class='fl'>0</span>:<span class='fl'>5</span>, <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"Unmanaged"</span>, <span class='st'>"Limited"</span>,
-  <span class='st'>"Modified"</span>, <span class='st'>"Critical"</span>, <span class='st'>"Full"</span>, <span class='st'>"Other"</span>))</pre>
+  <span class='st'>"Modified"</span>, <span class='st'>"Critical"</span>, <span class='st'>"Full"</span>, <span class='st'>"Other"</span>), <span class='kw'>fmo_layer</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -240,6 +240,10 @@
     <tr>
       <th>labels</th>
       <td><p>character, labels for <code>id</code> values.</p></td>
+    </tr>
+    <tr>
+      <th>fmo_layer</th>
+      <td><p>raster layer, optional. If <code>NULL</code>, the standard FMO base map from the snapgrid package is used.</p></td>
     </tr>
     </table>
     

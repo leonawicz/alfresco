@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Run ALFRESCO data extraction — run_alf_extraction â€¢ alfresco</title>
+<title>Probability of fire — point_fire â€¢ alfresco</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -212,110 +212,69 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Run ALFRESCO data extraction</h1>
+    <h1>Probability of fire</h1>
     </div>
 
     
-    <p>Extract data for different variables from ALFRESCO model outputs.</p>
+    <p>Compute the probability of fire within some radius of a point.</p>
     
 
-    <pre class="usage"><span class='fu'>run_alf_extraction</span>(<span class='kw'>domain</span> <span class='kw'>=</span> <span class='st'>"akcan1km"</span>, <span class='no'>type</span>, <span class='kw'>loop_by</span> <span class='kw'>=</span> <span class='st'>"rep"</span>, <span class='no'>main_dir</span>,
-  <span class='no'>out_dir</span>, <span class='no'>project</span>, <span class='no'>reps</span>, <span class='no'>years</span>, <span class='no'>cells</span>, <span class='no'>veg_labels</span>, <span class='kw'>cru</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>cru_id</span> <span class='kw'>=</span> <span class='st'>"CRU 3.2"</span>, <span class='kw'>itervar</span> <span class='kw'>=</span> <span class='fu'>seq_along</span>(<span class='no'>years</span>), <span class='kw'>mc.cores</span> <span class='kw'>=</span> <span class='fl'>32</span>,
-  <span class='kw'>rmpi</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>point_fire</span>(<span class='no'>rep</span>, <span class='kw'>base_path</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='no'>label</span>, <span class='no'>center</span>, <span class='kw'>sample_size</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+  <span class='kw'>sample_buffer</span> <span class='kw'>=</span> <span class='fl'>25000</span>, <span class='kw'>extraction_buffers</span> <span class='kw'>=</span> <span class='fu'>seq</span>(<span class='fl'>1000</span>, <span class='fl'>30000</span>, <span class='kw'>length.out</span> <span class='kw'>=</span>
+  <span class='fl'>100</span>), <span class='no'>years</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>domain</th>
-      <td><p>character, the ALFRESCO run spatial domain, either <code>"akcan1km"</code> or <code>"ak1km"</code>.</p></td>
+      <th>rep</th>
+      <td><p>integer, ALFRESCO replicate.</p></td>
     </tr>
     <tr>
-      <th>type</th>
-      <td><p><code>"fsv"</code> or <code>"av"</code>. See details.</p></td>
+      <th>base_path</th>
+      <td><p>input directory to ALFRESCO fire scar geotiffs.</p></td>
     </tr>
     <tr>
-      <th>loop_by</th>
-      <td><p><code>"rep"</code> or <code>"year"</code> (default).</p></td>
+      <th>label</th>
+      <td><p>character, name to attach to raster layer sum for input fire scar geotiffs.</p></td>
     </tr>
     <tr>
-      <th>main_dir</th>
-      <td><p>input directory.</p></td>
+      <th>center</th>
+      <td><p>numeric, coordinate pair for centroid around which buffered extractions are taken.</p></td>
     </tr>
     <tr>
-      <th>out_dir</th>
-      <td><p>output directory. If missing, a default is provided by <code>alfdef()$alf_extract_dir</code>.</p></td>
+      <th>sample_size</th>
+      <td><p>integer, number of grid cells to sample within <code>sample_buffer</code> of <code>center</code>.</p></td>
     </tr>
     <tr>
-      <th>project</th>
-      <td><p>character, valid projects based on the domain. See details.</p></td>
+      <th>sample_buffer</th>
+      <td><p>numeric, buffer radius in meters around <code>center</code> to sample grid cells.</p></td>
     </tr>
     <tr>
-      <th>reps</th>
-      <td><p>integer vector, simulation replicates included in data extraction, e.g., <code>1:200</code>.</p></td>
+      <th>extraction_buffers</th>
+      <td><p>numeric, vector of buffer radii in meters from each sampled point to compute the proportion of cells where fire has occurred.</p></td>
     </tr>
     <tr>
       <th>years</th>
-      <td><p>ALFRESCO model run years included in data extraction.</p></td>
-    </tr>
-    <tr>
-      <th>cells</th>
-      <td><p>data frame of raster grid cell indices appropriate to <code>domain</code>. See <code>get_domain_cells</code>.</p></td>
-    </tr>
-    <tr>
-      <th>veg_labels</th>
-      <td><p>vegetation labels appropriate to domain/vegetation input map for ALFRESCO runs. See <code>get_veg_labels</code>.</p></td>
-    </tr>
-    <tr>
-      <th>cru</th>
-      <td><p>logical, whether data extraction is for historical years (ALFRESCO runs based on CRU data) or projected years (GCM data).</p></td>
-    </tr>
-    <tr>
-      <th>cru_id</th>
-      <td><p>character, label for CRU data. Defaults to <code>"CRU 3.2"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>itervar</th>
-      <td><p>integer vector, iterator, defaults to <code>1:length(years)</code>.</p></td>
-    </tr>
-    <tr>
-      <th>mc.cores</th>
-      <td><p>number of processors. See details.</p></td>
-    </tr>
-    <tr>
-      <th>rmpi</th>
-      <td><p>logical, use Rmpi. Defaults to <code>TRUE</code>.</p></td>
+      <td><p>numeric, vector of years for which to compute the probability of fire.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>invisible, writes files.</p>
+    <p>a data frame.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The extracted data depends on <code>type</code>, which is <code>"fsv"</code> for fire size by vegetation class data or
-<code>"av"</code> for vegetation age and vegetation cover area data.
-A project refers to a collection of output directories pertaining to the set of climate models and emissions scenarios/RCPs
-that were used in project simulations. This function returns the full file path to each pertinent directory, given a valid <code>domain</code>
-and <code>project</code>.
-Valid projects for Alaska/western Canada include <code>"IEM"</code> and <code>"FMO_Calibrated"</code>.
-For Alaska "statewide", it is <code>"JFSP"</code> and <code>"CMIP5_SW"</code>. JFSP project names allow subproject/treatment run directories, e.g. <code>"JFSP/tx1"</code>.
-<code>mc.cores</code> is used explicitly when <code>rmpi = FALSE</code> for <code><a href='http://www.rdocumentation.org/packages/parallel/topics/mcdummies'>parallel::mclapply</a></code> instead of multi-node processing.</p>
-<p>Extracted data are subsequently curated into estimated probability distribution tables by run_alf_extraction.</p>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <p>alf_dist</p>
+    <p>This function computes the proportion of cells within a radial buffer zone of a sampled grid cell that has burned in ALFRESCO fire scar geotiff outputs.
+It does this for each of a number of sampled points around a centroid point of interest. There are radius arguments for both the size of the buffer around the center from
+which to draw random grid cell samples for bootstrapping a more robust estimate around the centroid grid cell as well as the buffer around each sampled point within
+which to compute the likelihood of fire. The latter buffer argument may be a vector. This function sums fire occurrences across replicates and years.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'># Not run; decontextualized example.
-</div><span class='co'># NOT RUN {</span>
-<span class='fu'>run_alf_extraction</span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"fsv"</span>, <span class='kw'>main_dir</span> <span class='kw'>=</span> <span class='st'>"Maps"</span>, <span class='kw'>project</span> <span class='kw'>=</span> <span class='st'>"MyProject"</span>,
-  <span class='kw'>reps</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>200</span>, <span class='kw'>years</span> <span class='kw'>=</span> <span class='fl'>2014</span>:<span class='fl'>2099</span>, <span class='kw'>cells</span> <span class='kw'>=</span> <span class='no'>cells</span>, <span class='kw'>veg_labels</span> <span class='kw'>=</span> <span class='no'>veg_labels</span>)
-<span class='co'># }</span></pre>
+    <pre class="examples"><div class='input'># not run
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -325,8 +284,6 @@ For Alaska "statewide", it is <code>"JFSP"</code> and <code>"CMIP5_SW"</code>. J
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
-
-      <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

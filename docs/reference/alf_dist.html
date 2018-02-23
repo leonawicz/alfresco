@@ -219,7 +219,7 @@
     <p>Compute and save to disk probability distributions of random variables from extracted ALFRESCO outputs.</p>
     
 
-    <pre class="usage"><span class='fu'>alf_dist</span>(<span class='no'>j</span>, <span class='no'>in_dir</span>, <span class='no'>out_dir</span>, <span class='no'>period</span>, <span class='no'>reps</span>)</pre>
+    <pre class="usage"><span class='fu'>alf_dist</span>(<span class='no'>j</span>, <span class='no'>in_dir</span>, <span class='no'>out_dir</span>, <span class='no'>period</span>, <span class='no'>reps</span>, <span class='kw'>project</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -243,6 +243,10 @@
     <tr>
       <th>reps</th>
       <td><p>integer vector, simulation replicates included in data extraction, e.g., <code>1:200</code>. Uses all replicates if not provided.</p></td>
+    </tr>
+    <tr>
+      <th>project</th>
+      <td><p>character, inferred from <code>in_dir</code> if <code>project = NULL</code>. Use this for project with subprojects/treatment group Alfresco runs.</p></td>
     </tr>
     </table>
     
