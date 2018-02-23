@@ -1,3 +1,7 @@
+# alfresco 0.2.5
+
+* Added plot function for zooming in on radial buffer around a point in a raster layer.
+
 # alfresco 0.2.4
 
 * Added additional handling of treatment runs, multiple FMO base map layers.
