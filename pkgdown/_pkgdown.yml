@@ -46,6 +46,7 @@ reference:
   - alf_prep_slurm
   - alf_prep_rscript
   - extract_alf_stops
+  - plot_map_zoom
 - title: Extracted data curation
   contents:
   - alf_dist

@@ -53,3 +53,42 @@ point_fire <- function(rep, base_path = ".", label, center, sample_size = 100,
   purrr::map(1:nrow(cell_sample), ~.buffered_data(x, cell_sample[.x, ], extraction_buffers) %>%
                dplyr::mutate(location = .x)) %>% dplyr::bind_rows() %>% dplyr::mutate(rep = rep)
 }
+
+#' Plot map composition for radial buffer around a point
+#'
+#' Plot the map composition of a raster layer in a radial neighborhood of a point.
+#'
+#' This function saves a png to disk of a radial buffer around a point. It is used for zooming in spatially around points of interest in raster layers such as those output by ALFRESCO.
+#'
+#' @param file character, output file.
+#' @param x raster layer. Should be discretely valued/categorical.
+#' @param cells cell numbers, typically defining a radial clump, but will accept any valid cells numbers.
+#' @param radius in meters, catering to NAD83 Alaska Albers projected ALFRESCO map output.
+#' @param classes character, the names of the classes assigned to the unique values in \code{x}.
+#' @param col color vector the same length as \code{lasses} and the number of unique non-\code{NA} values in \code{x}.
+#' @param title character, plot title.
+#' @param class_order integer vector, optional reordering of classes when the ordered values in \code{x} are not the desired order.
+#' @param base_path character, defaults to working directory.
+#' @param width numeric, plot width in pixels.
+#' @param height numeric, plot height in pixels.
+#'
+#' @return nothing is returned, but a file is saved to disk.
+#' @export
+#'
+#' @examples
+#' # not run
+plot_map_zoom <- function(file, x, cells, radius, classes, col, title = NULL,
+                          class_order = seq_along(class), base_path = ".", width = 1000, height = 1000){
+  if(is.null(title)) title <- paste0("Map composition within ", radius / 1000, " km of center")
+  x[1:ncell(x)][-cells] <- NA
+  x <- raster::ratify(raster::trim(x))
+  rat <- raster::levels(x)[[1]]
+  rat$class <- factor(classes[class_order], levels = classes)
+  levels(x) <- rat[class_order, ]
+  Cairo::CairoPNG(file.path(base_path, file), width = width, height = height)
+  print(rasterVis::levelplot(
+    x, att = "class", maxpixels = 1e6, main = title, col.regions = col,
+    xlab = NULL, ylab = NULL, scales = list(draw = FALSE), colorkey = list(space = "bottom", height = 1)))
+  dev.off()
+  invisible()
+}
