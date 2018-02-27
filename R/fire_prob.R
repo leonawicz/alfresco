@@ -78,7 +78,7 @@ point_fire <- function(rep, base_path = ".", label, center, sample_size = 100,
 #' @examples
 #' # not run
 plot_map_zoom <- function(file, x, cells, radius, classes, col, title = NULL,
-                          class_order = seq_along(class), base_path = ".", width = 1000, height = 1000){
+                          class_order = seq_along(classes), base_path = ".", width = 1000, height = 1000){
   if(is.null(title)) title <- paste0("Map composition within ", radius / 1000, " km of center")
   x[1:ncell(x)][-cells] <- NA
   x <- raster::ratify(raster::trim(x))
