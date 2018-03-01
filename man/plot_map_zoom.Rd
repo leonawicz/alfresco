@@ -5,7 +5,7 @@
 \title{Plot map composition for radial buffer around a point}
 \usage{
 plot_map_zoom(file, x, cells, radius, classes, col, title = NULL,
-  class_order = seq_along(class), base_path = ".", width = 1000,
+  class_order = seq_along(classes), base_path = ".", width = 1000,
   height = 1000)
 }
 \arguments{

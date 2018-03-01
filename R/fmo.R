@@ -169,11 +169,14 @@ fmo_cb_reduction <- function(data, pretty_names = TRUE){
 #'
 #' Generate a data frame of mean (across replicates) annual burn area by fire management options zones.
 #'
+#' Options for ecoregion masking include \code{"Arctic Tundra"}, \code{"Bering Taiga"}, \code{"Bering Tundra"} and \code{"Intermontane Boreal"}.
+#'
 #' @param in_dir input directory, a \code{Maps} directory for ALFRESCO run output.
 #' @param years integer.
 #' @param id integer, 0 through 5 available, pertaining to ID codes for FMO zones.
 #' @param labels character, labels for \code{id} values.
 #' @param fmo_layer raster layer, optional. If \code{NULL}, the standard FMO base map from the snapgrid package is used.
+#' @param ecomask character, optional ecoregion name to mask by, otherwise statewide Alaska JFSP ALFRESCO domain. See details.
 #'
 #' @return a data frame.
 #' @export
@@ -184,9 +187,15 @@ fmo_cb_reduction <- function(data, pretty_names = TRUE){
 #' }
 ba_fmo <- function(in_dir, years, id = 0:5,
                    labels = c("Unmanaged", "Limited", "Modified", "Critical", "Full", "Other"),
-                   fmo_layer = NULL){
+                   fmo_layer = NULL, ecomask = NULL){
   if(is.null(fmo_layer)) fmo_layer <- snapgrid::swfmo
-  idx <- purrr::map(id, ~which(fmo_layer[] == .x))
+  if(!is.null(ecomask)){
+    x <- snappoly::ecoreg[snappoly::ecoreg[["LEVEL_2"]] == ecomask, ]
+    cells <- raster::extract(fmo_layer, x, cellnumbers = TRUE) %>% purrr::map(~.x[, 1]) %>% unlist() %>% sort() # nolint
+    idx <- purrr::map(id, ~which(fmo_layer[] == .x & seq_along(fmo_layer) %in% cells))
+  } else {
+    idx <- purrr::map(id, ~which(fmo_layer[] == .x))
+  }
   f <- function(year, id){
     files <- list.files(file.path(in_dir, year), pattern = "^FireScar", full.names = TRUE)
     s <- raster::readAll(raster::stack(files, bands = 2)) # nolint

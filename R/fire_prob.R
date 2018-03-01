@@ -5,7 +5,8 @@
   e <- raster::extract(x, xy, fun = function(x, ...) mean(x > 0, ...), buffer = bfrs)
   e[is.na(e)] <- 0
   tibble::as_data_frame(e) %>% dplyr::mutate(buffer = bfrs / 1000) %>% dplyr::mutate(run = names(x)) %>%
-    dplyr::mutate(period = ifelse(substr(run, 1, 3) %in% c("his", "cru", "obs"), "Historical", "Projected"))
+    dplyr::mutate(period = ifelse(substr(.data[["run"]], 1, 3) %in%
+                                    c("his", "cru", "obs"), "Historical", "Projected"))
 }
 
 #' Probability of fire
@@ -89,6 +90,6 @@ plot_map_zoom <- function(file, x, cells, radius, classes, col, title = NULL,
   print(rasterVis::levelplot(
     x, att = "class", maxpixels = 1e6, main = title, col.regions = col,
     xlab = NULL, ylab = NULL, scales = list(draw = FALSE), colorkey = list(space = "bottom", height = 1)))
-  dev.off()
+  grDevices::dev.off()
   invisible()
 }

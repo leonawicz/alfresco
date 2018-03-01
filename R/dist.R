@@ -1,3 +1,5 @@
+# nolint start
+
 #' Compute probability distribution tables
 #'
 #' Compute and save to disk probability distributions of random variables from extracted ALFRESCO outputs.
@@ -134,6 +136,8 @@ alf_dist <- function(j, in_dir, out_dir, period, reps, project = NULL){
   }
   invisible()
 }
+
+# nolint end
 
 #' Table inputs from extracted data
 #'

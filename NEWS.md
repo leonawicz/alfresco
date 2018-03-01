@@ -1,3 +1,7 @@
+# alfresco 0.2.6
+
+* Added ecoregion masking argument to `fmo_ba`. This adds a new dependency on `snappoly`.
+
 # alfresco 0.2.5
 
 * Added plot function for zooming in on radial buffer around a point in a raster layer.
