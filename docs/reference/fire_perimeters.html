@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>All news • alfresco</title>
+<title>Obtain Alaska fire perimeter data � fire_perimeters • alfresco</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -49,7 +49,7 @@
   </head>
 
   <body>
-    <div class="container template-news">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
@@ -210,120 +210,55 @@
       </header>
 
       <div class="row">
-
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Change log <small>All releases</small></h1>
+    <h1>Obtain Alaska fire perimeter data</h1>
     </div>
 
-    <div class="contents">
-    <div id="alfresco-0-2-6" class="section level1">
-<h1 class="hasAnchor">
-<a href="#alfresco-0-2-6" class="anchor"></a>alfresco 0.2.6</h1>
-<ul>
-<li>Added ecoregion masking argument to <code>fmo_ba</code>. This adds a new dependency on <code>snappoly</code>.</li>
-<li>Added accessor function, <code>fire_perimiters</code>, to obtain historical Alaska fire perimiter polygon data via AWS.</li>
-</ul>
-</div>
-    <div id="alfresco-0-2-5" class="section level1">
-<h1 class="hasAnchor">
-<a href="#alfresco-0-2-5" class="anchor"></a>alfresco 0.2.5</h1>
-<ul>
-<li>Added plot function for zooming in on radial buffer around a point in a raster layer.</li>
-</ul>
-</div>
-    <div id="alfresco-0-2-4" class="section level1">
-<h1 class="hasAnchor">
-<a href="#alfresco-0-2-4" class="anchor"></a>alfresco 0.2.4</h1>
-<ul>
-<li>Added additional handling of treatment runs, multiple FMO base map layers.</li>
-<li>Added point fire probability function.</li>
-<li>Updated documentation.</li>
-</ul>
-</div>
-    <div id="alfresco-0-2-3" class="section level1">
-<h1 class="hasAnchor">
-<a href="#alfresco-0-2-3" class="anchor"></a>alfresco 0.2.3</h1>
-<ul>
-<li>Updated scripts and functions to allow for treatment subdirectories for JFSP project Alfresco run raw outputs, data extractions and curated data sets.</li>
-</ul>
-</div>
-    <div id="alfresco-0-2-2-release-date-2018-01-31" class="section level1">
-<h1 class="hasAnchor">
-<a href="#alfresco-0-2-2-release-date-2018-01-31" class="anchor"></a>alfresco 0.2.2 (Release date: 2018-01-31)</h1>
-<ul>
-<li>Updated FMO map generation functions based on new map versions in <code>snapgrid</code> package.</li>
-<li>Updated R function for generating slurm scripts for Atlas jobs. Added a <code>partition</code> argument.</li>
-<li>Added <code>ba_fmo</code> for computing burn area by FMO zone for each year, averaged across replicates.</li>
-<li>Package now depends on raster.</li>
-<li>Updated documentation.</li>
-</ul>
-</div>
-    <div id="alfresco-0-2-1-release-date-2017-10-02" class="section level1">
-<h1 class="hasAnchor">
-<a href="#alfresco-0-2-1-release-date-2017-10-02" class="anchor"></a>alfresco 0.2.1 (Release date: 2017-10-02)</h1>
-<ul>
-<li>Added <code>fire_weights</code> function for fire probability point estimates based on inverse distance weighting.</li>
-<li>Added <code>fire_probs</code> function for fire probability point estimates using <code>fire_weights</code> output.</li>
-<li>Added <code>point_probs</code> for parallelized application of <code>fire_weights</code> and <code>fire_probs</code> to multiple point locations.</li>
-<li>Added initial vignette for point probability estimation.</li>
-</ul>
-</div>
-    <div id="alfresco-0-2-0-release-date-2017-09-29" class="section level1">
-<h1 class="hasAnchor">
-<a href="#alfresco-0-2-0-release-date-2017-09-29" class="anchor"></a>alfresco 0.2.0 (Release date: 2017-09-29)</h1>
-<ul>
-<li>Added function for generating ALFRESCO outputs data extraction SLURM scripts leveraging Rmpi on SNAP’s Atlas cluster.</li>
-<li>Added function for generating slurm and R scripts for performing distribution estimation on extractions.</li>
-<li>Added functions for extraction and curation (discrete distribution estimation using <code>rvtable</code> package).</li>
-<li>Refactored <code>fmo_cb_reduction</code> to handle projected data by RCP and GCM.</li>
-</ul>
-</div>
-    <div id="alfresco-0-1-1-release-date-2017-09-13" class="section level1">
-<h1 class="hasAnchor">
-<a href="#alfresco-0-1-1-release-date-2017-09-13" class="anchor"></a>alfresco 0.1.1 (Release date: 2017-09-13)</h1>
-<ul>
-<li>Added functions for saving fire management options geotiff and png maps.</li>
-</ul>
-</div>
-    <div id="alfresco-0-1-0-release-date-2017-09-13" class="section level1">
-<h1 class="hasAnchor">
-<a href="#alfresco-0-1-0-release-date-2017-09-13" class="anchor"></a>alfresco 0.1.0 (Release date: 2017-09-13)</h1>
-<ul>
-<li>Added functions for fire events processing, general data extraction, fire management options, and bridging consecutive ALFRESCO model runs.</li>
-<li>Added function for generating bash scripts for data organization.</li>
-<li>Added documentation and web pages.</li>
-<li>Bug fixes.</li>
-</ul>
-</div>
-    <div id="alfresco-0-0-0-9000" class="section level1">
-<h1 class="hasAnchor">
-<a href="#alfresco-0-0-0-9000" class="anchor"></a>alfresco 0.0.0.9000</h1>
-<ul>
-<li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
-</ul>
-</div>
-    </div>
+    
+    <p>Obtain Alaska Fire Service historical Alaska fire perimeter data.</p>
+    
+
+    <pre class="usage"><span class='fu'>fire_perimeters</span>(<span class='kw'>years</span> <span class='kw'>=</span> <span class='fl'>1940</span>:<span class='fl'>2017</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>years</th>
+      <td><p>numeric vector, defaults to all available years, 1940 - 2017.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>a SpatialPolygonsDataFrame</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The most current fire perimeter data available through this function is up through 2017.
+The data is pulled from SNAP via Amazon Web Services. It is downloaded and imported from a ~21 MB rds file as a <code>SpatialPolygonsDataFrame</code>.
+For slow connections, please allow time for download. Subsetting years does not affect this because the full file is imported and any subsetting is done subsequently.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>fire_perimiters</span>()
+<span class='co'># }</span></pre>
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#alfresco-0-2-6">0.2.6</a></li>
-        <li><a href="#alfresco-0-2-5">0.2.5</a></li>
-        <li><a href="#alfresco-0-2-4">0.2.4</a></li>
-        <li><a href="#alfresco-0-2-3">0.2.3</a></li>
-        <li><a href="#alfresco-0-2-2-release-date-2018-01-31">0.2.2</a></li>
-        <li><a href="#alfresco-0-2-1-release-date-2017-10-02">0.2.1</a></li>
-        <li><a href="#alfresco-0-2-0-release-date-2017-09-29">0.2.0</a></li>
-        <li><a href="#alfresco-0-1-1-release-date-2017-09-13">0.1.1</a></li>
-        <li><a href="#alfresco-0-1-0-release-date-2017-09-13">0.1.0</a></li>
-        <li><a href="#alfresco-0-0-0-9000">0.0.0.9000</a></li>
-      </ul>
-    </div>
-  </div>
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
 
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
+  </div>
 </div>
 
       <footer>

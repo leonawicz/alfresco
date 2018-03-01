@@ -19,6 +19,8 @@ The `alfresco` package includes functions that assist with the following analyse
 -   Copying and organizing subsets of ALFRESCO outputs for consecutive model runs and in preparation for other analyses.
 -   Generating fire management options ratios geotiffs and related graphics.
 -   Generation of flexible bash and slurm scripts for processing catering to unique analysis and data processing needs.
+-   Data extraction and statistics by Fire Management Options (FMO) zones.
+-   Quickly access Alaska wildfire-related data sets like historical fire perimeters from the cloud.
 
 This is a subset of eventual functionality. The package is under active development.
 
