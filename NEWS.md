@@ -1,6 +1,7 @@
 # alfresco 0.2.6
 
 * Added ecoregion masking argument to `fmo_ba`. This adds a new dependency on `snappoly`.
+* Added accessor function, `fire_perimiters`, to obtain historical Alaska fire perimiter polygon data via AWS.
 
 # alfresco 0.2.5
 

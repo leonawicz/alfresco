@@ -55,6 +55,9 @@ reference:
   - fsv
   - fsdf
   - cbdf
+- title: Historical fire data
+  contents:
+  - fire_perimeters
 - title: Fire point probability
   contents:
   - point_probs
