@@ -220,8 +220,8 @@
     
 
     <pre class="usage"><span class='fu'>ba_fmo</span>(<span class='no'>in_dir</span>, <span class='no'>years</span>, <span class='kw'>id</span> <span class='kw'>=</span> <span class='fl'>0</span>:<span class='fl'>5</span>, <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"Unmanaged"</span>, <span class='st'>"Limited"</span>,
-  <span class='st'>"Modified"</span>, <span class='st'>"Critical"</span>, <span class='st'>"Full"</span>, <span class='st'>"Other"</span>), <span class='kw'>fmo_layer</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ecomask</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='st'>"Modified"</span>, <span class='st'>"Critical"</span>, <span class='st'>"Full"</span>, <span class='st'>"Other"</span>), <span class='kw'>fmo_layer</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mask</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>mask_value</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -247,8 +247,12 @@
       <td><p>raster layer, optional. If <code>NULL</code>, the standard FMO base map from the snapgrid package is used.</p></td>
     </tr>
     <tr>
-      <th>ecomask</th>
-      <td><p>character, optional ecoregion name to mask by, otherwise statewide Alaska JFSP ALFRESCO domain. See details.</p></td>
+      <th>mask</th>
+      <td><p>character, optional mask: <code>NULL</code>, <code>"ecoreg"</code> for <code><a href='http://www.rdocumentation.org/packages/snappoly/topics/ecoreg'>snappoly::ecoreg</a></code> ecoregions, or <code>"fmz"</code> for <code><a href='http://www.rdocumentation.org/packages/snappoly/topics/fmz'>snappoly::fmz</a></code> Fire Management Zones. See details.</p></td>
+    </tr>
+    <tr>
+      <th>mask_value</th>
+      <td><p>character, ecoregion or FMZ name to mask by, not applicable if <code>mask = NULL</code>, in which case the full statewide Alaska JFSP ALFRESCO domain. See details.</p></td>
     </tr>
     </table>
     
@@ -258,7 +262,9 @@
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Options for ecoregion masking include <code>"Arctic Tundra"</code>, <code>"Bering Taiga"</code>, <code>"Bering Tundra"</code> and <code>"Intermontane Boreal"</code>.</p>
+    <p>Options for Alaska ecoregion and Alaska fire management zone masking include <code>"Arctic Tundra"</code>, <code>"Bering Taiga"</code>, <code>"Bering Tundra"</code> and <code>"Intermontane Boreal"</code> and
+eight FMZs ("DAS", "FAS", "GAD", "MID", "SWS", "TAD", "TAS", "UYD"), respectively.
+The limited sets represent their spatial intersections with the JFSP ALFRESCO spatial domain.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
