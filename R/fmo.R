@@ -169,14 +169,17 @@ fmo_cb_reduction <- function(data, pretty_names = TRUE){
 #'
 #' Generate a data frame of mean (across replicates) annual burn area by fire management options zones.
 #'
-#' Options for ecoregion masking include \code{"Arctic Tundra"}, \code{"Bering Taiga"}, \code{"Bering Tundra"} and \code{"Intermontane Boreal"}.
+#' Options for Alaska ecoregion and Alaska fire management zone masking include \code{"Arctic Tundra"}, \code{"Bering Taiga"}, \code{"Bering Tundra"} and \code{"Intermontane Boreal"} and
+#' eight FMZs ("DAS", "FAS", "GAD", "MID", "SWS", "TAD", "TAS", "UYD"), respectively.
+#' The limited sets represent their spatial intersections with the JFSP ALFRESCO spatial domain.
 #'
 #' @param in_dir input directory, a \code{Maps} directory for ALFRESCO run output.
 #' @param years integer.
 #' @param id integer, 0 through 5 available, pertaining to ID codes for FMO zones.
 #' @param labels character, labels for \code{id} values.
 #' @param fmo_layer raster layer, optional. If \code{NULL}, the standard FMO base map from the snapgrid package is used.
-#' @param ecomask character, optional ecoregion name to mask by, otherwise statewide Alaska JFSP ALFRESCO domain. See details.
+#' @param mask character, optional mask: \code{NULL}, \code{"ecoreg"} for \code{snappoly::ecoreg} ecoregions, or \code{"fmz"} for \code{snappoly::fmz} Fire Management Zones. See details.
+#' @param mask_value character, ecoregion or FMZ name to mask by, not applicable if \code{mask = NULL}, in which case the full statewide Alaska JFSP ALFRESCO domain. See details.
 #'
 #' @return a data frame.
 #' @export
@@ -187,10 +190,11 @@ fmo_cb_reduction <- function(data, pretty_names = TRUE){
 #' }
 ba_fmo <- function(in_dir, years, id = 0:5,
                    labels = c("Unmanaged", "Limited", "Modified", "Critical", "Full", "Other"),
-                   fmo_layer = NULL, ecomask = NULL){
+                   fmo_layer = NULL, mask = NULL, mask_value = NULL){
   if(is.null(fmo_layer)) fmo_layer <- snapgrid::swfmo
-  if(!is.null(ecomask)){
-    x <- snappoly::ecoreg[snappoly::ecoreg[["LEVEL_2"]] == ecomask, ]
+  if(!is.null(mask) & !is.null(mask_value)){
+    if(mask_value == "ecoreg") x <- snappoly::ecoreg[snappoly::ecoreg[["LEVEL_2"]] == mask_value, ]
+    if(mask_value == "fmz") x <- snappoly::ecoreg[snappoly::fmz[["REGION"]] == mask_value, ]
     cells <- raster::extract(fmo_layer, x, cellnumbers = TRUE) %>% purrr::map(~.x[, 1]) %>% unlist() %>% sort() # nolint
     idx <- purrr::map(id, ~which(fmo_layer[] == .x & seq_along(fmo_layer) %in% cells))
   } else {

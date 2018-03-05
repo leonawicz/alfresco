@@ -5,8 +5,8 @@
 \title{Burn area by FMO zone}
 \usage{
 ba_fmo(in_dir, years, id = 0:5, labels = c("Unmanaged", "Limited",
-  "Modified", "Critical", "Full", "Other"), fmo_layer = NULL,
-  ecomask = NULL)
+  "Modified", "Critical", "Full", "Other"), fmo_layer = NULL, mask = NULL,
+  mask_value = NULL)
 }
 \arguments{
 \item{in_dir}{input directory, a \code{Maps} directory for ALFRESCO run output.}
@@ -19,7 +19,9 @@ ba_fmo(in_dir, years, id = 0:5, labels = c("Unmanaged", "Limited",
 
 \item{fmo_layer}{raster layer, optional. If \code{NULL}, the standard FMO base map from the snapgrid package is used.}
 
-\item{ecomask}{character, optional ecoregion name to mask by, otherwise statewide Alaska JFSP ALFRESCO domain. See details.}
+\item{mask}{character, optional mask: \code{NULL}, \code{"ecoreg"} for \code{snappoly::ecoreg} ecoregions, or \code{"fmz"} for \code{snappoly::fmz} Fire Management Zones. See details.}
+
+\item{mask_value}{character, ecoregion or FMZ name to mask by, not applicable if \code{mask = NULL}, in which case the full statewide Alaska JFSP ALFRESCO domain. See details.}
 }
 \value{
 a data frame.
@@ -28,7 +30,9 @@ a data frame.
 Generate a data frame of mean (across replicates) annual burn area by fire management options zones.
 }
 \details{
-Options for ecoregion masking include \code{"Arctic Tundra"}, \code{"Bering Taiga"}, \code{"Bering Tundra"} and \code{"Intermontane Boreal"}.
+Options for Alaska ecoregion and Alaska fire management zone masking include \code{"Arctic Tundra"}, \code{"Bering Taiga"}, \code{"Bering Tundra"} and \code{"Intermontane Boreal"} and
+eight FMZs ("DAS", "FAS", "GAD", "MID", "SWS", "TAD", "TAS", "UYD"), respectively.
+The limited sets represent their spatial intersections with the JFSP ALFRESCO spatial domain.
 }
 \examples{
 \dontrun{
