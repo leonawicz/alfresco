@@ -193,8 +193,8 @@ ba_fmo <- function(in_dir, years, id = 0:5,
                    fmo_layer = NULL, mask = NULL, mask_value = NULL){
   if(is.null(fmo_layer)) fmo_layer <- snapgrid::swfmo
   if(!is.null(mask) & !is.null(mask_value)){
-    if(mask_value == "ecoreg") x <- snappoly::ecoreg[snappoly::ecoreg[["LEVEL_2"]] == mask_value, ]
-    if(mask_value == "fmz") x <- snappoly::ecoreg[snappoly::fmz[["REGION"]] == mask_value, ]
+    if(mask == "ecoreg") x <- snappoly::ecoreg[snappoly::ecoreg[["LEVEL_2"]] == mask_value, ]
+    if(mask == "fmz") x <- snappoly::fmz[snappoly::fmz[["REGION"]] == mask_value, ]
     cells <- raster::extract(fmo_layer, x, cellnumbers = TRUE) %>% purrr::map(~.x[, 1]) %>% unlist() %>% sort() # nolint
     idx <- purrr::map(id, ~which(fmo_layer[] == .x & seq_along(fmo_layer) %in% cells))
   } else {
