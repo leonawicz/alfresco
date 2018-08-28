@@ -4,9 +4,9 @@
 \alias{fmo_add_buffer}
 \title{Add buffer to FMO zone base map}
 \usage{
-fmo_add_buffer(out_dir = ".", file = "fmo_buffer.tif", unmanaged = NULL,
-  limited = NULL, modified = NULL, full = NULL, critical = NULL,
-  other = NULL)
+fmo_add_buffer(out_dir = ".", file = "fmo_buffer.tif",
+  unmanaged = NULL, limited = NULL, modified = NULL, full = NULL,
+  critical = NULL, other = NULL)
 }
 \arguments{
 \item{out_dir}{output directory.}

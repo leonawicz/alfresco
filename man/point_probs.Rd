@@ -5,8 +5,8 @@
 \title{Fire probabilities for point locations}
 \usage{
 point_probs(r, xy, id, buffer = 20000, weight = "linear",
-  lonlat_to_akalbers = TRUE, veg_labels, covariates = TRUE, veg = NULL,
-  age = NULL, max.cores = 32)
+  lonlat_to_akalbers = TRUE, veg_labels, covariates = TRUE,
+  veg = NULL, age = NULL, max.cores = 32)
 }
 \arguments{
 \item{r}{raster layer or path to file, an ALFRESCO fire scar output geotiff.}

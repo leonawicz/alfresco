@@ -17,6 +17,10 @@ knitr::opts_chunk$set(
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/leonawicz/alfresco?branch=master&svg=true)](https://ci.appveyor.com/project/leonawicz/alfresco)
 [![Coverage status](https://codecov.io/gh/leonawicz/alfresco/branch/master/graph/badge.svg)](https://codecov.io/github/leonawicz/alfresco?branch=master)
 
+## SNAPverse R package ecosystem development frozen.
+
+*Development of the SNAPverse R package ecosystem has been frozen indefinitely. While this project was never directly funded, and I only worked on it here and there out of a personal interest in both enhancing some of my own workflows at SNAP and making SNAP datasets and their analysis more accessible to other researchers in academia in a more frictionless way, I no longer work for SNAP so what you see in this and related R package web pages is where I left off. It will remain archived here for historical reference, but won't see further development unless I somehow become incredibly wealthy and quite bored and the project finds its way into my completionist crosshairs.*
+
 R is used to manipulate and analyze data that both feed into and come out of the ALFRESCO wildfire model. 
 The `alfresco` R package contains functions for working with ALFRESCO input and output data. 
 It is a core functional package in the [SNAPverse](https://leonawicz.github.io/snapverse/) collection of R packages.

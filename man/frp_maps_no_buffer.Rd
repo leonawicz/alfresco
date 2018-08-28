@@ -4,8 +4,8 @@
 \alias{frp_maps_no_buffer}
 \title{Make stock FRP maps}
 \usage{
-frp_maps_no_buffer(i, alf_data, emp_data, shp, fire_area_history, out, domain,
-  alf_yrs, emp_yrs)
+frp_maps_no_buffer(i, alf_data, emp_data, shp, fire_area_history, out,
+  domain, alf_yrs, emp_yrs)
 }
 \arguments{
 \item{i}{integer, replicate iterator.}

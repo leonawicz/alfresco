@@ -10,8 +10,8 @@ pp_fsv(d, main_dir, veg, shp, years, obs = NULL)
 
 pp_fsv_emp(i, b, veg, shp, years, obs = NULL)
 
-pp_fsv_save(d, main_dir, veg, shp, alf_yrs, emp_yrs, obs, i, b, out, domain,
-  mc.cores = 32)
+pp_fsv_save(d, main_dir, veg, shp, alf_yrs, emp_yrs, obs, i, b, out,
+  domain, mc.cores = 32)
 }
 \arguments{
 \item{d}{iterator, ALFRESCO replicates.}

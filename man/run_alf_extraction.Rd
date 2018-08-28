@@ -4,10 +4,10 @@
 \alias{run_alf_extraction}
 \title{Run ALFRESCO data extraction}
 \usage{
-run_alf_extraction(domain = "akcan1km", type, loop_by = "rep", main_dir,
-  out_dir, project, reps, years, cells, veg_labels, cru = FALSE,
-  cru_id = "CRU 3.2", itervar = seq_along(years), mc.cores = 32,
-  rmpi = TRUE)
+run_alf_extraction(domain = "akcan1km", type, loop_by = "rep",
+  main_dir, out_dir, project, reps, years, cells, veg_labels,
+  cru = FALSE, cru_id = "CRU 3.2", itervar = seq_along(years),
+  mc.cores = 32, rmpi = TRUE)
 }
 \arguments{
 \item{domain}{character, the ALFRESCO run spatial domain, either \code{"akcan1km"} or \code{"ak1km"}.}

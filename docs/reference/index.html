@@ -18,13 +18,24 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
   <link href="../extra.css" rel="stylesheet">
   
+<meta property="og:title" content="Function reference" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -34,16 +45,14 @@
 <![endif]-->
 
 
-<!-- Google analytics -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-46129458-3"></script>
 <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-  ga('create', 'UA-46129458-3', 'auto');
-  ga('send', 'pageview');
-
+  gtag('config', 'UA-46129458-3');
 </script>
 
   </head>
@@ -59,8 +68,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">alfresco</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">alfresco</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.6</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -70,7 +83,7 @@
   </a>
 </li>
 <li>
-  <a href="../articles/alfresco.html">Get Started</a>
+  <a href="../articles/alfresco.html">Get started</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -94,7 +107,7 @@
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -202,6 +215,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -209,368 +223,364 @@
       
       </header>
 
-      <div class="row">
-  <div class="col-md-9">
+<div class="row">
+  <div class="contents col-md-9">
     <div class="page-header">
-      <h1>
-        Reference
-        <small>version&nbsp;0.2.6</small>
-      </h1>
+      <h1>Reference</h1>
     </div>
 
-    <div class="contents">
-      <table class="ref-index">
+    <table class="ref-index">
 
-      <colgroup>
-        <col class="alias" />
-        <col class="title" />
-      </colgroup>
+    <colgroup>
+      
+      <col class="alias" />
+      <col class="title" />
+    </colgroup>
 
-      <tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-package" class="hasAnchor"><a href="#section-package" class="anchor"></a>Package</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="alfresco.html">alfresco</a></code> </p>
-          </td>
-          <td><p>alfresco: R functions for ALFRESCO wildfire model.</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-default-options" class="hasAnchor"><a href="#section-default-options" class="anchor"></a>Default options</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="alfdef.html">alfdef</a></code> </p>
-          </td>
-          <td><p>Common default values</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-stock-fire-events-processing" class="hasAnchor"><a href="#section-stock-fire-events-processing" class="anchor"></a>Stock fire events processing</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="pp_fire_events.html">pp_fire_events</a></code> </p>
-          </td>
-          <td><p>Prepare list of data frames during ALFRESCO post-processing</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="pp_df_prep.html">pp_df_prep</a></code> </p>
-          </td>
-          <td><p>Prepare data frame during ALFRESCO post-processing</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="pp_fsv.html">pp_fsv</a></code> <code><a href="pp_fsv.html">pp_fsv_emp</a></code> <code><a href="pp_fsv.html">pp_fsv_save</a></code> </p>
-          </td>
-          <td><p>Fire size by vegetation ALFRESCO post-processing</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="prep_fire_events.html">prep_fire_events</a></code> <code><a href="prep_fire_events.html">prep_fire_events_emp</a></code> </p>
-          </td>
-          <td><p>ALFRESCO post-processing of fire events</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="fire_scar_brick.html">fire_scar_brick</a></code> </p>
-          </td>
-          <td><p>Prepare fire scar bricks</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="prep_points.html">prep_points</a></code> </p>
-          </td>
-          <td><p>Prepare points matrix and locations vector</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="frp_maps_no_buffer.html">frp_maps_no_buffer</a></code> </p>
-          </td>
-          <td><p>Make stock FRP maps</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-general-data-extraction" class="hasAnchor"><a href="#section-general-data-extraction" class="anchor"></a>General data extraction</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="run_alf_extraction.html">run_alf_extraction</a></code> </p>
-          </td>
-          <td><p>Run ALFRESCO data extraction</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="extract_alf.html">extract_alf</a></code> <code><a href="extract_alf.html">prep_alf_files</a></code> <code><a href="extract_alf.html">extract_fsv</a></code> <code><a href="extract_alf.html">extract_av</a></code> </p>
-          </td>
-          <td><p>Extract ALFRESCO data</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_domain_cells.html">get_domain_cells</a></code> </p>
-          </td>
-          <td><p>Load cell index data frame for subregions</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_veg_labels.html">get_veg_labels</a></code> </p>
-          </td>
-          <td><p>Get vegetation labels</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_out_dirs.html">get_out_dirs</a></code> </p>
-          </td>
-          <td><p>Get ALFRESCO output directories</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="alf_extract_slurm.html">alf_extract_slurm</a></code> </p>
-          </td>
-          <td><p>Slurm script for ALFRESCO data extractions</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="alf_extract_rscript.html">alf_extract_rscript</a></code> </p>
-          </td>
-          <td><p>R script for ALFRESCO data extraction</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="alf_prep_slurm.html">alf_prep_slurm</a></code> </p>
-          </td>
-          <td><p>Slurm script for ALFRESCO probability distributions</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="alf_prep_rscript.html">alf_prep_rscript</a></code> </p>
-          </td>
-          <td><p>R script for ALFRESCO probability distributions</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="extract_alf_stops.html">extract_alf_stops</a></code> <code><a href="extract_alf_stops.html">prep_alf_stops</a></code> </p>
-          </td>
-          <td><p>ALFRESCO extraction stop error checks</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="plot_map_zoom.html">plot_map_zoom</a></code> </p>
-          </td>
-          <td><p>Plot map composition for radial buffer around a point</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-extracted-data-curation" class="hasAnchor"><a href="#section-extracted-data-curation" class="anchor"></a>Extracted data curation</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="alf_dist.html">alf_dist</a></code> </p>
-          </td>
-          <td><p>Compute probability distribution tables</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="alf_dist_inputs.html">alf_dist_inputs</a></code> </p>
-          </td>
-          <td><p>Table inputs from extracted data</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="extract_alf_stops.html">extract_alf_stops</a></code> <code><a href="extract_alf_stops.html">prep_alf_stops</a></code> </p>
-          </td>
-          <td><p>ALFRESCO extraction stop error checks</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="fsv.html">fsv</a></code> </p>
-          </td>
-          <td><p>Compute fire size by vegetation class</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="fsdf.html">fsdf</a></code> </p>
-          </td>
-          <td><p>Fire size and cumulative burn data frame</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="cbdf.html">cbdf</a></code> </p>
-          </td>
-          <td><p>Cumulative burn over time data frame</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-historical-fire-data" class="hasAnchor"><a href="#section-historical-fire-data" class="anchor"></a>Historical fire data</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="fire_perimeters.html">fire_perimeters</a></code> </p>
-          </td>
-          <td><p>Obtain Alaska fire perimeter data</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-fire-point-probability" class="hasAnchor"><a href="#section-fire-point-probability" class="anchor"></a>Fire point probability</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="point_probs.html">point_probs</a></code> </p>
-          </td>
-          <td><p>Fire probabilities for point locations</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="fire_probs.html">fire_probs</a></code> </p>
-          </td>
-          <td><p>Fire point probabilities</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="fire_weights.html">fire_weights</a></code> </p>
-          </td>
-          <td><p>Fire probability weights for point locations</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-fire-management-options" class="hasAnchor"><a href="#section-fire-management-options" class="anchor"></a>Fire management options</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="ba_ratios.html">ba_ratios</a></code> </p>
-          </td>
-          <td><p>Obtain total cumulative burn area ratios</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="save_fmo_ratios.html">save_fmo_ratios</a></code> </p>
-          </td>
-          <td><p>Save FMO ratios maps</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="save_fmo_panel.html">save_fmo_panel</a></code> </p>
-          </td>
-          <td><p>Save FMO panel plot</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="fmo_cb_reduction.html">fmo_cb_reduction</a></code> </p>
-          </td>
-          <td><p>FMO cumulative burn reduction table</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="ba_fmo.html">ba_fmo</a></code> </p>
-          </td>
-          <td><p>Burn area by FMO zone</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-file-system-data-organization" class="hasAnchor"><a href="#section-file-system-data-organization" class="anchor"></a>File system data organization</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="outputs_as_inputs.html">outputs_as_inputs</a></code> </p>
-          </td>
-          <td><p>Copy ALFRESCO output maps</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="copy_alf_outputs.html">copy_alf_outputs</a></code> </p>
-          </td>
-          <td><p>Generate bash script for copying ALFRESCO maps</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-projections" class="hasAnchor"><a href="#section-projections" class="anchor"></a>Projections</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="wgs2ak.html">wgs2ak</a></code> </p>
-          </td>
-          <td><p>Convert from WGS84 to Alaska Albers projection</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-command-line-helpers" class="hasAnchor"><a href="#section-command-line-helpers" class="anchor"></a>Command line helpers</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="prep_comArgs.html">prep_comArgs</a></code> </p>
-          </td>
-          <td><p>Prepare command line arguments</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="prep_alf_frp.html">prep_alf_frp</a></code> </p>
-          </td>
-          <td><p>Helper function for FRP processing</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-data" class="hasAnchor"><a href="#section-data" class="anchor"></a>Data</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="obs_fmo_ba.html">obs_fmo_ba</a></code> </p>
-          </td>
-          <td><p>Historical Alaska annual burn area by fire management options zones (FMOs).</p></td>
-        </tr>
-      </tbody>
-      </table>
-    </div>
+    <tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-package" class="hasAnchor"><a href="#section-package" class="anchor"></a>Package</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="alfresco.html">alfresco</a></code> </p>
+        </td>
+        <td><p>alfresco: R functions for ALFRESCO wildfire model.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-default-options" class="hasAnchor"><a href="#section-default-options" class="anchor"></a>Default options</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="alfdef.html">alfdef()</a></code> </p>
+        </td>
+        <td><p>Common default values</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-stock-fire-events-processing" class="hasAnchor"><a href="#section-stock-fire-events-processing" class="anchor"></a>Stock fire events processing</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="pp_fire_events.html">pp_fire_events()</a></code> </p>
+        </td>
+        <td><p>Prepare list of data frames during ALFRESCO post-processing</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="pp_df_prep.html">pp_df_prep()</a></code> </p>
+        </td>
+        <td><p>Prepare data frame during ALFRESCO post-processing</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="pp_fsv.html">pp_fsv()</a></code> <code><a href="pp_fsv.html">pp_fsv_emp()</a></code> <code><a href="pp_fsv.html">pp_fsv_save()</a></code> </p>
+        </td>
+        <td><p>Fire size by vegetation ALFRESCO post-processing</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="prep_fire_events.html">prep_fire_events()</a></code> <code><a href="prep_fire_events.html">prep_fire_events_emp()</a></code> </p>
+        </td>
+        <td><p>ALFRESCO post-processing of fire events</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fire_scar_brick.html">fire_scar_brick()</a></code> </p>
+        </td>
+        <td><p>Prepare fire scar bricks</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="prep_points.html">prep_points()</a></code> </p>
+        </td>
+        <td><p>Prepare points matrix and locations vector</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="frp_maps_no_buffer.html">frp_maps_no_buffer()</a></code> </p>
+        </td>
+        <td><p>Make stock FRP maps</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-general-data-extraction" class="hasAnchor"><a href="#section-general-data-extraction" class="anchor"></a>General data extraction</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="run_alf_extraction.html">run_alf_extraction()</a></code> </p>
+        </td>
+        <td><p>Run ALFRESCO data extraction</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="extract_alf.html">extract_alf()</a></code> <code><a href="extract_alf.html">prep_alf_files()</a></code> <code><a href="extract_alf.html">extract_fsv()</a></code> <code><a href="extract_alf.html">extract_av()</a></code> </p>
+        </td>
+        <td><p>Extract ALFRESCO data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_domain_cells.html">get_domain_cells()</a></code> </p>
+        </td>
+        <td><p>Load cell index data frame for subregions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_veg_labels.html">get_veg_labels()</a></code> </p>
+        </td>
+        <td><p>Get vegetation labels</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_out_dirs.html">get_out_dirs()</a></code> </p>
+        </td>
+        <td><p>Get ALFRESCO output directories</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="alf_extract_slurm.html">alf_extract_slurm()</a></code> </p>
+        </td>
+        <td><p>Slurm script for ALFRESCO data extractions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="alf_extract_rscript.html">alf_extract_rscript()</a></code> </p>
+        </td>
+        <td><p>R script for ALFRESCO data extraction</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="alf_prep_slurm.html">alf_prep_slurm()</a></code> </p>
+        </td>
+        <td><p>Slurm script for ALFRESCO probability distributions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="alf_prep_rscript.html">alf_prep_rscript()</a></code> </p>
+        </td>
+        <td><p>R script for ALFRESCO probability distributions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="extract_alf_stops.html">extract_alf_stops()</a></code> <code><a href="extract_alf_stops.html">prep_alf_stops()</a></code> </p>
+        </td>
+        <td><p>ALFRESCO extraction stop error checks</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_map_zoom.html">plot_map_zoom()</a></code> </p>
+        </td>
+        <td><p>Plot map composition for radial buffer around a point</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-extracted-data-curation" class="hasAnchor"><a href="#section-extracted-data-curation" class="anchor"></a>Extracted data curation</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="alf_dist.html">alf_dist()</a></code> </p>
+        </td>
+        <td><p>Compute probability distribution tables</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="alf_dist_inputs.html">alf_dist_inputs()</a></code> </p>
+        </td>
+        <td><p>Table inputs from extracted data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="extract_alf_stops.html">extract_alf_stops()</a></code> <code><a href="extract_alf_stops.html">prep_alf_stops()</a></code> </p>
+        </td>
+        <td><p>ALFRESCO extraction stop error checks</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fsv.html">fsv()</a></code> </p>
+        </td>
+        <td><p>Compute fire size by vegetation class</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fsdf.html">fsdf()</a></code> </p>
+        </td>
+        <td><p>Fire size and cumulative burn data frame</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cbdf.html">cbdf()</a></code> </p>
+        </td>
+        <td><p>Cumulative burn over time data frame</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-historical-fire-data" class="hasAnchor"><a href="#section-historical-fire-data" class="anchor"></a>Historical fire data</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="fire_perimeters.html">fire_perimeters()</a></code> </p>
+        </td>
+        <td><p>Obtain Alaska fire perimeter data</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-fire-point-probability" class="hasAnchor"><a href="#section-fire-point-probability" class="anchor"></a>Fire point probability</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="point_probs.html">point_probs()</a></code> </p>
+        </td>
+        <td><p>Fire probabilities for point locations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fire_probs.html">fire_probs()</a></code> </p>
+        </td>
+        <td><p>Fire point probabilities</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fire_weights.html">fire_weights()</a></code> </p>
+        </td>
+        <td><p>Fire probability weights for point locations</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-fire-management-options" class="hasAnchor"><a href="#section-fire-management-options" class="anchor"></a>Fire management options</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="ba_ratios.html">ba_ratios()</a></code> </p>
+        </td>
+        <td><p>Obtain total cumulative burn area ratios</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="save_fmo_ratios.html">save_fmo_ratios()</a></code> </p>
+        </td>
+        <td><p>Save FMO ratios maps</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="save_fmo_panel.html">save_fmo_panel()</a></code> </p>
+        </td>
+        <td><p>Save FMO panel plot</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fmo_cb_reduction.html">fmo_cb_reduction()</a></code> </p>
+        </td>
+        <td><p>FMO cumulative burn reduction table</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ba_fmo.html">ba_fmo()</a></code> </p>
+        </td>
+        <td><p>Burn area by FMO zone</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-file-system-data-organization" class="hasAnchor"><a href="#section-file-system-data-organization" class="anchor"></a>File system data organization</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="outputs_as_inputs.html">outputs_as_inputs()</a></code> </p>
+        </td>
+        <td><p>Copy ALFRESCO output maps</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="copy_alf_outputs.html">copy_alf_outputs()</a></code> </p>
+        </td>
+        <td><p>Generate bash script for copying ALFRESCO maps</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-projections" class="hasAnchor"><a href="#section-projections" class="anchor"></a>Projections</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="wgs2ak.html">wgs2ak()</a></code> </p>
+        </td>
+        <td><p>Convert from WGS84 to Alaska Albers projection</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-command-line-helpers" class="hasAnchor"><a href="#section-command-line-helpers" class="anchor"></a>Command line helpers</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="prep_comArgs.html">prep_comArgs()</a></code> </p>
+        </td>
+        <td><p>Prepare command line arguments</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="prep_alf_frp.html">prep_alf_frp()</a></code> </p>
+        </td>
+        <td><p>Helper function for FRP processing</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-data" class="hasAnchor"><a href="#section-data" class="anchor"></a>Data</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="obs_fmo_ba.html">obs_fmo_ba</a></code> </p>
+        </td>
+        <td><p>Historical Alaska annual burn area by fire management options zones (FMOs).</p></td>
+      </tr>
+    </tbody>
+    </table>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -598,11 +608,14 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

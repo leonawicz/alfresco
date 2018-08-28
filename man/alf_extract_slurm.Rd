@@ -4,10 +4,11 @@
 \alias{alf_extract_slurm}
 \title{Slurm script for ALFRESCO data extractions}
 \usage{
-alf_extract_slurm(out_dir = alfdef()$alf_slurm_dir, file = "alf_extract.R",
-  ntasks, nodes, ntasks_per_node, exclusive = TRUE, domain = "akcan1km",
-  rmpi = TRUE, modelIndex = NULL, project = NULL, years = NULL,
-  reps = NULL, cru = NULL, repSample = NULL, locgroup = NULL,
+alf_extract_slurm(out_dir = alfdef()$alf_slurm_dir,
+  file = "alf_extract.R", ntasks, nodes, ntasks_per_node,
+  exclusive = TRUE, domain = "akcan1km", rmpi = TRUE,
+  modelIndex = NULL, project = NULL, years = NULL, reps = NULL,
+  cru = NULL, repSample = NULL, locgroup = NULL,
   email = "mfleonawicz@alaska.edu", partition = "main",
   copy_rscript = TRUE, max_cores = 32)
 }

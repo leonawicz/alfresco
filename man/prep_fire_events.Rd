@@ -6,8 +6,8 @@
 \title{ALFRESCO post-processing of fire events}
 \usage{
 prep_fire_events(k, pts, locs, replicates, source = "Modeled",
-  buffer_list = list(NULL), buffer_labels = LETTERS[1:length(buffer_list)],
-  veg = NULL, main_dir)
+  buffer_list = list(NULL),
+  buffer_labels = LETTERS[1:length(buffer_list)], veg = NULL, main_dir)
 
 prep_fire_events_emp(b, pts, locs, replicates = "Observed",
   source = "Observed", buffer_list = list(NULL),

@@ -7,12 +7,13 @@
 \alias{extract_av}
 \title{Extract ALFRESCO data}
 \usage{
-extract_alf(i, type, loop_by, main_dir, age_dir = NULL, reps, years, cells,
-  ...)
+extract_alf(i, type, loop_by, main_dir, age_dir = NULL, reps, years,
+  cells, ...)
 
 prep_alf_files(i, loop_by, main_dir, reps, years)
 
-extract_fsv(i, loop_by, main_dir, reps = NULL, years = NULL, cells, ...)
+extract_fsv(i, loop_by, main_dir, reps = NULL, years = NULL, cells,
+  ...)
 
 extract_av(i, loop_by, main_dir, age_dir = NULL, reps = NULL,
   years = NULL, cells, ...)

@@ -1,9 +1,12 @@
-urls:
-  reference: https://leonawicz.github.io//reference
-  article: https://leonawicz.github.io//articles
+pandoc: 1.19.2.1
+pkgdown: 1.1.0
+pkgdown_sha: ~
 articles:
   alfresco: alfresco.html
   fire_prob: fire_prob.html
   jfsp_extract: jfsp_extract.html
   jfsp_hist_fmo_tx: jfsp_hist_fmo_tx.html
+urls:
+  reference: https://leonawicz.github.io//reference
+  article: https://leonawicz.github.io//articles
 

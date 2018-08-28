@@ -5,7 +5,8 @@
 \title{Generate bash script for copying ALFRESCO maps}
 \usage{
 copy_alf_outputs(project, in_dir, out_dir = alfdef()$alf_extract_dir,
-  file = "copy_alf_outputs.sh", domain = "akcan1km", cru_id = "CRU32")
+  file = "copy_alf_outputs.sh", domain = "akcan1km",
+  cru_id = "CRU32")
 }
 \arguments{
 \item{project}{character, a (new) name for the project, not required to match anything in source data directories.}

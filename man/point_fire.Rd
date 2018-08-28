@@ -5,8 +5,8 @@
 \title{Probability of fire}
 \usage{
 point_fire(rep, base_path = ".", label, center, sample_size = 100,
-  sample_buffer = 25000, extraction_buffers = seq(1000, 30000, length.out =
-  100), years)
+  sample_buffer = 25000, extraction_buffers = seq(1000, 30000,
+  length.out = 100), years)
 }
 \arguments{
 \item{rep}{integer, ALFRESCO replicate.}

@@ -5,8 +5,8 @@
 \title{Burn area by FMO zone}
 \usage{
 ba_fmo(in_dir, years, id = 0:5, labels = c("Unmanaged", "Limited",
-  "Modified", "Critical", "Full", "Other"), fmo_layer = NULL, mask = NULL,
-  mask_value = NULL)
+  "Modified", "Critical", "Full", "Other"), fmo_layer = NULL,
+  mask = NULL, mask_value = NULL)
 }
 \arguments{
 \item{in_dir}{input directory, a \code{Maps} directory for ALFRESCO run output.}

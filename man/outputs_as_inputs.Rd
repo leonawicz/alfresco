@@ -5,8 +5,10 @@
 \title{Copy ALFRESCO output maps}
 \usage{
 outputs_as_inputs(domain, run_name, year,
-  owner = alfdef()$atlas_run_owner_dir, top_dir = alfdef()$atlas_shiny_dir,
-  template_raster = alfdef()$age_spinups, suffix = "runs", mc.cores = 32)
+  owner = alfdef()$atlas_run_owner_dir,
+  top_dir = alfdef()$atlas_shiny_dir,
+  template_raster = alfdef()$age_spinups, suffix = "runs",
+  mc.cores = 32)
 }
 \arguments{
 \item{domain}{character, usually \code{"Statewide"} or \code{"Noatak"}.}

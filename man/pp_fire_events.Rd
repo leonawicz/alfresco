@@ -4,8 +4,8 @@
 \alias{pp_fire_events}
 \title{Prepare list of data frames during ALFRESCO post-processing}
 \usage{
-pp_fire_events(alf_data, emp_data, domain, group_name, run_name, emp_yrs, out,
-  send_to_app = TRUE)
+pp_fire_events(alf_data, emp_data, domain, group_name, run_name, emp_yrs,
+  out, send_to_app = TRUE)
 }
 \arguments{
 \item{alf_data}{output from \code{fire_events}.}

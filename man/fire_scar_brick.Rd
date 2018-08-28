@@ -4,8 +4,8 @@
 \alias{fire_scar_brick}
 \title{Prepare fire scar bricks}
 \usage{
-fire_scar_brick(fire_area_history, fah_yrs, emp_yrs, emp_fire_cause, domain,
-  shp, template_raster, mc.cores = 32)
+fire_scar_brick(fire_area_history, fah_yrs, emp_yrs, emp_fire_cause,
+  domain, shp, template_raster, mc.cores = 32)
 }
 \arguments{
 \item{fire_area_history}{shapefile of fire area history.}
