@@ -60,11 +60,13 @@ reference:
   - fire_perimeters
 - title: Fire point probability
   contents:
+  - point_fire
   - point_probs
   - fire_probs
   - fire_weights
 - title: Fire management options
   contents:
+  - fmo_add_buffer
   - ba_ratios
   - save_fmo_ratios
   - save_fmo_panel
